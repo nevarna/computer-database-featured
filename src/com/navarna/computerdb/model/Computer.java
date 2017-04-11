@@ -25,6 +25,14 @@ public class Computer {
 		this.company_id = pCompany_id ;
 	}
 	
+	public Computer (int pId , String pName) {
+		this.id = pId ; 
+		this.name = pName ; 
+		this.introduced = null  ;
+		this.discontinued = null;
+		this.company_id = -1 ;
+	}
+	
 	public String getName () {
 		return this.name ; 
 	}
