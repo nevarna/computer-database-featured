@@ -1,8 +1,6 @@
 package com.navarna.computerdb.persistence;
 
 public interface DAOComputer {
-	public static int page = 0 ; 
-	public static int nbElement = 20 ;
 	
 	public int getPage() ;
 	public int getNbElement () ;
