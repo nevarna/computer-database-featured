@@ -1,74 +1,78 @@
 package com.navarna.computerdb.persistence;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import com.navarna.computerdb.service.ConstruireRequete;
 
 public final class ConnectionDb {
 	private final static ConnectionDb _instance = new ConnectionDb() ; 
+	private final static String DRIVER = "com.mysql.jdbc.Driver" ;
+	private final static String FICHIER_PROPERTIES = "src/com/navarna/computerdb/persistence/informationDB.properties" ;
+	private static String url ;
+	private static String user ;
+	private static String password ;
 	private static Connection conn ; 
+	
 	private ConnectionDb() {
-		// TODO Auto-generated constructor stub
-		try {
-			System.out.println("CONNECTION EN COURS"); 
-			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/computer-database-db","root","");
+		if(initialisationParametreDB() );
+		else throw new DAOException("Erreur lecture fichier properties"); 
+	}
+	
+	public boolean initialisationParametreDB () {
+		try (BufferedReader br = new BufferedReader( new FileReader (FICHIER_PROPERTIES))){
+			String ligne = "" ; 	
+			while((ligne = br.readLine()) != null) {
+				String [] decoupEspace = ligne.split(" ") ;
+				if(decoupEspace.length == 3) {
+					System.out.println("taille = 3 ") ;
+					if(decoupEspace[0].equals("\t<url>")) {
+						url = decoupEspace[1].replaceAll("\"","") ;
+					}
+					else if(decoupEspace[0].equals("\t<user>")) {
+						user = decoupEspace[1].replaceAll("\"","") ;
+					}
+					else if(decoupEspace[0].equals("\t<password>")) {
+						password = decoupEspace[1].replaceAll("\"","") ;
+					}
+				}
+			}
+			if((url == null)||(password == null)||(user == null)){
+				return false ;
+			}
 		}
-		catch (SQLException se) {
-			System.out.println("Echec de la connexion à la base de donnée");
-			//se.printStackTrace();
+		catch(IOException io) {
+			throw new DAOException("Erreur IO lecture fichier properties",io); 
 		}
-		catch(ClassNotFoundException ce) {
-			System.out.println("Class non trouver ");
-			//ce.printStackTrace();
-		}
+		return true ; 
 	}
 	
 	public static ConnectionDb getInstance () {
 		return _instance;
 	}
 	
-	public boolean envoieQuery (String query , int mode) {
-		boolean retour = false ; 
-		try  {
-			ResultSet result = null ;
-			int changementDB = -1 ; 
-			Statement statement = conn.createStatement();
-			if((mode > -1)&&(mode < 3))
-				result = statement.executeQuery(query);
-			else {
-				 changementDB = statement.executeUpdate(query);
-				 if(changementDB ==0)
-					 mode = 3 ;
-				 else 
-					 mode = 4 ; 
-			}
-			retour = ConstruireRequete.switchResult(result,mode);
-			if(result != null)
-				result.close();
-			statement.close();
+	public void open () {
+		try {
+			System.out.println("CONNECTION EN COURS") ; 
+			Class.forName(DRIVER) ;
+			conn = DriverManager.getConnection(url,user,password) ;
 		}
-		catch(SQLException se) {
-			//se.printStackTrace();
-			System.out.println("Erreur de base de donnée");
+		catch (SQLException |ClassNotFoundException de) {
+			throw new DAOException("Echec de la connexion à la base de donnée",de) ;
 		}
-		return retour; 
 	}
 	
-	protected void finalize() throws Throwable {
+	public void close () {
 		try {
 			if(conn.isValid(5)) {
 				conn.close();
-				System.out.println("fermeture base de donnée");
 			}
-			System.out.println("base de données non fermer ") ; 
+			throw new DAOException("base de données non fermee ") ; 
 		}
 		catch(SQLException se) {
-			System.out.println("Erreur lors de la fermeture de la base de donnée");
-			se.printStackTrace();
+			throw new DAOException("Erreur lors de la fermeture de la base de donnée",se);
 		}
 	}
 }
