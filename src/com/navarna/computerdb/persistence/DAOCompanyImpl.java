@@ -45,8 +45,7 @@ public final class DAOCompanyImpl implements DAOCompany {
 	}
 
 	@Override
-	public boolean list() {
-		boolean retour = false ; 
+	public Page<Company> list() {
 		try  {
 			Connection conn = ConnectionDb.getInstance().open();
 			ResultSet result = null ;
@@ -55,18 +54,12 @@ public final class DAOCompanyImpl implements DAOCompany {
 			statement.setInt(1, page*nbElement);
 			result = statement.executeQuery();
 			Page<Company> page = TransformationResultSet.extraireListeCompany(result);
-			if(page != null) {
-				// func service affichage 
-			}
-			else {
-				// func service aucune Donnee 
-			}
 			statement.close();
+			return page ;
 		}
 		catch(SQLException se) {
 			throw new DAOException("Erreur de base de donnée");
 		}
-		return retour; 
 	}
 	
 	@Override
@@ -75,7 +68,7 @@ public final class DAOCompanyImpl implements DAOCompany {
 	}
 	
 	@Override
-	public boolean suivantList() {
+	public Page<Company> suivantList() {
 		page ++ ; 
 		return list();
 	}

@@ -35,13 +35,22 @@ public final class DAOComputerImpl implements DAOComputer {
 	public int getNbElement() {
 		return nbElement ;
 	}
-
-
+	
+	@Override
+	public void setPage(int pPage) {
+		page = pPage ;	
+	}
+	
+	@Override
+	public void setNbElement(int pNbElement) {
+		nbElement = pNbElement ;
+	}
+	
 	public static DAOComputerImpl getInstance() {
 		return INSTANCE ; 
 	}
 	@Override
-	public boolean insert(Computer computer) {
+	public int insert(Computer computer) {
 		try  {
 			Connection conn = ConnectionDb.getInstance().open();
 			int result = 0 ; 
@@ -52,15 +61,9 @@ public final class DAOComputerImpl implements DAOComputer {
 			statement.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
 			statement.setLong(4, computer.getCompany().getId());
 			result = statement.executeUpdate();
-			if(result == 0) {
-				// func service 
-			}
-			else {
-				// func service 
-			}
 			statement.close();
 			ConnectionDb.getInstance().close();
-			return true; 
+			return result ; 
 		}
 		catch(SQLException se) {
 			throw new DAOException("Erreur de base de donnée");
@@ -68,7 +71,7 @@ public final class DAOComputerImpl implements DAOComputer {
 	}
 
 	@Override
-	public boolean update(Computer computer) {
+	public int update(Computer computer) {
 		try  {
 			Connection conn = ConnectionDb.getInstance().open();
 			int result = 0 ; 
@@ -79,15 +82,9 @@ public final class DAOComputerImpl implements DAOComputer {
 			statement.setLong(3, computer.getCompany().getId());
 			statement.setLong(4, computer.getId());
 			result = statement.executeUpdate();
-			if(result == 0) {
-				// func service 
-			}
-			else {
-				// func service 
-			}
 			statement.close();
 			ConnectionDb.getInstance().close();
-			return true; 
+			return result; 
 		}
 		catch(SQLException se) {
 			throw new DAOException("Erreur de base de donnée");
@@ -95,22 +92,16 @@ public final class DAOComputerImpl implements DAOComputer {
 	}
 
 	@Override
-	public boolean delete(long id) {
+	public int delete(long id) {
 		try  {
 			Connection conn = ConnectionDb.getInstance().open();
 			int result = 0 ; 
 			PreparedStatement statement = conn.prepareStatement(DELETE);
 			statement.setLong(0, id);
 			result = statement.executeUpdate();
-			if(result == 0) {
-				// func service 
-			}
-			else {
-				// func service 
-			}
 			statement.close();
 			ConnectionDb.getInstance().close();
-			return true; 
+			return result; 
 		}
 		catch(SQLException se) {
 			throw new DAOException("Erreur de base de donnée");
@@ -118,7 +109,7 @@ public final class DAOComputerImpl implements DAOComputer {
 	}
 
 	@Override
-	public boolean list() {
+	public Page<Computer> list() {
 		try  {
 			Connection conn = ConnectionDb.getInstance().open();
 			ResultSet result = null; 
@@ -126,21 +117,10 @@ public final class DAOComputerImpl implements DAOComputer {
 			statement.setInt(0, nbElement);
 			statement.setInt(1, page * nbElement);
 			result = statement.executeQuery();
-			if(result != null) {
-				 Page<Computer> page = 	TransformationResultSet.extraireListeComputer(result);
-				 if(page != null) {
-					 //func service 
-				 }
-				 else {
-					 // func service 
-				 }
-			}
-			else {
-				// func service 
-			}
+			Page<Computer> page = 	TransformationResultSet.extraireListeComputer(result);
 			statement.close();
 			ConnectionDb.getInstance().close();
-			return true; 
+			return page; 
 		}
 		catch(SQLException se) {
 			throw new DAOException("Erreur de base de donnée");
@@ -148,28 +128,17 @@ public final class DAOComputerImpl implements DAOComputer {
 	}
 
 	@Override
-	public boolean show(long id) {
+	public Computer showId(long id) {
 		try  {
 			Connection conn = ConnectionDb.getInstance().open();
 			ResultSet result = null; 
 			PreparedStatement statement = conn.prepareStatement(SHOW_ID);
 			statement.setLong(0, id);
 			result = statement.executeQuery();
-			if(result != null) {
-				 Computer computer = TransformationResultSet.extraireDetailsComputer(result);
-				 if(computer != null) {
-					 //func service 
-				 }
-				 else {
-					 // func service 
-				 }
-			}
-			else {
-				// func service 
-			}
+			Computer computer = TransformationResultSet.extraireDetailsComputer(result);
 			statement.close();
 			ConnectionDb.getInstance().close();
-			return true; 
+			return computer; 
 		}
 		catch(SQLException se) {
 			throw new DAOException("Erreur de base de donnée");
@@ -177,7 +146,7 @@ public final class DAOComputerImpl implements DAOComputer {
 	}
 	
 	@Override
-	public boolean show(String name) {
+	public Page<Computer> showName(String name) {
 		try  {
 			Connection conn = ConnectionDb.getInstance().open();
 			ResultSet result = null; 
@@ -186,21 +155,10 @@ public final class DAOComputerImpl implements DAOComputer {
 			statement.setInt(1, nbElement);
 			statement.setInt(2, page * nbElement);
 			result = statement.executeQuery();
-			if(result != null) {
-				 Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result);
-				 if(page != null) {
-					 //func service 
-				 }
-				 else {
-					 // func service 
-				 }
-			}
-			else {
-				// func service 
-			}
+			Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result);
 			statement.close();
 			ConnectionDb.getInstance().close();
-			return true; 
+			return page; 
 		}
 		catch(SQLException se) {
 			throw new DAOException("Erreur de base de donnée");
@@ -213,14 +171,14 @@ public final class DAOComputerImpl implements DAOComputer {
 	}
 	
 	@Override
-	public boolean suivantList() {
+	public Page<Computer> suivantList() {
 		page ++ ; 
 		return list();
 	}
 
 	@Override
-	public boolean suivantShow(String name) {
+	public Page<Computer> suivantShow(String name) {
 		page ++ ; 
-		return show(name);
+		return showName(name);
 	}
 }
