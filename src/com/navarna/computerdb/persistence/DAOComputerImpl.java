@@ -10,8 +10,8 @@ import com.navarna.computerdb.mapper.Page;
 import com.navarna.computerdb.mapper.TransformationResultSet;
 import com.navarna.computerdb.model.Computer;
 
-public final class DaoComputer implements DAOComputer {
-	private static final DaoComputer INSTANCE = new DaoComputer();
+public final class DAOComputerImpl implements DAOComputer {
+	private static final DAOComputerImpl INSTANCE = new DAOComputerImpl();
 	
 	public static int page = 0 ; 
 	public static int nbElement = 20 ;
@@ -23,7 +23,7 @@ public final class DaoComputer implements DAOComputer {
 	public final static String SHOW_ID = "SELECT * from computer where id = ?";
 	public final static String SHOW_NAME = "SELECT * from computer where name = ? LIMIT ? OFFSET ?";
 			
-	private DaoComputer() {
+	private DAOComputerImpl() {
 	}
 	
 	@Override
@@ -37,7 +37,7 @@ public final class DaoComputer implements DAOComputer {
 	}
 
 
-	public static DaoComputer getInstance() {
+	public static DAOComputerImpl getInstance() {
 		return INSTANCE ; 
 	}
 	@Override
