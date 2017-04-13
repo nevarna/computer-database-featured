@@ -5,8 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public final class DaoCompany implements DAOCompany {
-	private static final DaoCompany instance = new DaoCompany();
+public final class DAOCompanyImpl implements DAOCompany {
+	private static final DAOCompanyImpl INSTANCE = new DAOCompanyImpl();
 	
 	private static int page = 0 ; 
 	private static int nbElement = 20 ;
@@ -14,8 +14,8 @@ public final class DaoCompany implements DAOCompany {
 	private static final String SELECT  = "SELECT id,name from company LIMIT " ;
 	private static final String OFFSET = " OFFSET " ;
 
-	public static DaoCompany getInstance() {
-		return instance ;
+	public static DAOCompanyImpl getInstance() {
+		return INSTANCE ;
 	}
 	
 	@Override
