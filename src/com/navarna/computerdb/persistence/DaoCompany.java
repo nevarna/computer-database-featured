@@ -1,46 +1,76 @@
 package com.navarna.computerdb.persistence;
 
-import com.navarna.computerdb.model.Company;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-public final class DaoCompany extends Dao<Company> {
+public final class DaoCompany implements DAOCompany {
 	private static final DaoCompany instance = new DaoCompany();
 	
-	private DaoCompany() {
-		// TODO Auto-generated constructor stub
-	}
+	private static int page = 0 ; 
+	private static int nbElement = 20 ;
 	
+	private static final String SELECT  = "SELECT id,name from company LIMIT " ;
+	private static final String OFFSET = " OFFSET " ;
+
 	public static DaoCompany getInstance() {
 		return instance ;
 	}
-
+	
 	@Override
-	public boolean insert(String information) {
-		// TODO Auto-generated method stub
-		return false;
+	public int getPage() {
+		return page ; 
 	}
 
 	@Override
-	public boolean update(int id, String information) {
-		// TODO Auto-generated method stub
-		return false;
+	public int getNbElement() {
+		return nbElement ;
+	}
+	
+	@Override
+	public void setPage(int pPage) {
+		page = pPage ;	
 	}
 
 	@Override
-	public boolean delete(int id) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean show(int id) {
-		// TODO Auto-generated method stub
-		return false;
+	public void setNbElement(int pNbElement) {
+		nbElement = pNbElement ;
 	}
 
 	@Override
 	public boolean list() {
-		// TODO Auto-generated method stub
-		String query = "SELECT id,name from company LIMIT "+getNbElement()+" OFFSET "+ getPage()*getNbElement() ; 
-		return ConnectionDb.getInstance().envoieQuery(query, 0);
+		String query = SELECT+getNbElement()+OFFSET+ getPage()*getNbElement() ; 
+		return executeQuery(query);
 	}
+	
+	@Override
+	public void resetList() {
+		page = 0 ;
+	}
+	
+	@Override
+	public boolean suivantList() {
+		page ++ ; 
+		return list();
+	}
+	
+	public boolean executeQuery (String query) {
+		boolean retour = false ; 
+		try  {
+			Connection conn = ConnectionDb.getInstance().open();
+			ResultSet result = null ;
+			Statement statement = conn.createStatement();
+			result = statement.executeQuery(query);
+			//retour = 
+			if(result != null)
+				result.close();
+			statement.close();
+		}
+		catch(SQLException se) {
+			throw new DAOException("Erreur de base de donnée");
+		}
+		return retour; 
+	}
+
 }
