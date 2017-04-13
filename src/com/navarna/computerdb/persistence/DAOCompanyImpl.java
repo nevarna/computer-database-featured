@@ -14,6 +14,9 @@ public final class DAOCompanyImpl implements DAOCompany {
 	private static final String SELECT  = "SELECT id,name from company LIMIT " ;
 	private static final String OFFSET = " OFFSET " ;
 
+	private DAOCompanyImpl () {
+		
+	}
 	public static DAOCompanyImpl getInstance() {
 		return INSTANCE ;
 	}
