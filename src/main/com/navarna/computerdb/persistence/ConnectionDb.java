@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public final class ConnectionDb {
 	private final static ConnectionDb _instance = new ConnectionDb() ; 
 	private final static String DRIVER = "com.mysql.jdbc.Driver" ;
-	private final static String FICHIER_PROPERTIES = "src/com/navarna/computerdb/persistence/informationDB.properties" ;
+	private final static String FICHIER_PROPERTIES = "src/main/com/navarna/computerdb/persistence/informationDB.properties" ;
 	private static String url ;
 	private static String user ;
 	private static String password ;
@@ -53,11 +53,12 @@ public final class ConnectionDb {
 		return _instance;
 	}
 	
-	public void open () {
+	public Connection open () {
 		try {
 			System.out.println("CONNECTION EN COURS") ; 
 			Class.forName(DRIVER) ;
 			conn = DriverManager.getConnection(url,user,password) ;
+			return conn ;
 		}
 		catch (SQLException |ClassNotFoundException de) {
 			throw new DAOException("Echec de la connexion à la base de donnée",de) ;
