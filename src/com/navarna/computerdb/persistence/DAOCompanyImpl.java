@@ -1,9 +1,13 @@
 package com.navarna.computerdb.persistence;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+
+import com.navarna.computerdb.mapper.Page;
+import com.navarna.computerdb.mapper.TransformationResultSet;
+import com.navarna.computerdb.model.Company;
 
 public final class DAOCompanyImpl implements DAOCompany {
 	private static final DAOCompanyImpl INSTANCE = new DAOCompanyImpl();
@@ -11,8 +15,7 @@ public final class DAOCompanyImpl implements DAOCompany {
 	private static int page = 0 ; 
 	private static int nbElement = 20 ;
 	
-	private static final String SELECT  = "SELECT id,name from company LIMIT " ;
-	private static final String OFFSET = " OFFSET " ;
+	private static final String SELECT  = "SELECT id,name from company LIMIT ? OFFSET ?" ;
 
 	private DAOCompanyImpl () {
 		
@@ -43,8 +46,27 @@ public final class DAOCompanyImpl implements DAOCompany {
 
 	@Override
 	public boolean list() {
-		String query = SELECT+getNbElement()+OFFSET+ getPage()*getNbElement() ; 
-		return executeQuery(query);
+		boolean retour = false ; 
+		try  {
+			Connection conn = ConnectionDb.getInstance().open();
+			ResultSet result = null ;
+			PreparedStatement statement = conn.prepareStatement(SELECT);
+			statement.setInt(0, nbElement);
+			statement.setInt(1, page*nbElement);
+			result = statement.executeQuery();
+			Page<Company> page = TransformationResultSet.extraireListeCompany(result);
+			if(page != null) {
+				// func service affichage 
+			}
+			else {
+				// func service aucune Donnee 
+			}
+			statement.close();
+		}
+		catch(SQLException se) {
+			throw new DAOException("Erreur de base de donnée");
+		}
+		return retour; 
 	}
 	
 	@Override
@@ -58,22 +80,4 @@ public final class DAOCompanyImpl implements DAOCompany {
 		return list();
 	}
 	
-	public boolean executeQuery (String query) {
-		boolean retour = false ; 
-		try  {
-			Connection conn = ConnectionDb.getInstance().open();
-			ResultSet result = null ;
-			Statement statement = conn.createStatement();
-			result = statement.executeQuery(query);
-			//retour = 
-			if(result != null)
-				result.close();
-			statement.close();
-		}
-		catch(SQLException se) {
-			throw new DAOException("Erreur de base de donnée");
-		}
-		return retour; 
-	}
-
 }
