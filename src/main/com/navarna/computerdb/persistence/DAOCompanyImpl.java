@@ -63,12 +63,12 @@ public final class DAOCompanyImpl implements DAOCompany {
 	}
 	
 	@Override
-	public void resetList() {
+	public void resetPage() {
 		page = 0 ;
 	}
 	
 	@Override
-	public Page<Company> suivantList() {
+	public Page<Company> listeSuivante() {
 		page ++ ; 
 		return list();
 	}

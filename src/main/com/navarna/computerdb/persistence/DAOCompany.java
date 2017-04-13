@@ -10,6 +10,6 @@ public interface DAOCompany {
 	public void setPage (int pPage) ;
 	public void setNbElement (int pNbElement) ;
 	public Page<Company> list () ;
-	public void resetList() ;
-	public Page<Company> suivantList() ;
+	public void resetPage() ;
+	public Page<Company> listeSuivante() ;
 }

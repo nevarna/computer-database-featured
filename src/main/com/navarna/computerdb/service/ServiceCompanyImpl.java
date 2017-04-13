@@ -14,7 +14,7 @@ public class ServiceCompanyImpl implements ServiceCompany {
 
 	@Override
 	public Page<Company> listeSuivante() {
-		return this.dCompanyImpl.suivantList();
+		return this.dCompanyImpl.listeSuivante();
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class ServiceCompanyImpl implements ServiceCompany {
 
 	@Override
 	public void resetPage() {
-		this.dCompanyImpl.resetList();
+		this.dCompanyImpl.resetPage();
 	}
 
 }

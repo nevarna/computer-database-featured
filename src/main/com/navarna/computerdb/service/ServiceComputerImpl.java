@@ -54,12 +54,12 @@ public class ServiceComputerImpl implements ServiceComputer {
 
 	@Override
 	public Page<Computer> listeSuivante() {
-		return this.dComputerImpl.suivantList();
+		return this.dComputerImpl.listeSuivante();
 	}
 
 	@Override
 	public Page<Computer> showSuivant(String name) {
-		return this.dComputerImpl.suivantShow(name);
+		return this.dComputerImpl.showSuivant(name);
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class ServiceComputerImpl implements ServiceComputer {
 
 	@Override
 	public void resetPage() {
-		this.dComputerImpl.resetList();
+		this.dComputerImpl.resetPage();
 	}
 
 }

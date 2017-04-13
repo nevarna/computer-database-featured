@@ -166,18 +166,18 @@ public final class DAOComputerImpl implements DAOComputer {
 	}
 	
 	@Override
-	public void resetList() {
+	public void resetPage() {
 		page = 0 ;
 	}
 	
 	@Override
-	public Page<Computer> suivantList() {
+	public Page<Computer> listeSuivante() {
 		page ++ ; 
 		return list();
 	}
 
 	@Override
-	public Page<Computer> suivantShow(String name) {
+	public Page<Computer> showSuivant(String name) {
 		page ++ ; 
 		return showName(name);
 	}

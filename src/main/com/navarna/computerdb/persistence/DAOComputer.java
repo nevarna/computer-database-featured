@@ -15,7 +15,7 @@ public interface DAOComputer {
 	public Computer showId (long id) ; 
 	public Page<Computer> showName (String name) ;
 	public Page<Computer> list () ;
-	public void resetList() ;
-	public Page<Computer> suivantList() ;
-	public Page<Computer> suivantShow(String name) ; 
+	public void resetPage() ;
+	public Page<Computer> listeSuivante() ;
+	public Page<Computer> showSuivant(String name) ; 
 }
