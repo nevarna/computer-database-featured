@@ -10,12 +10,17 @@ import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Page;
 
 public final class DAOCompanyImpl implements DAOCompany {
-	private static final DAOCompanyImpl INSTANCE = new DAOCompanyImpl();
+	private static final DAOCompanyImpl INSTANCE ;
 	
 	private static int page = 0 ; 
 	private static int nbElement = 20 ;
 	
-	private static final String SELECT  = "SELECT id,name from company LIMIT ? OFFSET ?" ;
+	private static final String SELECT ;
+	
+	static {
+		SELECT  = "SELECT id,name from company LIMIT ? OFFSET ?" ;
+		INSTANCE = new DAOCompanyImpl();
+	}
 
 	private DAOCompanyImpl () {
 		

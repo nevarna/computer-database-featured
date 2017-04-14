@@ -12,18 +12,28 @@ import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
 
 public final class DAOComputerImpl implements DAOComputer {
-	private static final DAOComputerImpl INSTANCE = new DAOComputerImpl();
+	private static final DAOComputerImpl INSTANCE ;
 	
 	public static int page = 0 ; 
 	public static int nbElement = 20 ;
 	
-	public final static String INSERT = "INSERT INTO computer VALUES ( ?, ?, ?, ?, ? )";
-	public final static String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?" ; 
-	public final static String DELETE = "DELETE FROM computer where id = ?";
-	public final static String SELECT_LIST = "SELECT id,name from computer LIMIT ? OFFSET ?";
-	public final static String SHOW_ID = "SELECT * from computer left join company on company_id = company.id where computer.id = ?";
-	public final static String SHOW_NAME = "SELECT * from computer left join company on company_id = company.id where computer.name = ? LIMIT ? OFFSET ?";
+	public final static String INSERT ;
+	public final static String UPDATE ; 
+	public final static String DELETE ;
+	public final static String SELECT_LIST ;
+	public final static String SHOW_ID ;
+	public final static String SHOW_NAME ;
 			
+	static {
+		INSERT = "INSERT INTO computer VALUES ( ?, ?, ?, ?, ? )";
+		UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?" ; 
+		DELETE = "DELETE FROM computer where id = ?";
+		SELECT_LIST = "SELECT id,name from computer LIMIT ? OFFSET ?";
+		SHOW_ID = "SELECT * from computer left join company on company_id = company.id where computer.id = ?";
+		SHOW_NAME = "SELECT * from computer left join company on company_id = company.id where computer.name = ? LIMIT ? OFFSET ?";
+		INSTANCE = new DAOComputerImpl();
+	}
+	
 	private DAOComputerImpl() {
 	}
 	

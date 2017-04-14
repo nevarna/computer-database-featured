@@ -5,10 +5,12 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Scanner;
 
+import com.navarna.computerdb.mapper.MapperException;
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Company.CompanyBuilder;
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Computer.ComputerBuilder;
+import com.navarna.computerdb.persistence.DAOException;
 
 public class EntrerUtilisateur {
 
@@ -212,8 +214,8 @@ public class EntrerUtilisateur {
 						System.out.println("Option inconnue");
 						break;
 					}
-				} catch (CLIException ci) {
-					SortieUtilisateur.lireErreur(ci.getMessage());
+				} catch (DAOException | MapperException | CLIException e) {
+					SortieUtilisateur.lireErreur(e.getMessage());
 				}
 			}
 		}

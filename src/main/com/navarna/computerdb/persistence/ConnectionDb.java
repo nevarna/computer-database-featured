@@ -8,13 +8,19 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public final class ConnectionDb {
-	private final static ConnectionDb _instance = new ConnectionDb() ; 
-	private final static String DRIVER = "com.mysql.jdbc.Driver" ;
-	private final static String FICHIER_PROPERTIES = "src/main/com/navarna/computerdb/persistence/informationDB.properties" ;
+	private final static ConnectionDb INSTANCE ;
+	private final static String DRIVER ;
+	private final static String FICHIER_PROPERTIES ;
 	private static String url ;
 	private static String user ;
 	private static String password ;
 	private static Connection conn ; 
+	
+	static {
+		DRIVER = "com.mysql.jdbc.Driver" ;
+		FICHIER_PROPERTIES = "src/main/com/navarna/computerdb/persistence/informationDB.properties";
+		INSTANCE = new ConnectionDb() ; 	
+	}
 	
 	private ConnectionDb() {
 		if(initialisationParametreDB() );
@@ -49,12 +55,11 @@ public final class ConnectionDb {
 	}
 	
 	public static ConnectionDb getInstance () {
-		return _instance;
+		return INSTANCE;
 	}
 	
 	public Connection open () {
 		try {
-			System.out.println("CONNECTION EN COURS") ; 
 			Class.forName(DRIVER) ;
 			conn = DriverManager.getConnection(url,user,password) ;
 			return conn ;
