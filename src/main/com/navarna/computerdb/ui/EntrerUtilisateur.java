@@ -138,9 +138,30 @@ public class EntrerUtilisateur {
 		return entree ; 
 	}
 
+	
+	public static void demandeChangeNbListe (String type) {
+		System.out.println("Voulez-vous changer le nombre d'element par liste? (Si oui inserer un nombre, sinon taper ENTRER");
+		String stringNbElement = SC.nextLine() ;
+		if(!stringNbElement.equals("")) {
+			int nbElement = ConstruireRequete.stringEnInt(stringNbElement);
+			if(nbElement > 0) {
+				ConstruireRequete.demandeChangeNbElement(type,nbElement);
+			}
+		}
+		System.out.println("Voulez-vous changer le numero de la page? (Si oui inserer un nombre, sinon taper ENTRER");
+		String stringNbPage = SC.nextLine() ; 
+		if(!stringNbPage.equals("")) {
+			int nbPage = ConstruireRequete.stringEnInt(stringNbPage);
+			if(nbPage >= 1) {
+				ConstruireRequete.demandeChangeNbPage(type,nbPage-1);
+			}
+		}
+	}
+	
 	public static void retourList(String[] command) {
 		if (command.length == 2) {
 			boolean pasFini = true ; 
+			demandeChangeNbListe(command[1]) ; 
 			ConstruireRequete.command(command);
 			while (pasFini) {
 				System.out.println("Souhaitez-vous continuez la liste ?\noui\nnon(Par defaut non)");

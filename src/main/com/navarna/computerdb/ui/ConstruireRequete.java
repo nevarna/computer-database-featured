@@ -136,6 +136,30 @@ private static ServiceCompany servCompanyImpl = new ServiceCompanyImpl() ;
 		}
 	}
 	
+	public static void demandeChangeNbElement (String type ,int nbElement) {
+		if(type.equals("computers")) {
+			servComputerImpl.choisirNbElement(nbElement);
+		}
+		else if (type.equals("companies")) {
+			servCompanyImpl.choisirNbElement(nbElement);
+		}
+		else {
+			throw new CLIException ("fonction demandeChangeNbElement arguments incorect");
+		}
+	}
+	
+	public static void demandeChangeNbPage (String type ,int nbPage) {
+		if(type.equals("computers")) {
+			servComputerImpl.choisirPage(nbPage);
+		}
+		else if(type.equals("companies")) {
+			servCompanyImpl.choisirPage(nbPage); 
+		}
+		else {
+			throw new CLIException ("fonction demandeChangeNbPage arguments incorect");
+		}
+	}
+	
 	public static void command (String [] command) {
 		if(command.length < 2)
 			throw new CLIException ("fonction command nombre d'arguments incorect");
