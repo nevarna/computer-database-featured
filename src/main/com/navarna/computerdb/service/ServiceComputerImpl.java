@@ -1,7 +1,7 @@
 package com.navarna.computerdb.service;
 
-import com.navarna.computerdb.mapper.Page;
 import com.navarna.computerdb.model.Computer;
+import com.navarna.computerdb.model.Page;
 import com.navarna.computerdb.persistence.DAOComputerImpl;
 
 public class ServiceComputerImpl implements ServiceComputer {

@@ -2,20 +2,24 @@ package com.navarna.computerdb.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Company.CompanyBuilder;
 import com.navarna.computerdb.model.Computer;
+import com.navarna.computerdb.model.Page;
 import com.navarna.computerdb.model.Computer.ComputerBuilder;
 import com.navarna.computerdb.persistence.DAOCompanyImpl;
-import com.navarna.computerdb.persistence.DaoComputer;
+import com.navarna.computerdb.persistence.DAOComputerImpl;
 
 public class TransformationResultSet {
 	
 	public static Page<Computer> extraireListeComputer (ResultSet result){
 		try {
-			Page<Computer> page = new Page<Computer>(DaoComputer.getInstance().getPage(), DaoComputer.getInstance().getNbElement()); 
+			Page<Computer> page = new Page<Computer>(DAOComputerImpl.getInstance().getPage(), DAOComputerImpl.getInstance().getNbElement()); 
 			int compteur = 0 ; 
 			while(result.next()) {
 				compteur ++ ; 
@@ -57,13 +61,33 @@ public class TransformationResultSet {
 		}
 	}
 	
+	public static LocalDate recupererDate (String dateEnString) {
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss.S");
+			LocalDate date = LocalDate.parse(dateEnString,formatter);
+			return date ;
+		}
+		catch (DateTimeParseException pe) {
+			throw new MapperException("Erreur transformation de date",pe);
+		}
+		
+	}
+	
 	public static Computer extraireDetailsComputer (ResultSet result) {
 		try {
 			if(result.next()) { 
 				Long id = result.getLong("id");
 				String nameComputer = result.getString("computer.name");
-				LocalDate introduced = result.getTimestamp("introduced").toLocalDateTime().toLocalDate();
-				LocalDate discontinued =  result.getTimestamp("discontinued").toLocalDateTime().toLocalDate();
+				String tIntroduced = result.getString("introduced");
+				LocalDate introduced = null ; 
+				if(tIntroduced != null) {
+					introduced = recupererDate(tIntroduced);
+				}
+				String tDiscontinued = result.getString("discontinued");
+				LocalDate discontinued = null ;
+				if(tDiscontinued != null) {
+					discontinued = recupererDate(tDiscontinued);
+				}
 				Long companyId  = result.getLong("company_id");
 				String nameCompany = result.getString("company.name");
 				Company company = new CompanyBuilder(nameCompany).setId(companyId).build() ;
@@ -81,14 +105,22 @@ public class TransformationResultSet {
 	
 	public static Page<Computer> extraireDetailsComputers (ResultSet result) {
 		try {
-			Page<Computer> page = new Page<Computer>(DaoComputer.getInstance().getPage(), DaoComputer.getInstance().getNbElement()); 
+			Page<Computer> page = new Page<Computer>(DAOComputerImpl.getInstance().getPage(), DAOComputerImpl.getInstance().getNbElement()); 
 			int compteur = 0 ;
 			while(result.next()) {
 				compteur ++ ;
 				Long id = result.getLong("id");
 				String nameComputer = result.getString("computer.name");
-				LocalDate introduced = result.getTimestamp("introduced").toLocalDateTime().toLocalDate();
-				LocalDate discontinued =  result.getTimestamp("discontinued").toLocalDateTime().toLocalDate();
+				Timestamp tIntroduced = result.getTimestamp("introduced");
+				LocalDate introduced = null ; 
+				if(tIntroduced != null) {
+					introduced = tIntroduced.toLocalDateTime().toLocalDate();
+				}
+				Timestamp tDiscontinued = result.getTimestamp("discontinued");
+				LocalDate discontinued = null ;
+				if(tDiscontinued != null) {
+					discontinued = tDiscontinued.toLocalDateTime().toLocalDate();
+				}
 				Long companyId  = result.getLong("company_id");
 				String nameCompany = result.getString("company.name");
 				Company company = new CompanyBuilder(nameCompany).setId(companyId).build() ;

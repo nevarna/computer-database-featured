@@ -1,7 +1,7 @@
 package com.navarna.computerdb.persistence;
 
-import com.navarna.computerdb.mapper.Page;
 import com.navarna.computerdb.model.Computer;
+import com.navarna.computerdb.model.Page;
 
 public interface DAOComputer {
 	

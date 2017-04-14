@@ -3,7 +3,7 @@ package com.navarna.computerdb.model;
 import java.time.LocalDate;
 
 public class Computer {
-	private long id  ; 
+	private Long id  ; 
 	private String name ; 
 	private LocalDate introduced ; 
 	private LocalDate discontinued ; 
@@ -33,8 +33,8 @@ public class Computer {
 		return this.company ; 
 	}
 	
-	public long getId () {
-		return this.id ;
+	public Long getId () {
+		return this.id == null ? new Long (0) : id ;
 	}
 	
 	@Override
@@ -68,14 +68,14 @@ public class Computer {
 	}
 	
 	public static final class ComputerBuilder {
-		private Long id  ; 
+		private Long id ; 
 		private String name ; 
 		private LocalDate introduced ; 
 		private LocalDate discontinued ; 
 		private Company company ;
 		
 		public ComputerBuilder (String pName) {
-			this.name = pName ; 
+			this.name = pName == null ? "undefined" : pName ;
 		}
 		
 		public ComputerBuilder setId (Long pId) {

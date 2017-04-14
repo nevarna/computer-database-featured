@@ -5,9 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.navarna.computerdb.mapper.Page;
 import com.navarna.computerdb.mapper.TransformationResultSet;
 import com.navarna.computerdb.model.Company;
+import com.navarna.computerdb.model.Page;
 
 public final class DAOCompanyImpl implements DAOCompany {
 	private static final DAOCompanyImpl INSTANCE = new DAOCompanyImpl();
@@ -50,8 +50,8 @@ public final class DAOCompanyImpl implements DAOCompany {
 			Connection conn = ConnectionDb.getInstance().open();
 			ResultSet result = null ;
 			PreparedStatement statement = conn.prepareStatement(SELECT);
-			statement.setInt(0, nbElement);
-			statement.setInt(1, page*nbElement);
+			statement.setInt(1, nbElement);
+			statement.setInt(2, page*nbElement);
 			result = statement.executeQuery();
 			Page<Company> page = TransformationResultSet.extraireListeCompany(result);
 			statement.close();

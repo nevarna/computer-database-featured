@@ -1,4 +1,4 @@
-package com.navarna.computerdb.mapper;
+package com.navarna.computerdb.model;
 
 import java.util.ArrayList;
 

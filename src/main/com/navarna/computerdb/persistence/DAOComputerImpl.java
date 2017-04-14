@@ -5,10 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 
-import com.navarna.computerdb.mapper.Page;
 import com.navarna.computerdb.mapper.TransformationResultSet;
 import com.navarna.computerdb.model.Computer;
+import com.navarna.computerdb.model.Page;
 
 public final class DAOComputerImpl implements DAOComputer {
 	private static final DAOComputerImpl INSTANCE = new DAOComputerImpl();
@@ -17,11 +18,11 @@ public final class DAOComputerImpl implements DAOComputer {
 	public static int nbElement = 20 ;
 	
 	public final static String INSERT = "INSERT INTO computer VALUES ( ?, ?, ?, ?, ? )";
-	public final static String UPDATE = "UPDATE computer SET name = ?, introduce = ?, discontinued = ?, id_company = ? where id = ?" ; 
+	public final static String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?" ; 
 	public final static String DELETE = "DELETE FROM computer where id = ?";
 	public final static String SELECT_LIST = "SELECT id,name from computer LIMIT ? OFFSET ?";
-	public final static String SHOW_ID = "SELECT * from computer where id = ?";
-	public final static String SHOW_NAME = "SELECT * from computer where name = ? LIMIT ? OFFSET ?";
+	public final static String SHOW_ID = "SELECT * from computer left join company on company_id = company.id where computer.id = ?";
+	public final static String SHOW_NAME = "SELECT * from computer left join company on company_id = company.id where computer.name = ? LIMIT ? OFFSET ?";
 			
 	private DAOComputerImpl() {
 	}
@@ -49,17 +50,38 @@ public final class DAOComputerImpl implements DAOComputer {
 	public static DAOComputerImpl getInstance() {
 		return INSTANCE ; 
 	}
+	
 	@Override
 	public int insert(Computer computer) {
 		try  {
 			Connection conn = ConnectionDb.getInstance().open();
 			int result = 0 ; 
 			PreparedStatement statement = conn.prepareStatement(INSERT);
-			statement.setLong(0, computer.getId());
-			statement.setString(1, computer.getName());
-			statement.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
-			statement.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
-			statement.setLong(4, computer.getCompany().getId());
+			if(computer.getId() != null) {
+				statement.setLong(1, computer.getId());
+			}
+			else {
+				statement.setNull(1,Types.BIGINT);
+			}
+			statement.setString(2, computer.getName());
+			if(computer.getIntroduced() != null) {
+				statement.setTimestamp(3, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
+			}
+			else {
+				statement.setNull(3, Types.TIMESTAMP);
+			}
+			if(computer.getDiscontinued() != null) {
+				statement.setTimestamp(4, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
+			}
+			else {
+				statement.setNull(4, Types.TIMESTAMP);
+			}
+			if(computer.getCompany().getId() != null) {
+				statement.setLong(5, computer.getCompany().getId());
+			}
+			else {
+				statement.setNull(5, Types.BIGINT);
+			}
 			result = statement.executeUpdate();
 			statement.close();
 			ConnectionDb.getInstance().close();
@@ -76,18 +98,38 @@ public final class DAOComputerImpl implements DAOComputer {
 			Connection conn = ConnectionDb.getInstance().open();
 			int result = 0 ; 
 			PreparedStatement statement = conn.prepareStatement(UPDATE);
-			statement.setString(0, computer.getName());
-			statement.setTimestamp(1, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
-			statement.setTimestamp(2, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
-			statement.setLong(3, computer.getCompany().getId());
-			statement.setLong(4, computer.getId());
+			if(computer.getId() != null) {
+				statement.setLong(5, computer.getId());
+			}
+			else {
+				statement.setNull(5,Types.BIGINT);
+			}
+			statement.setString(1, computer.getName());
+			if(computer.getIntroduced() != null) {
+				statement.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
+			}
+			else {
+				statement.setNull(2, Types.TIMESTAMP);
+			}
+			if(computer.getDiscontinued() != null) {
+				statement.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
+			}
+			else {
+				statement.setNull(3, Types.TIMESTAMP);
+			}
+			if(computer.getCompany().getId() != null) {
+				statement.setLong(4, computer.getCompany().getId());
+			}
+			else {
+				statement.setNull(4, Types.BIGINT);
+			}
 			result = statement.executeUpdate();
 			statement.close();
 			ConnectionDb.getInstance().close();
 			return result; 
 		}
 		catch(SQLException se) {
-			throw new DAOException("Erreur de base de donnée");
+			throw new DAOException("Erreur de base de donnée",se);
 		}
 	}
 
@@ -97,14 +139,14 @@ public final class DAOComputerImpl implements DAOComputer {
 			Connection conn = ConnectionDb.getInstance().open();
 			int result = 0 ; 
 			PreparedStatement statement = conn.prepareStatement(DELETE);
-			statement.setLong(0, id);
+			statement.setLong(1, id);
 			result = statement.executeUpdate();
 			statement.close();
 			ConnectionDb.getInstance().close();
 			return result; 
 		}
 		catch(SQLException se) {
-			throw new DAOException("Erreur de base de donnée");
+			throw new DAOException("Erreur de base de donnée",se);
 		}
 	}
 
@@ -114,8 +156,8 @@ public final class DAOComputerImpl implements DAOComputer {
 			Connection conn = ConnectionDb.getInstance().open();
 			ResultSet result = null; 
 			PreparedStatement statement = conn.prepareStatement(SELECT_LIST);
-			statement.setInt(0, nbElement);
-			statement.setInt(1, page * nbElement);
+			statement.setInt(1, nbElement);
+			statement.setInt(2, page * nbElement);
 			result = statement.executeQuery();
 			Page<Computer> page = 	TransformationResultSet.extraireListeComputer(result);
 			statement.close();
@@ -123,7 +165,7 @@ public final class DAOComputerImpl implements DAOComputer {
 			return page; 
 		}
 		catch(SQLException se) {
-			throw new DAOException("Erreur de base de donnée");
+			throw new DAOException("Erreur de base de donnée",se);
 		}
 	}
 
@@ -133,7 +175,7 @@ public final class DAOComputerImpl implements DAOComputer {
 			Connection conn = ConnectionDb.getInstance().open();
 			ResultSet result = null; 
 			PreparedStatement statement = conn.prepareStatement(SHOW_ID);
-			statement.setLong(0, id);
+			statement.setLong(1, id);
 			result = statement.executeQuery();
 			Computer computer = TransformationResultSet.extraireDetailsComputer(result);
 			statement.close();
@@ -151,9 +193,9 @@ public final class DAOComputerImpl implements DAOComputer {
 			Connection conn = ConnectionDb.getInstance().open();
 			ResultSet result = null; 
 			PreparedStatement statement = conn.prepareStatement(SHOW_NAME);
-			statement.setString(0, name);
-			statement.setInt(1, nbElement);
-			statement.setInt(2, page * nbElement);
+			statement.setString(1, name);
+			statement.setInt(2, nbElement);
+			statement.setInt(3, page * nbElement);
 			result = statement.executeQuery();
 			Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result);
 			statement.close();

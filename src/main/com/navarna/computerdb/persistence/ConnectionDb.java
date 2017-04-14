@@ -27,7 +27,6 @@ public final class ConnectionDb {
 			while((ligne = br.readLine()) != null) {
 				String [] decoupEspace = ligne.split(" ") ;
 				if(decoupEspace.length == 3) {
-					System.out.println("taille = 3 ") ;
 					if(decoupEspace[0].equals("\t<url>")) {
 						url = decoupEspace[1].replaceAll("\"","") ;
 					}
@@ -67,10 +66,7 @@ public final class ConnectionDb {
 	
 	public void close () {
 		try {
-			if(conn.isValid(5)) {
-				conn.close();
-			}
-			throw new DAOException("base de données non fermee ") ; 
+			conn.close(); 
 		}
 		catch(SQLException se) {
 			throw new DAOException("Erreur lors de la fermeture de la base de donnée",se);
