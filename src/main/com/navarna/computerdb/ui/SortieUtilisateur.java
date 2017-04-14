@@ -10,6 +10,13 @@ public class SortieUtilisateur {
 		System.out.println("Détail computer : " + computer );
 	}
 	
+	public static void lireDetailsComputers (Page <Computer> page) {
+		System.out.println("Detail computers") ;
+		for(Computer computer : page.getPage()) {
+			System.out.println(computer);
+		}
+	}
+	
 	public static void lireListComputers (Page<Computer> page) {
 		System.out.println("Liste Computer : "+page.getNbPage() +" element : "+page.getNbElementPage());  
 		for (Computer computer : page.getPage())

@@ -95,6 +95,16 @@ private static ServiceCompany servCompanyImpl = new ServiceCompanyImpl() ;
 		}
 	}
 	
+	public static void demandeShowName (String name) {
+		Page<Computer> page = servComputerImpl.show(name);
+		if(page != null) {
+			SortieUtilisateur.lireDetailsComputers(page);
+		}
+		else {
+			SortieUtilisateur.lireAucuneDonnee();
+		}
+	}
+	
 	public static void demandeUpdate (String id) {
 		int ids = stringEnInt(id);
 		if(ids != -1) {
@@ -134,9 +144,12 @@ private static ServiceCompany servCompanyImpl = new ServiceCompanyImpl() ;
 			case "List" :
 				demandeListe(command[1]);
 				break ; 
-			case "Show" :
+			case "ShowId" :
 				demandeShowId(command[1]);
-				break ; 
+				break ;
+			case "ShowName" :
+				demandeShowName(command[1]);
+				break ;
 			case "Update" :
 				demandeUpdate(command[1]);
 				break ; 

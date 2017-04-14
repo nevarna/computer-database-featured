@@ -90,11 +90,50 @@ public class EntrerUtilisateur {
 		Computer computer = computerBuilder.build();
 		return computer;
 	}
+	
+	public static void demandeShow () {
+		System.out.println("\n1 : par id\n2 : par nom") ;
+		int entree = ConstruireRequete.stringEnInt(SC.nextLine());
+		String [] command = new String [2] ;
+		switch(entree) {
+		case 1 : 
+			int id = demandeId();
+			if (id != -1) {
+				command[0] = "ShowId";
+				command[1] = "" + id;
+				ConstruireRequete.command(command);
+			} else {
+				System.out.println("Suppression de la demande");
+			}
+			break;
+		case 2 :
+			String nom = demandeName() ;
+			if((nom != null)&&(nom != "")) {
+				command[0] = "ShowName";
+				command[1] = "" + nom;
+				ConstruireRequete.command(command);
+			}
+			else {
+				System.out.println("Suppression de la demande");
+			}
+			break;
+		default :
+			System.out.println("Suppression de la demande");
+			break ;
+		}
+		
+	}
 
-	public static int demandeId(Scanner SC) {
+	public static int demandeId() {
 		System.out.println("id de l'ordinateur : ");
 		String entree = SC.nextLine();
 		return ConstruireRequete.stringEnInt(entree);
+	}
+	
+	public static String demandeName() {
+		System.out.println("Nom de l'ordinateur : ");
+		String entree = SC.nextLine();
+		return entree ; 
 	}
 
 	public static void retourList(String[] command) {
@@ -140,21 +179,15 @@ public class EntrerUtilisateur {
 						retourList(command);
 						break;
 					case 3:
-						id = demandeId(SC);
-						if (id != -1) {
-							command[0] = "Show";
-							command[1] = "" + id;
-							ConstruireRequete.command(command);
-						} else
-							System.out.println("Suppression de la demande");
-						break;
+						demandeShow();
+						break ;
 					case 4:
 						command[0] = "Insert";
 						command[1] = "computer";
 						ConstruireRequete.command(command);
 						break;
 					case 5:
-						id = demandeId(SC);
+						id = demandeId();
 						if (id != -1) {
 							command[0] = "Update";
 							command[1] = "" + id;
@@ -163,7 +196,7 @@ public class EntrerUtilisateur {
 							System.out.println("Suppression de la demande");
 						break;
 					case 6:
-						id = demandeId(SC);
+						id = demandeId();
 						if (id != -1) {
 							command[0] = "Delete";
 							command[1] = "" + id;
