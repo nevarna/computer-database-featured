@@ -5,9 +5,32 @@ import com.navarna.computerdb.model.Page;
 
 public interface ServiceCompany {
 
-	public Page<Company> liste () ;
-	public Page<Company> listeSuivante () ;
-	public void choisirPage (int page) ;
-	public void choisirNbElement (int nbElement) ;
-	public void resetPage () ;
+    /**
+     * Demande au DAOCompany la liste des compagnies.
+     * @return Page<Company> : page de la liste de companie
+     */
+    Page<Company> liste();
+
+    /**
+     * Demande au DAOCompany la page suivante de la liste des compagnies.
+     * @return Page<Company> : page de la liste de companie
+     */
+    Page<Company> listeSuivante();
+
+    /**
+     * Demande au DAOCompany de changer le numero de la page.
+     * @param page : numero de la page
+     */
+    void choisirPage(int page);
+
+    /**
+     * Demande au DAOCompany de changer le nombre d'élément par page.
+     * @param nbElement : nombre d'éléments
+     */
+    void choisirNbElement(int nbElement);
+
+    /**
+     * Demande au DAOCompany de remettre le numero de la page à zero.
+     */
+    void resetPage();
 }
