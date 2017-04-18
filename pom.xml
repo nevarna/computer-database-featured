@@ -10,24 +10,29 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.mysql.version>6.0.6</maven.mysql.version>
+    <maven.junit.version>4.11</maven.junit.version>
+    <maven.mockito.version>1.10.19</maven.mockito.version>
+    <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+    <maven-checkstyle-plugin.configLocation>src/main/resources/checkstyle.xml</maven-checkstyle-plugin.configLocation>
   </properties>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>${maven.junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>6.0.6</version>
+      <version>${maven.mysql.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
-      <version>1.10.19</version>
+      <version>${maven.mockito.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -39,5 +44,35 @@
   </dependencies>
   <build>
     <finalName>ComputerDatabase</finalName>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>${maven-checkstyle-plugin.version}</version>
+            <configuration>
+                <configLocation>${maven-checkstyle-plugin.configLocation}</configLocation>
+            </configuration>
+        </plugin>
+    </plugins>
   </build>
+  <reporting>
+        <plugins>
+            <!-- Vérificaion de styles -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <configLocation>${maven-checkstyle-plugin.configLocation}</configLocation>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
