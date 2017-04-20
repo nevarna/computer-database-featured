@@ -23,7 +23,7 @@ public final class DAOComputerImpl implements DAOComputer {
     private static final DAOComputerImpl INSTANCE;
 
     public static int page = 0;
-    public static int nbElement = 20;
+    public static int nbElement = 10;
 
     public static final String INSERT;
     public static final String UPDATE;
@@ -36,7 +36,7 @@ public final class DAOComputerImpl implements DAOComputer {
         INSERT = "INSERT INTO computer VALUES ( ?, ?, ?, ?, ? )";
         UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
         DELETE = "DELETE FROM computer where id = ?";
-        SELECT_LIST = "SELECT id,name from computer LIMIT ? OFFSET ?";
+        SELECT_LIST = "SELECT * from computer left join company on company_id = company.id LIMIT ? OFFSET ?";
         SHOW_ID = "SELECT * from computer left join company on company_id = company.id where computer.id = ?";
         SHOW_NAME = "SELECT * from computer left join company on company_id = company.id where computer.name = ? LIMIT ? OFFSET ?";
         INSTANCE = new DAOComputerImpl();
@@ -117,7 +117,9 @@ public final class DAOComputerImpl implements DAOComputer {
             if (computer.getId() != null) {
                 statement.setLong(5, computer.getId());
             } else {
-                statement.setNull(5, Types.BIGINT);
+                statement.close();
+                ConnectionDb.getInstance().close();
+                throw new DAOException("Update n'as pas de id arret de la fonction");
             }
             statement.setString(1, computer.getName());
             if (computer.getIntroduced() != null) {
@@ -169,7 +171,7 @@ public final class DAOComputerImpl implements DAOComputer {
             statement.setInt(1, nbElement);
             statement.setInt(2, page * nbElement);
             result = statement.executeQuery();
-            Page<Computer> page =     TransformationResultSet.extraireListeComputer(result);
+            Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result);
             statement.close();
             ConnectionDb.getInstance().close();
             return page;

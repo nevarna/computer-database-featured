@@ -1,8 +1,12 @@
 package com.navarna.computerdb.persistence;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DAOException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DAOException.class);
 
     /**
      * Constructeur avec seulement un message.
@@ -10,6 +14,7 @@ public class DAOException extends RuntimeException {
      */
     public DAOException(String message) {
         super(message);
+        LOGGER.debug(message);
     }
 
     /**
@@ -18,6 +23,7 @@ public class DAOException extends RuntimeException {
      */
     public DAOException(Throwable cause) {
         super(cause);
+        LOGGER.debug(cause.getMessage());
     }
 
     /**
@@ -27,6 +33,7 @@ public class DAOException extends RuntimeException {
      */
     public DAOException(String message, Throwable cause) {
         super(message, cause);
+        LOGGER.debug(message+"\n"+cause.getMessage());
     }
 
     /**
@@ -38,6 +45,7 @@ public class DAOException extends RuntimeException {
      */
     public DAOException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
+        LOGGER.debug(message+"\n"+cause.getMessage());
     }
 
 }

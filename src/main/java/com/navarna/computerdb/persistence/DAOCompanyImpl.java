@@ -13,7 +13,7 @@ public final class DAOCompanyImpl implements DAOCompany {
     private static final DAOCompanyImpl INSTANCE;
 
     private static int page = 0;
-    private static int nbElement = 20;
+    private static int nbElement = 10;
 
     private static final String SELECT;
 
