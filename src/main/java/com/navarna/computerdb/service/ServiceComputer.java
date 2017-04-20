@@ -3,6 +3,10 @@ package com.navarna.computerdb.service;
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
 
+/**
+ * @author excilys
+ *
+ */
 public interface ServiceComputer {
 
     /**
@@ -64,6 +68,12 @@ public interface ServiceComputer {
      * @param page : numero de la page
      */
     void choisirPage(int page);
+
+    /**
+     * Demande au DAOComputer le numero de la page actuelle
+     * @return int : numero de la page
+     */
+    int recupererPage();
 
     /**
      * Demande au DAOComputer de changer le nombre d'élément par page.

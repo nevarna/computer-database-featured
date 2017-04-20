@@ -77,4 +77,9 @@ public class ServiceComputerImpl implements ServiceComputer {
         this.dComputerImpl.resetPage();
     }
 
+    @Override
+    public int recupererPage() {
+        return this.dComputerImpl.getPage();
+    }
+
 }

@@ -33,4 +33,10 @@ public interface ServiceCompany {
      * Demande au DAOCompany de remettre le numero de la page à zero.
      */
     void resetPage();
+
+    /**
+     * Demande au DAOComputer le numero de la page actuelle
+     * @return int : numero de la page
+     */
+    int recupererPage();
 }

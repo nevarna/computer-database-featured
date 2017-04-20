@@ -32,4 +32,9 @@ public class ServiceCompanyImpl implements ServiceCompany {
         this.dCompanyImpl.resetPage();
     }
 
+    @Override
+    public int recupererPage() {
+        return this.dCompanyImpl.getPage();
+    }
+
 }
