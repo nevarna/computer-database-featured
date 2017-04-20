@@ -1,9 +1,12 @@
 package com.navarna.computerdb.mapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MapperException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapperException.class);
 
     /**
      * Constructeur à 4 éléments.
@@ -14,6 +17,7 @@ public class MapperException extends RuntimeException {
      */
     public MapperException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
+        LOGGER.debug(message+"\n"+cause.getMessage());
     }
 
     /**
@@ -23,6 +27,7 @@ public class MapperException extends RuntimeException {
      */
     public MapperException(String message, Throwable cause) {
         super(message, cause);
+        LOGGER.debug(message+"\n"+cause.getMessage());
     }
 
 
@@ -32,6 +37,7 @@ public class MapperException extends RuntimeException {
      */
     public MapperException(String message) {
         super(message);
+        LOGGER.debug(message+"\n");
     }
 
     /**
@@ -40,6 +46,7 @@ public class MapperException extends RuntimeException {
      */
     public MapperException(Throwable cause) {
         super(cause);
+        LOGGER.debug(cause.getMessage());
     }
 
 }

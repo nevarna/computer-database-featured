@@ -39,7 +39,7 @@ public class TransformationResultSet {
                 return null;
             }
         } catch (SQLException se) {
-            throw new MapperException("Erreur de result.next (fonction extraireListeCompany())", se);
+            throw new MapperException("Erreur de result.next (fonction extraireListeComputer())", se);
         }
     }
 
