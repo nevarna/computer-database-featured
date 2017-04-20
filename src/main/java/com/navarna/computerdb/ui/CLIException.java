@@ -1,8 +1,13 @@
 package com.navarna.computerdb.ui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 public class CLIException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CLIException.class);
 
     /**
      * Constructeur avec seulement un message.
@@ -10,6 +15,7 @@ public class CLIException extends RuntimeException {
      */
     public CLIException(String message) {
         super(message);
+        LOGGER.debug(message);
     }
 
     /**
@@ -18,6 +24,7 @@ public class CLIException extends RuntimeException {
      */
     public CLIException(Throwable cause) {
         super(cause);
+        LOGGER.debug(cause.getMessage());
     }
 
     /**
@@ -27,6 +34,7 @@ public class CLIException extends RuntimeException {
      */
     public CLIException(String message, Throwable cause) {
         super(message, cause);
+        LOGGER.debug(message+"\n"+cause.getMessage());
     }
 
     /**
@@ -38,6 +46,7 @@ public class CLIException extends RuntimeException {
      */
     public CLIException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
+        LOGGER.debug(message+"\n"+cause.getMessage());
     }
 
 }

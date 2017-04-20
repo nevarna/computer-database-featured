@@ -7,6 +7,7 @@ import com.navarna.computerdb.service.ServiceCompany;
 import com.navarna.computerdb.service.ServiceCompanyImpl;
 import com.navarna.computerdb.service.ServiceComputer;
 import com.navarna.computerdb.service.ServiceComputerImpl;
+import com.navarna.computerdb.validator.ValidationEntrer;
 
 public class ConstruireRequete {
     private static ServiceComputer servComputerImpl = new ServiceComputerImpl();
@@ -51,23 +52,7 @@ public class ConstruireRequete {
         }
     }
 
-    /**
-     * transforme un String en int.
-     * @param nombre : nombre en ype String
-     * @return int : le nombre en type int
-     */
-    public static int stringEnInt(String nombre) {
-        int retour = -1;
-        try {
-            retour = Integer.valueOf(nombre);
-            if (retour < 0) {
-                retour = -1;
-            }
-        } catch (NumberFormatException ne) {
-            System.out.println("Ce n'est pas un nombre");
-        }
-        return retour;
-    }
+
 
     /**
      * L UI appelle le service pour satisfaire la demande de l'utilisateur.
@@ -100,7 +85,7 @@ public class ConstruireRequete {
      * @param id : id en String.
      */
     public static void demandeShowId(String id) {
-        int ids = stringEnInt(id);
+        int ids = ValidationEntrer.stringEnInt(id);
         if (ids != -1) {
             Computer computer = servComputerImpl.show(ids);
             SortieUtilisateur.lireDetailsComputer(computer);
@@ -129,7 +114,7 @@ public class ConstruireRequete {
      * @param id : id du computer
      */
     public static void demandeUpdate(String id) {
-        int ids = stringEnInt(id);
+        int ids = ValidationEntrer.stringEnInt(id);
         if (ids != -1) {
             Computer computer = EntrerUtilisateur.computerInformation(new Long(ids));
             SortieUtilisateur.lireValidationChangement(servComputerImpl.update(computer));
@@ -158,7 +143,7 @@ public class ConstruireRequete {
      * @param id : id du computer
      */
     public static void demandeDelete(String id) {
-        int ids = stringEnInt(id);
+        int ids = ValidationEntrer.stringEnInt(id);
         if (ids != -1) {
             SortieUtilisateur.lireValidationChangement(servComputerImpl.delete(ids));
         } else {

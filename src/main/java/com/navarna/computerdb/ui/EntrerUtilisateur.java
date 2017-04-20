@@ -1,7 +1,5 @@
 package com.navarna.computerdb.ui;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -11,58 +9,14 @@ import com.navarna.computerdb.model.Company.CompanyBuilder;
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Computer.ComputerBuilder;
 import com.navarna.computerdb.persistence.DAOException;
+import com.navarna.computerdb.validator.ValidationEntrer;
 
 public class EntrerUtilisateur {
 
     public static final Scanner SC = new Scanner(System.in);
 
     /**
-     * Verifie si la date en String est correct.
-     * @param timestamp : timeStamp en type String
-     * @return boolean : true or false
-     */
-    public static boolean verifeFormatTimestamp(String timestamp) {
-        boolean retour = false;
-        String[] decoup = timestamp.split(" ");
-        if (decoup.length > 2) {
-            return retour;
-        }
-        if (decoup.length > 0) {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            df.setLenient(false);
-            try {
-                df.parse(decoup[0]);
-            } catch (ParseException pe) {
-                System.out.println("Date incorrect");
-                return retour;
-            }
-            if (decoup.length == 2) {
-                String[] temps = decoup[1].split(":");
-                if (temps.length != 3) {
-                    return retour;
-                } else {
-                    int heure = ConstruireRequete.stringEnInt(temps[0]);
-                    if ((heure < 0) || (heure > 23)) {
-                        return retour;
-                    }
-                    int minute = ConstruireRequete.stringEnInt(temps[1]);
-                    if ((minute < 0) || (minute > 59)) {
-                        return retour;
-                    }
-                    int seconde = ConstruireRequete.stringEnInt(temps[2]);
-                    if ((seconde < 0) || (seconde > 59)) {
-                        return retour;
-                    }
-                    retour = true;
-                }
-            } else {
-                retour = true;
-            }
-        } else {
-            return retour;
-        }
-        return retour;
-    }
+     
 
     /**
      * Demande à l'utilisateur d'entrer les informations d'un ordinateur.
@@ -84,20 +38,20 @@ public class EntrerUtilisateur {
         computerBuilder = new ComputerBuilder(cInformation);
         System.out.println("\nchamps introduced de l'ordinateur");
         cInformation = SC.nextLine();
-        if (verifeFormatTimestamp(cInformation)) {
+        if (ValidationEntrer.verifeFormatTimestamp(cInformation)) {
             date = LocalDate.parse(cInformation);
             computerBuilder.setIntroduced(date);
         }
         System.out.println("\nchamps discontinued de l'ordinateur");
         cInformation = SC.nextLine();
-        if (verifeFormatTimestamp(cInformation)) {
+        if (ValidationEntrer.verifeFormatTimestamp(cInformation)) {
             date = LocalDate.parse(cInformation);
             computerBuilder.setDiscontinued(date);
         }
         System.out.println("\nid de la company");
         cInformation = SC.nextLine();
         CompanyBuilder companyBuilder = new CompanyBuilder("aucuneImportance");
-        if ((!cInformation.equals("")) && ((idCompany = ConstruireRequete.stringEnInt(cInformation)) != -1)) {
+        if ((!cInformation.equals("")) && ((idCompany = ValidationEntrer.stringEnInt(cInformation)) != -1)) {
             companyBuilder.setId(new Long(idCompany));
         }
         Company company = companyBuilder.build();
@@ -112,7 +66,7 @@ public class EntrerUtilisateur {
      */
     public static void demandeShow() {
         System.out.println("\n1 : par id\n2 : par nom");
-        int entree = ConstruireRequete.stringEnInt(SC.nextLine());
+        int entree = ValidationEntrer.stringEnInt(SC.nextLine());
         String[] command = new String[2];
         switch (entree) {
         case 1:
@@ -149,7 +103,7 @@ public class EntrerUtilisateur {
     public static int demandeId() {
         System.out.println("id de l'ordinateur : ");
         String entree = SC.nextLine();
-        return ConstruireRequete.stringEnInt(entree);
+        return ValidationEntrer.stringEnInt(entree);
     }
 
     /**
@@ -171,7 +125,7 @@ public class EntrerUtilisateur {
                 "Voulez-vous changer le nombre d'element par liste? (Si oui inserer un nombre, sinon taper ENTRER");
         String stringNbElement = SC.nextLine();
         if (!stringNbElement.equals("")) {
-            int nbElement = ConstruireRequete.stringEnInt(stringNbElement);
+            int nbElement = ValidationEntrer.stringEnInt(stringNbElement);
             if (nbElement > 0) {
                 ConstruireRequete.demandeChangeNbElement(type, nbElement);
             }
@@ -179,7 +133,7 @@ public class EntrerUtilisateur {
         System.out.println("Voulez-vous changer le numero de la page? (Si oui inserer un nombre, sinon taper ENTRER");
         String stringNbPage = SC.nextLine();
         if (!stringNbPage.equals("")) {
-            int nbPage = ConstruireRequete.stringEnInt(stringNbPage);
+            int nbPage = ValidationEntrer.stringEnInt(stringNbPage);
             if (nbPage >= 1) {
                 ConstruireRequete.demandeChangeNbPage(type, nbPage - 1);
             }
@@ -222,7 +176,7 @@ public class EntrerUtilisateur {
                             + "\n7 Quitter le programme");
             if (SC.hasNext()) {
                 try {
-                    entree = ConstruireRequete.stringEnInt(SC.nextLine());
+                    entree = ValidationEntrer.stringEnInt(SC.nextLine());
                     String[] command = new String[2];
                     int id = -1;
                     switch (entree) {
