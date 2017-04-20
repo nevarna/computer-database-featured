@@ -27,7 +27,7 @@ public class Page<T> {
     }
 
     public void setNbPage(int pNbPage) {
-        this.nbPage = pNbPage < -1 ? -1 : pNbPage;
+        this.nbPage = pNbPage < 0 ? 0 : pNbPage;
     }
 
     public ArrayList<T> getPage() {
