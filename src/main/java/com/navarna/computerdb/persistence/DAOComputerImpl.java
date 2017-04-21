@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Optional;
 
 import com.navarna.computerdb.mapper.TransformationResultSet;
 import com.navarna.computerdb.model.Computer;
@@ -21,9 +22,6 @@ import com.navarna.computerdb.model.Page;
  */
 public final class DAOComputerImpl implements DAOComputer {
     private static final DAOComputerImpl INSTANCE;
-
-    public static int page = 0;
-    public static int nbElement = 10;
 
     public static final String INSERT;
     public static final String UPDATE;
@@ -48,57 +46,17 @@ public final class DAOComputerImpl implements DAOComputer {
     private DAOComputerImpl() {
     }
 
-    @Override
-    public int getPage() {
-        return page;
-    }
-
-    @Override
-    public int getNbElement() {
-        return nbElement;
-    }
-
-    @Override
-    public void setPage(int pPage) {
-        page = pPage;
-    }
-
-    @Override
-    public void setNbElement(int pNbElement) {
-        nbElement = pNbElement;
-    }
-
     public static DAOComputerImpl getInstance() {
         return INSTANCE;
     }
 
     @Override
     public int insert(Computer computer) {
-        try  {
+        try {
             Connection conn = ConnectionDb.getInstance().open();
             int result = 0;
             PreparedStatement statement = conn.prepareStatement(INSERT);
-            if (computer.getId() != null) {
-                statement.setLong(1, computer.getId());
-            } else {
-                statement.setNull(1, Types.BIGINT);
-            }
-            statement.setString(2, computer.getName());
-            if (computer.getIntroduced() != null) {
-                statement.setTimestamp(3, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
-            } else {
-                statement.setNull(3, Types.TIMESTAMP);
-            }
-            if (computer.getDiscontinued() != null) {
-                statement.setTimestamp(4, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
-            } else {
-                statement.setNull(4, Types.TIMESTAMP);
-            }
-            if (computer.getCompany().getId() != null) {
-                statement.setLong(5, computer.getCompany().getId());
-            } else {
-                statement.setNull(5, Types.BIGINT);
-            }
+            setStatementInsert(statement, computer);
             result = statement.executeUpdate();
             statement.close();
             ConnectionDb.getInstance().close();
@@ -110,33 +68,11 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int update(Computer computer) {
-        try  {
+        try {
             Connection conn = ConnectionDb.getInstance().open();
             int result = 0;
             PreparedStatement statement = conn.prepareStatement(UPDATE);
-            if (computer.getId() != null) {
-                statement.setLong(5, computer.getId());
-            } else {
-                statement.close();
-                ConnectionDb.getInstance().close();
-                throw new DAOException("Update n'as pas de id arret de la fonction");
-            }
-            statement.setString(1, computer.getName());
-            if (computer.getIntroduced() != null) {
-                statement.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
-            } else {
-                statement.setNull(2, Types.TIMESTAMP);
-            }
-            if (computer.getDiscontinued() != null) {
-                statement.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
-            } else {
-                statement.setNull(3, Types.TIMESTAMP);
-            }
-            if (computer.getCompany().getId() != null) {
-                statement.setLong(4, computer.getCompany().getId());
-            } else {
-                statement.setNull(4, Types.BIGINT);
-            }
+            setStatementUpdate(statement, computer);
             result = statement.executeUpdate();
             statement.close();
             ConnectionDb.getInstance().close();
@@ -148,7 +84,7 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int delete(long id) {
-        try  {
+        try {
             Connection conn = ConnectionDb.getInstance().open();
             int result = 0;
             PreparedStatement statement = conn.prepareStatement(DELETE);
@@ -163,15 +99,14 @@ public final class DAOComputerImpl implements DAOComputer {
     }
 
     @Override
-    public Page<Computer> list() {
-        try  {
+    public Page<Computer> list(int numPage, int nbElement) {
+        try {
             Connection conn = ConnectionDb.getInstance().open();
             ResultSet result = null;
             PreparedStatement statement = conn.prepareStatement(SELECT_LIST);
-            statement.setInt(1, nbElement);
-            statement.setInt(2, page * nbElement);
+            setStatementListe(statement, numPage, nbElement);
             result = statement.executeQuery();
-            Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result);
+            Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result, numPage, nbElement);
             statement.close();
             ConnectionDb.getInstance().close();
             return page;
@@ -181,14 +116,14 @@ public final class DAOComputerImpl implements DAOComputer {
     }
 
     @Override
-    public Computer showId(long id) {
-        try  {
+    public Optional<Computer> showId(long id) {
+        try {
             Connection conn = ConnectionDb.getInstance().open();
             ResultSet result = null;
             PreparedStatement statement = conn.prepareStatement(SHOW_ID);
             statement.setLong(1, id);
             result = statement.executeQuery();
-            Computer computer = TransformationResultSet.extraireDetailsComputer(result);
+            Optional<Computer> computer = TransformationResultSet.extraireDetailsComputer(result);
             statement.close();
             ConnectionDb.getInstance().close();
             return computer;
@@ -198,16 +133,14 @@ public final class DAOComputerImpl implements DAOComputer {
     }
 
     @Override
-    public Page<Computer> showName(String name) {
-        try  {
+    public Page<Computer> showName(String name, int numPage, int nbElement) {
+        try {
             Connection conn = ConnectionDb.getInstance().open();
             ResultSet result = null;
             PreparedStatement statement = conn.prepareStatement(SHOW_NAME);
-            statement.setString(1, name);
-            statement.setInt(2, nbElement);
-            statement.setInt(3, page * nbElement);
+            setStatementShowName(statement, name, numPage, nbElement);
             result = statement.executeQuery();
-            Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result);
+            Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result, numPage, nbElement);
             statement.close();
             ConnectionDb.getInstance().close();
             return page;
@@ -216,20 +149,66 @@ public final class DAOComputerImpl implements DAOComputer {
         }
     }
 
-    @Override
-    public void resetPage() {
-        page = 0;
+    private void setStatementListe(PreparedStatement statement, int numPage, int nbElement) throws SQLException {
+        statement.setInt(1, nbElement);
+        statement.setInt(2, numPage * nbElement);
     }
 
-    @Override
-    public Page<Computer> listeSuivante() {
-        page++;
-        return list();
+    private void setStatementInsert(PreparedStatement statement, Computer computer) throws SQLException {
+        if (computer.getId() != null) {
+            statement.setLong(1, computer.getId());
+        } else {
+            statement.setNull(1, Types.BIGINT);
+        }
+        statement.setString(2, computer.getName());
+        if (computer.getIntroduced() != null) {
+            statement.setTimestamp(3, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
+        } else {
+            statement.setNull(3, Types.TIMESTAMP);
+        }
+        if (computer.getDiscontinued() != null) {
+            statement.setTimestamp(4, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
+        } else {
+            statement.setNull(4, Types.TIMESTAMP);
+        }
+        if (computer.getCompany().getId() != null) {
+            statement.setLong(5, computer.getCompany().getId());
+        } else {
+            statement.setNull(5, Types.BIGINT);
+        }
     }
 
-    @Override
-    public Page<Computer> showSuivant(String name) {
-        page++;
-        return showName(name);
+    private void setStatementUpdate(PreparedStatement statement, Computer computer) throws SQLException {
+        if (computer.getId() != null) {
+            statement.setLong(5, computer.getId());
+        } else {
+            statement.close();
+            ConnectionDb.getInstance().close();
+            throw new DAOException("Update n'as pas de id arret de la fonction");
+        }
+        statement.setString(1, computer.getName());
+        if (computer.getIntroduced() != null) {
+            statement.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
+        } else {
+            statement.setNull(2, Types.TIMESTAMP);
+        }
+        if (computer.getDiscontinued() != null) {
+            statement.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
+        } else {
+            statement.setNull(3, Types.TIMESTAMP);
+        }
+        if (computer.getCompany().getId() != null) {
+            statement.setLong(4, computer.getCompany().getId());
+        } else {
+            statement.setNull(4, Types.BIGINT);
+        }
+
+    }
+
+    private void setStatementShowName(PreparedStatement statement, String name, int numPage, int nbElement)
+            throws SQLException {
+        statement.setString(1, name);
+        statement.setInt(2, nbElement);
+        statement.setInt(3, numPage * nbElement);
     }
 }

@@ -13,7 +13,13 @@ import com.navarna.computerdb.validator.ValidationEntrer;
 
 public class EntrerUtilisateur {
 
-    public static final Scanner SC = new Scanner(System.in);
+    public final Scanner sc ;
+    public final ConstruireRequete construireRequete;
+    
+    public EntrerUtilisateur() {
+        sc = new Scanner(System.in);
+        this.construireRequete = new ConstruireRequete(this);
+    }
 
     /**
      
@@ -23,7 +29,7 @@ public class EntrerUtilisateur {
      * @param idComputer : id du computer
      * @return Computer : un Computer avec les données insérer
      */
-    public static Computer computerInformation(Long idComputer) {
+    public Computer computerInformation(Long idComputer) {
         ComputerBuilder computerBuilder = null;
         String cInformation = "";
         LocalDate date;
@@ -31,27 +37,27 @@ public class EntrerUtilisateur {
         System.out.println(
                 "--------- INFORMATION COMPUTER ---------\nEntrer La valeur des champs, ne rien entrer equivaut à mettre la valeur par défaut \n");
         System.out.println("\nNom de l'ordinateur (obligatoire) : ");
-        cInformation = SC.nextLine();
+        cInformation = sc.nextLine();
         if (cInformation.equals("")) {
             throw new CLIException("Le champs nom n'est pas rempli");
         }
         computerBuilder = new ComputerBuilder(cInformation);
         System.out.println("\nchamps introduced de l'ordinateur");
-        cInformation = SC.nextLine();
-        if (ValidationEntrer.verifeFormatTimestamp(cInformation)) {
+        cInformation = sc.nextLine();
+        if (ValidationEntrer.verificationFormatDate(cInformation)) {
             date = LocalDate.parse(cInformation);
             computerBuilder.setIntroduced(date);
         }
         System.out.println("\nchamps discontinued de l'ordinateur");
-        cInformation = SC.nextLine();
-        if (ValidationEntrer.verifeFormatTimestamp(cInformation)) {
+        cInformation = sc.nextLine();
+        if (ValidationEntrer.verificationFormatDate(cInformation)) {
             date = LocalDate.parse(cInformation);
             computerBuilder.setDiscontinued(date);
         }
         System.out.println("\nid de la company");
-        cInformation = SC.nextLine();
+        cInformation = sc.nextLine();
         CompanyBuilder companyBuilder = new CompanyBuilder("aucuneImportance");
-        if ((!cInformation.equals("")) && ((idCompany = ValidationEntrer.stringEnInt(cInformation)) != -1)) {
+        if ((!cInformation.equals("")) && ((idCompany = ValidationEntrer.stringEnIntPositif(cInformation)) != -1)) {
             companyBuilder.setId(new Long(idCompany));
         }
         Company company = companyBuilder.build();
@@ -64,9 +70,9 @@ public class EntrerUtilisateur {
     /**
      *  Demande à l'utilisateur de choisir si il souhaite les détails d'un computer grace à un id ou grace à son nom.
      */
-    public static void demandeShow() {
+    public void demandeShow() {
         System.out.println("\n1 : par id\n2 : par nom");
-        int entree = ValidationEntrer.stringEnInt(SC.nextLine());
+        int entree = ValidationEntrer.stringEnIntPositif(sc.nextLine());
         String[] command = new String[2];
         switch (entree) {
         case 1:
@@ -74,7 +80,7 @@ public class EntrerUtilisateur {
             if (id != -1) {
                 command[0] = "ShowId";
                 command[1] = "" + id;
-                ConstruireRequete.command(command);
+                construireRequete.command(command);
             } else {
                 System.out.println("Suppression de la demande");
             }
@@ -84,7 +90,7 @@ public class EntrerUtilisateur {
             if ((nom != null) && (nom != "")) {
                 command[0] = "ShowName";
                 command[1] = "" + nom;
-                ConstruireRequete.command(command);
+                construireRequete.command(command);
             } else {
                 System.out.println("Suppression de la demande");
             }
@@ -100,19 +106,19 @@ public class EntrerUtilisateur {
      * Demande à l'utilisateur d'entrer un id.
      * @return int
      */
-    public static int demandeId() {
+    public int demandeId() {
         System.out.println("id de l'ordinateur : ");
-        String entree = SC.nextLine();
-        return ValidationEntrer.stringEnInt(entree);
+        String entree = sc.nextLine();
+        return ValidationEntrer.stringEnIntPositif(entree);
     }
 
     /**
      * Demande à l'utilisateur d'entrer un nom.
      * @return String : le nom
      */
-    public static String demandeName() {
+    public String demandeName() {
         System.out.println("Nom de l'ordinateur : ");
-        String entree = SC.nextLine();
+        String entree = sc.nextLine();
         return entree;
     }
 
@@ -120,22 +126,22 @@ public class EntrerUtilisateur {
      * Demande à l'utilisateur le numero de la page et le nombre d'élément par page.
      * @param type : companies ou computer
      */
-    public static void demandeChangeNbListe(String type) {
+    public void demandeChangeNbListe(String type) {
         System.out.println(
                 "Voulez-vous changer le nombre d'element par liste? (Si oui inserer un nombre, sinon taper ENTRER");
-        String stringNbElement = SC.nextLine();
+        String stringNbElement = sc.nextLine();
         if (!stringNbElement.equals("")) {
-            int nbElement = ValidationEntrer.stringEnInt(stringNbElement);
+            int nbElement = ValidationEntrer.stringEnIntPositif(stringNbElement);
             if (nbElement > 0) {
-                ConstruireRequete.demandeChangeNbElement(type, nbElement);
+                construireRequete.demandeChangeNbElement(nbElement);
             }
         }
         System.out.println("Voulez-vous changer le numero de la page? (Si oui inserer un nombre, sinon taper ENTRER");
-        String stringNbPage = SC.nextLine();
+        String stringNbPage = sc.nextLine();
         if (!stringNbPage.equals("")) {
-            int nbPage = ValidationEntrer.stringEnInt(stringNbPage);
+            int nbPage = ValidationEntrer.stringEnIntPositif(stringNbPage);
             if (nbPage >= 1) {
-                ConstruireRequete.demandeChangeNbPage(type, nbPage - 1);
+                construireRequete.demandeChangeNbPage(nbPage - 1);
             }
         }
     }
@@ -144,28 +150,28 @@ public class EntrerUtilisateur {
      * Permet à l'utilisateur de naviguer dans la liste.
      * @param command : commande de l'utilisateur
      */
-    public static void retourList(String[] command) {
+    public void retourList(String[] command) {
         if (command.length == 2) {
             boolean pasFini = true;
             demandeChangeNbListe(command[1]);
-            ConstruireRequete.command(command);
+            construireRequete.command(command);
             while (pasFini) {
                 System.out.println("Souhaitez-vous continuez la liste ?\noui\nnon(Par defaut non)");
-                String entree = SC.nextLine();
+                String entree = sc.nextLine();
                 if (entree.equals("oui")) {
-                    ConstruireRequete.demandePageSuivante(command[1]);
+                    construireRequete.demandePageSuivante(command[1]);
                 } else {
                     pasFini = false;
                 }
             }
-            ConstruireRequete.resetList(command[1]);
+            construireRequete.resetList(command[1]);
         }
     }
 
     /**
      * Boucle principal : propose des choix à l'utilisateur.
      */
-    public static void choixPrincipal() {
+    public void choixPrincipal() {
         int entree = 0;
         boolean fini = false;
 
@@ -174,9 +180,9 @@ public class EntrerUtilisateur {
                     "Que souhaitez-vous faire? (Entrer un chiffre)\n1 - Liste des ordinateurs\n2 - Liste des compagnies\n3 - Détails d'un ordinateur"
                             + "\n4 - Enregistrer un ordinateur dans la base de donnée\n5 - Modifier un ordinateur dans la base de donnée\n6 - Supprimer un ordinateur de la base de donnée"
                             + "\n7 Quitter le programme");
-            if (SC.hasNext()) {
+            if (sc.hasNext()) {
                 try {
-                    entree = ValidationEntrer.stringEnInt(SC.nextLine());
+                    entree = ValidationEntrer.stringEnIntPositif(sc.nextLine());
                     String[] command = new String[2];
                     int id = -1;
                     switch (entree) {
@@ -196,14 +202,14 @@ public class EntrerUtilisateur {
                     case 4:
                         command[0] = "Insert";
                         command[1] = "computer";
-                        ConstruireRequete.command(command);
+                        construireRequete.command(command);
                         break;
                     case 5:
                         id = demandeId();
                         if (id != -1) {
                             command[0] = "Update";
                             command[1] = "" + id;
-                            ConstruireRequete.command(command);
+                            construireRequete.command(command);
                         } else {
                             System.out.println("Suppression de la demande");
                         }
@@ -213,7 +219,7 @@ public class EntrerUtilisateur {
                         if (id != -1) {
                             command[0] = "Delete";
                             command[1] = "" + id;
-                            ConstruireRequete.command(command);
+                            construireRequete.command(command);
                         } else {
                             System.out.println("Suppression de la demande");
                         }
@@ -232,6 +238,6 @@ public class EntrerUtilisateur {
                 }
             }
         }
-        SC.close();
+        sc.close();
     }
 }

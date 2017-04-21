@@ -4,14 +4,6 @@ public class Company {
     private Long id;
     private String name;
 
-    /**
-     * Constructeur de Company.
-     * @param builder : Un CompanyBuilder ayant tout les arguments
-     */
-    public Company(CompanyBuilder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
-    }
 
     public Long getId() {
         return this.id;
@@ -27,37 +19,44 @@ public class Company {
         return affiche;
     }
 
-    @Override
-    public boolean equals(Object objet) {
-        boolean egal = false;
-        if (this == objet) {
-            egal = true;
-        } else if (objet instanceof Company) {
-            Company oCompany = (Company) objet;
-            if (this.name == oCompany.getName()) {
-                egal = true;
-            }
-        }
-        return egal;
-    }
+
 
     @Override
     public int hashCode() {
-        int hash = 1;
-        hash += this.name.hashCode();
-        return hash;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Company other = (Company) obj;
+        if(name.equals(other.getName())){
+            return true;
+        }
+        return false;
+    }
+
+
+
     public static final class CompanyBuilder {
-        private Long id;
-        private String name;
+        private Company company;
 
         /**
          * Constructeur de classe : un argument obligatoire.
          * @param pName : String argument obligatoire
          */
         public CompanyBuilder(String pName) {
-            this.name = pName;
+            company = new Company();
+            company.name =pName;
         }
 
         /**
@@ -66,7 +65,7 @@ public class Company {
          * @return CompanyBuilder : l'instance de classe
          */
         public CompanyBuilder setId(Long pId) {
-            this.id = pId;
+            company.id = pId;
             return this;
         }
 
@@ -75,7 +74,7 @@ public class Company {
          * @return Company : la company fini
          */
         public Company build() {
-            return new Company(this);
+            return company;
         }
     }
-}
+};

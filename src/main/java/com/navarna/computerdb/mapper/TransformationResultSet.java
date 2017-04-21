@@ -6,64 +6,34 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Optional;
 
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Company.CompanyBuilder;
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
 import com.navarna.computerdb.model.Computer.ComputerBuilder;
-import com.navarna.computerdb.persistence.DAOCompanyImpl;
-import com.navarna.computerdb.persistence.DAOComputerImpl;
 
 public class TransformationResultSet {
 
-    /**
-     * extrait du ResultSet une liste de computer avec 2 éléments id et name.
-     * @param result : ResultSet de la requête
-     * @return Page<Computer> : page contenant la liste de computer
-     */
-    public static Page<Computer> extraireListeComputer(ResultSet result) {
-        try {
-            Page<Computer> page = new Page<Computer>(DAOComputerImpl.getInstance().getPage(), DAOComputerImpl.getInstance().getNbElement());
-            int compteur = 0;
-            while (result.next()) {
-                compteur++;
-                 Long id = result.getLong("id");
-                 String name = result.getString("name");
-                 Computer computer = new ComputerBuilder(name).setId(id).build();
-                 page.addElement(computer);
-            }
-            if (compteur != 0) {
-                return page;
-            } else {
-                return null;
-            }
-        } catch (SQLException se) {
-            throw new MapperException("Erreur de result.next (fonction extraireListeComputer())", se);
-        }
-    }
 
     /**
      * extrait du ResultSet une liste de compagnie.
      * @param result : ResultSet de la requête
      * @return Page<Company> : une page contenant la liste de compagnie
      */
-    public static Page<Company> extraireListeCompany(ResultSet result) {
+    public static Page<Company> extraireListeCompany(ResultSet result, int numPage , int nbElement) {
         try {
-            Page<Company> page = new Page<Company>(DAOCompanyImpl.getInstance().getPage(), DAOCompanyImpl.getInstance().getNbElement());
-            int compteur = 0;
+            Page<Company> page = new Page<Company>(numPage,nbElement);
             while (result.next()) {
-                compteur++;
                 Long id = result.getLong("id");
                 String name = result.getString("name");
-                Company company = new CompanyBuilder(name).setId(id).build();
+                Company company = new CompanyBuilder(name)
+                        .setId(id)
+                        .build();
                 page.addElement(company);
             }
-            if (compteur != 0) {
-                return page;
-            } else {
-                return null;
-            }
+            return page ;
         } catch (SQLException se) {
             throw new MapperException("Erreur de result.next (fonction extraireListeCompany())", se);
         }
@@ -74,13 +44,13 @@ public class TransformationResultSet {
      * @param dateEnString : date en type String
      * @return LocalDate : localDate correspondant au String en arguments
      */
-    public static LocalDate recupererDate(String dateEnString) {
+    public static Optional<LocalDate> recupererDate(String dateEnString) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss.S");
             LocalDate date = LocalDate.parse(dateEnString, formatter);
-            return date;
+            return Optional.of(date);
         } catch (DateTimeParseException pe) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -89,7 +59,7 @@ public class TransformationResultSet {
      * @param result : ResultSet de la requête
      * @return Computer : un computer contenant les données du resultSet.
      */
-    public static Computer extraireDetailsComputer(ResultSet result) {
+    public static Optional<Computer> extraireDetailsComputer(ResultSet result) {
         try {
             if (result.next()) {
                 Long id = result.getLong("id");
@@ -97,20 +67,29 @@ public class TransformationResultSet {
                 String tIntroduced = result.getString("introduced");
                 LocalDate introduced = null;
                 if (tIntroduced != null) {
-                    introduced = recupererDate(tIntroduced);
+                    Optional<LocalDate> OpInroduced = recupererDate(tIntroduced);                   
+                    introduced = OpInroduced.isPresent()? OpInroduced.get() : null ;
                 }
                 String tDiscontinued = result.getString("discontinued");
                 LocalDate discontinued = null;
                 if (tDiscontinued != null) {
-                    discontinued = recupererDate(tDiscontinued);
+                    Optional<LocalDate> OpDiscontinued = recupererDate(tDiscontinued);
+                    discontinued = OpDiscontinued.isPresent()? OpDiscontinued.get() : null ;
                 }
                 Long companyId  = result.getLong("company_id");
                 String nameCompany = result.getString("company.name");
-                Company company = new CompanyBuilder(nameCompany).setId(companyId).build();
-                Computer computer = new ComputerBuilder(nameComputer).setId(id).setIntroduced(introduced).setDiscontinued(discontinued).setCompany(company).build();
-                return computer;
+                Company company = new CompanyBuilder(nameCompany)
+                        .setId(companyId)
+                        .build();
+                Computer computer = new ComputerBuilder(nameComputer)
+                        .setId(id)
+                        .setIntroduced(introduced)
+                        .setDiscontinued(discontinued)
+                        .setCompany(company)
+                        .build();
+                return Optional.of(computer);
             } else {
-                return null;
+                return Optional.empty();
             }
         } catch (SQLException se) {
             throw new MapperException("Erreur de result.next()", se);
@@ -122,12 +101,10 @@ public class TransformationResultSet {
      * @param result : ResultSet de la requête
      * @return Page<Computer> : une liste de computer
      */
-    public static Page<Computer> extraireDetailsComputers(ResultSet result) {
+    public static Page<Computer> extraireDetailsComputers(ResultSet result, int numPage, int nbElement) {
         try {
-            Page<Computer> page = new Page<Computer>(DAOComputerImpl.getInstance().getPage(), DAOComputerImpl.getInstance().getNbElement());
-            int compteur = 0;
+            Page<Computer> page = new Page<Computer>(numPage,nbElement);
             while (result.next()) {
-                compteur++;
                 Long id = result.getLong("id");
                 String nameComputer = result.getString("computer.name");
                 Timestamp tIntroduced = result.getTimestamp("introduced");
@@ -142,15 +119,18 @@ public class TransformationResultSet {
                 }
                 Long companyId  = result.getLong("company_id");
                 String nameCompany = result.getString("company.name");
-                Company company = new CompanyBuilder(nameCompany).setId(companyId).build();
-                Computer computer = new ComputerBuilder(nameComputer).setId(id).setIntroduced(introduced).setDiscontinued(discontinued).setCompany(company).build();
+                Company company = new CompanyBuilder(nameCompany)
+                        .setId(companyId)
+                        .build();
+                Computer computer = new ComputerBuilder(nameComputer)
+                        .setId(id)
+                        .setIntroduced(introduced)
+                        .setDiscontinued(discontinued)
+                        .setCompany(company)
+                        .build();
                 page.addElement(computer);
             }
-            if (compteur == 0) {
-                return null;
-            } else {
-                return page;
-            }
+            return page;
         } catch (SQLException se) {
             throw new MapperException("Erreur de result.next()", se);
         }

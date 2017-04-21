@@ -12,9 +12,6 @@ import com.navarna.computerdb.model.Page;
 public final class DAOCompanyImpl implements DAOCompany {
     private static final DAOCompanyImpl INSTANCE;
 
-    private static int page = 0;
-    private static int nbElement = 10;
-
     private static final String SELECT;
 
     static {
@@ -33,50 +30,28 @@ public final class DAOCompanyImpl implements DAOCompany {
     }
 
     @Override
-    public int getPage() {
-        return page;
-    }
-
-    @Override
-    public int getNbElement() {
-        return nbElement;
-    }
-
-    @Override
-    public void setPage(int pPage) {
-        page = pPage;
-    }
-
-    @Override
-    public void setNbElement(int pNbElement) {
-        nbElement = pNbElement;
-    }
-
-    @Override
-    public Page<Company> list() {
+    public Page<Company> list(int numPage , int nbElement) {
         try  {
             Connection conn = ConnectionDb.getInstance().open();
             ResultSet result = null;
             PreparedStatement statement = conn.prepareStatement(SELECT);
-            statement.setInt(1, nbElement);
-            statement.setInt(2, page * nbElement);
+            setStatementListe(statement, numPage, nbElement);
             result = statement.executeQuery();
-            Page<Company> page = TransformationResultSet.extraireListeCompany(result);
+            Page<Company> page = TransformationResultSet.extraireListeCompany(result, numPage , nbElement);
             statement.close();
             return page;
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
         }
     }
-
-    @Override
-    public void resetPage() {
-        page = 0;
-    }
-
-    @Override
-    public Page<Company> listeSuivante() {
-        page++;
-        return list();
+    
+    public static void setStatementListe(PreparedStatement statement,int numPage, int nbElement) {
+        try {
+            statement.setInt(1, nbElement);
+            statement.setInt(2, numPage * nbElement);
+        } catch (SQLException e) {
+            throw new DAOException("Erreur affectation des arguments", e);
+        }
+        
     }
 }

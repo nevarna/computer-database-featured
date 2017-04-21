@@ -1,10 +1,12 @@
 package com.navarna.computerdb.service;
 
+import java.util.Optional;
+
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
 
 /**
- * @author excilys
+ * @author navarna
  *
  */
 public interface ServiceComputer {
@@ -34,55 +36,19 @@ public interface ServiceComputer {
      * Demande au DAOComputer la liste des computer.
      * @return Page<Computer> : page de la liste de computer
      */
-    Page<Computer> liste();
+    Page<Computer> liste(int numPage , int nbElement);
 
     /**
      * Demande au DAOComputer les détails du computer ayant l'id de l'arguments.
      * @param id : id du computer
      * @return Computer : le computer avec tout ses détails
      */
-    Computer show(long id);
+    Optional<Computer> show(long id);
 
     /**
      * Demande au DAOComputer les détails des computer ayant le nom de l'arguments.
      * @param name : name des computer
      * @return Page<Computer> : page des computer avec tout leus détails
      */
-    Page<Computer> show(String name);
-
-    /**
-     * Demande au DAOComputer la page suivante de la liste des computer.
-     * @return Page<Computer> : page de la liste de computer
-     */
-    Page<Computer> listeSuivante();
-
-    /**
-     * Demande au DAOComputer la page suivantes des détails des computer ayant le nom de l'arguments.
-     * @param name : name des computer
-     * @return Page<Computer> : page des computer avec tout leus détails
-     */
-    Page<Computer> showSuivant(String name);
-
-    /**
-     * Demande au DAOComputer de changer le numero de la page.
-     * @param page : numero de la page
-     */
-    void choisirPage(int page);
-
-    /**
-     * Demande au DAOComputer le numero de la page actuelle
-     * @return int : numero de la page
-     */
-    int recupererPage();
-
-    /**
-     * Demande au DAOComputer de changer le nombre d'élément par page.
-     * @param nbElement : nombre d'éléments
-     */
-    void choisirNbElement(int nbElement);
-
-    /**
-     * Demande au DAOComputer de remettre le numero de la page à zero.
-     */
-    void resetPage();
+    Page<Computer> show(String name,int numPage , int nbElement);
 }

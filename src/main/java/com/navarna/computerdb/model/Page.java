@@ -7,6 +7,8 @@ public class Page<T> {
     private int nbPage;
     private int nbElementPage;
 
+    public Page() {
+    }
     /**
      * Constructeur à 2 éléments.
      * @param pNbPage : numero de page
@@ -32,6 +34,10 @@ public class Page<T> {
 
     public ArrayList<T> getPage() {
         return this.page;
+    }
+    
+    public boolean estVide() {
+        return this.page.isEmpty();
     }
 
     /**

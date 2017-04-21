@@ -3,6 +3,7 @@ package com.navarna.computerdb.persistence;
 import static org.junit.Assert.*;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -66,37 +67,20 @@ public class DAOComputerImplTest {
 
     @Test
     public void testList() {
-        DAOComputerImpl.getInstance().resetPage();
-        Page<Computer> page = DAOComputerImpl.getInstance().list();
-        assertEquals(0,DAOComputerImpl.getInstance().getPage());
-        assertNotNull(page);
+        Page<Computer> page = DAOComputerImpl.getInstance().list(0,20);
+        assertEquals(page.estVide(),false);
     }
 
     @Test
     public void testShowId() {
-        Computer computer = DAOComputerImpl.getInstance().showId(1L);
-        assertNotNull(computer);
+        Optional<Computer> computer = DAOComputerImpl.getInstance().showId(1L);
+        assertEquals(computer.isPresent(),true);
     }
 
     @Test
     public void testShowName() {
-        DAOComputerImpl.getInstance().resetPage();
-        Page<Computer> page = DAOComputerImpl.getInstance().showName("test");
-        assertNotNull(page);
-    }
-
-    @Test
-    public void testResetPage() {
-        DAOComputerImpl.getInstance().resetPage();
-        assertEquals(0,DAOComputerImpl.getInstance().getPage());
-    }
-
-    @Test
-    public void testListeSuivante() {
-        DAOComputerImpl.getInstance().resetPage();
-        Page<Computer> page = DAOComputerImpl.getInstance().listeSuivante();
-        assertEquals(1,DAOComputerImpl.getInstance().getPage());
-        assertNotNull(page);
+        Page<Computer> page = DAOComputerImpl.getInstance().showName("test",0,20);
+        assertEquals(page.estVide(),false);
     }
 
 }

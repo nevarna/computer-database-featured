@@ -9,17 +9,6 @@ public class Computer {
     private LocalDate discontinued;
     private Company company;
 
-    /**
-     * Constructeur de computer.
-     * @param builder : un ComputerBuilder ayant tout les arguments
-     */
-    public Computer(ComputerBuilder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
-        this.introduced = builder.introduced;
-        this.discontinued = builder.discontinued;
-        this.company = builder.company;
-    }
 
     public String getName() {
         return this.name;
@@ -49,41 +38,46 @@ public class Computer {
     }
 
     @Override
-    public boolean equals(Object objet) {
-        boolean egal = false;
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((company == null) ? 0 : company.hashCode());
+        result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
+    public boolean equals2(Object objet) {
         if (objet == this) {
-            egal = true;
+            return true;
+        }
+        if(objet == null) {
+            return false;
         }
         if (objet instanceof Computer) {
             Computer oComputer = (Computer) objet;
-            if ((this.name == oComputer.getName()) && (this.company == oComputer.getCompany())) {
-                egal = true;
+            if ((this.name == oComputer.getName()) 
+                    && (this.company.equals(oComputer.getCompany()))
+                    &&(this.introduced.equals(oComputer.getIntroduced()))
+                    &&(this.discontinued.equals(oComputer.getDiscontinued()))) {
+                return true;
             }
         }
-        return egal;
+        return false;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 1;
-        hash += 13 * this.name.hashCode();
-        hash += 21 * this.company.hashCode();
-        return hash;
-    }
+
 
     public static final class ComputerBuilder {
-        private Long id;
-        private String name;
-        private LocalDate introduced;
-        private LocalDate discontinued;
-        private Company company;
-
+        private Computer computer;
         /**
          * Constructeur de classe : un argument obligatoire.
          * @param pName : String argument obligatoire
          */
         public ComputerBuilder(String pName) {
-            this.name = pName == null ? "undefined" : pName;
+            computer = new Computer();
+            computer.name = pName == null ? "undefined" : pName;
         }
 
         /**
@@ -92,7 +86,7 @@ public class Computer {
          * @return ComputerBuilder : l'instance de classe
          */
         public ComputerBuilder setId(Long pId) {
-            this.id = pId;
+            computer.id = pId;
             return this;
         }
 
@@ -102,7 +96,7 @@ public class Computer {
          * @return ComputerBuilder : l'instance de classe
          */
         public ComputerBuilder setIntroduced(LocalDate pIntroduced) {
-            this.introduced = pIntroduced;
+            computer.introduced = pIntroduced;
             return this;
         }
 
@@ -112,7 +106,7 @@ public class Computer {
          * @return ComputerBuilder : l'instance de classe
          */
         public ComputerBuilder setDiscontinued(LocalDate pDiscontinued) {
-            this.discontinued = pDiscontinued;
+            computer.discontinued = pDiscontinued;
             return this;
         }
 
@@ -122,7 +116,7 @@ public class Computer {
          * @return ComputerBuilder : l'instance de classe
          */
         public ComputerBuilder setCompany(Company pCompany) {
-            this.company = pCompany;
+            computer.company = pCompany;
             return this;
         }
 
@@ -131,7 +125,7 @@ public class Computer {
          * @return Computer: le computer fini
          */
         public Computer build() {
-            return new Computer(this);
+            return computer;
         }
     }
 }

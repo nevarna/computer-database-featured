@@ -1,5 +1,7 @@
 package com.navarna.computerdb.service;
 
+import java.util.Optional;
+
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
 import com.navarna.computerdb.persistence.DAOComputerImpl;
@@ -32,54 +34,23 @@ public class ServiceComputerImpl implements ServiceComputer {
     }
 
     @Override
-    public Page<Computer> liste() {
-        return this.dComputerImpl.list();
+    public Page<Computer> liste(int numPage , int nbElement) {
+        return this.dComputerImpl.list(numPage ,nbElement);
     }
 
     @Override
-    public Computer show(long id) {
+    public Optional<Computer> show(long id) {
         if (id >= 0) {
             return this.dComputerImpl.showId(id);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public Page<Computer> show(String name) {
+    public Page<Computer> show(String name,int numPage , int nbElement) {
         if (name != null) {
-            return this.dComputerImpl.showName(name);
+            return this.dComputerImpl.showName(name, numPage, nbElement);
         }
-        return null;
+        return new Page<Computer>();
     }
-
-    @Override
-    public Page<Computer> listeSuivante() {
-        return this.dComputerImpl.listeSuivante();
-    }
-
-    @Override
-    public Page<Computer> showSuivant(String name) {
-        return this.dComputerImpl.showSuivant(name);
-    }
-
-    @Override
-    public void choisirPage(int page) {
-        this.dComputerImpl.setPage(page);
-    }
-
-    @Override
-    public void choisirNbElement(int nbElement) {
-        this.dComputerImpl.setNbElement(nbElement);
-    }
-
-    @Override
-    public void resetPage() {
-        this.dComputerImpl.resetPage();
-    }
-
-    @Override
-    public int recupererPage() {
-        return this.dComputerImpl.getPage();
-    }
-
 }

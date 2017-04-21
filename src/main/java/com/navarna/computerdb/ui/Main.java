@@ -11,7 +11,8 @@ public class Main {
      */
     public static void main(String[] args) {
         LOGGER.debug("Début du programme");
-        EntrerUtilisateur.choixPrincipal();
+        EntrerUtilisateur entrerUtilisateur = new EntrerUtilisateur();
+        entrerUtilisateur.choixPrincipal();
         LOGGER.debug("fin du programme");
     }
 }
