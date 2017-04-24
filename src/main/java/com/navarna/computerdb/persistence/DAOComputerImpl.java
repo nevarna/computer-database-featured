@@ -57,14 +57,12 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int insert(Computer computer) {
-        try {
-            Connection conn = ConnectionDb.getInstance().open();
+        try (Connection conn = ConnectionPoolDB.getInstance().open()){
             int result = 0;
             PreparedStatement statement = conn.prepareStatement(INSERT);
             setStatementInsert(statement, computer);
             result = statement.executeUpdate();
             statement.close();
-            ConnectionDb.getInstance().close();
             return result;
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
@@ -73,14 +71,12 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int update(Computer computer) {
-        try {
-            Connection conn = ConnectionDb.getInstance().open();
+        try (Connection conn = ConnectionPoolDB.getInstance().open()){
             int result = 0;
             PreparedStatement statement = conn.prepareStatement(UPDATE);
             setStatementUpdate(statement, computer);
             result = statement.executeUpdate();
             statement.close();
-            ConnectionDb.getInstance().close();
             return result;
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
@@ -89,14 +85,12 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int delete(long id) {
-        try {
-            Connection conn = ConnectionDb.getInstance().open();
+        try (Connection conn = ConnectionPoolDB.getInstance().open()){
             int result = 0;
             PreparedStatement statement = conn.prepareStatement(DELETE);
             statement.setLong(1, id);
             result = statement.executeUpdate();
             statement.close();
-            ConnectionDb.getInstance().close();
             return result;
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
@@ -105,15 +99,13 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public Page<Computer> list(int numPage, int nbElement) {
-        try {
-            Connection conn = ConnectionDb.getInstance().open();
+        try (Connection conn = ConnectionPoolDB.getInstance().open()){
             ResultSet result = null;
             PreparedStatement statement = conn.prepareStatement(SELECT_LIST);
             setStatementListe(statement, numPage, nbElement);
             result = statement.executeQuery();
             Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result, numPage, nbElement);
             statement.close();
-            ConnectionDb.getInstance().close();
             return page;
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
@@ -122,15 +114,13 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public Optional<Computer> showId(long id) {
-        try {
-            Connection conn = ConnectionDb.getInstance().open();
+        try(Connection conn = ConnectionPoolDB.getInstance().open()) {
             ResultSet result = null;
             PreparedStatement statement = conn.prepareStatement(SHOW_ID);
             statement.setLong(1, id);
             result = statement.executeQuery();
             Optional<Computer> computer = TransformationResultSet.extraireDetailsComputer(result);
             statement.close();
-            ConnectionDb.getInstance().close();
             return computer;
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
@@ -139,15 +129,13 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public Page<Computer> showName(String name, int numPage, int nbElement) {
-        try {
-            Connection conn = ConnectionDb.getInstance().open();
+        try (Connection conn = ConnectionPoolDB.getInstance().open()){
             ResultSet result = null;
             PreparedStatement statement = conn.prepareStatement(SHOW_NAME);
             setStatementShowName(statement, name, numPage, nbElement);
             result = statement.executeQuery();
             Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result, numPage, nbElement);
             statement.close();
-            ConnectionDb.getInstance().close();
             return page;
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
@@ -188,7 +176,6 @@ public final class DAOComputerImpl implements DAOComputer {
             statement.setLong(5, computer.getId());
         } else {
             statement.close();
-            ConnectionDb.getInstance().close();
             throw new DAOException("Update n'as pas de id arret de la fonction");
         }
         statement.setString(1, computer.getName());
@@ -219,14 +206,12 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int countComputer() {
-        try {
-            Connection conn = ConnectionDb.getInstance().open();
+        try (Connection conn = ConnectionPoolDB.getInstance().open()){      
             ResultSet result = null;
             Statement statement = conn.createStatement();
             result = statement.executeQuery(COUNT);
             int retour = TransformationResultSet.extraireNombreElement(result);
             statement.close();
-            ConnectionDb.getInstance().close();
             return retour;
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
@@ -235,15 +220,13 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int countComputerName(String name) {
-        try {
-            Connection conn = ConnectionDb.getInstance().open();
+        try (Connection conn = ConnectionPoolDB.getInstance().open()){
             ResultSet result = null;
             PreparedStatement statement = conn.prepareStatement(COUNT_NAME);
             statement.setString(1, name);
             result = statement.executeQuery();
             int retour = TransformationResultSet.extraireNombreElement(result);
             statement.close();
-            ConnectionDb.getInstance().close();
             return retour;
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);

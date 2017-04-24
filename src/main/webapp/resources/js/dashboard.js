@@ -29,9 +29,9 @@ $(function() {
 (function ( $ ) {
 
     $.fn.setCheckboxValues = function(formFieldName, checkboxFieldName) {
-
+    	var indice = -1;
         var str = $('.' + checkboxFieldName + ':checked').map(function() {
-            return this.value;
+        	return this.value;
         }).get().join();
         
         $(this).attr('value',str);

@@ -42,7 +42,7 @@ public class DAOComputerImplTest {
         assertNotNull(DAOComputerImpl.getInstance()); 
     }
 
-    @Ignore
+    @Test
     public void testInsert() {
         int result = DAOComputerImpl.getInstance().insert(computerTest);
         assertEquals(1,result);
@@ -50,7 +50,7 @@ public class DAOComputerImplTest {
         assertEquals(1,resultNull);
     }
 
-    @Ignore
+    @Test
     public void testUpdate() {
         int result = DAOComputerImpl.getInstance().update(computerTest);
         assertEquals(0,result);

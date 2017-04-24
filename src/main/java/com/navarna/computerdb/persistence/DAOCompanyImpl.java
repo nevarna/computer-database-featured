@@ -31,8 +31,7 @@ public final class DAOCompanyImpl implements DAOCompany {
 
     @Override
     public Page<Company> list(int numPage , int nbElement) {
-        try  {
-            Connection conn = ConnectionDb.getInstance().open();
+        try (Connection conn = ConnectionPoolDB.getInstance().open()) {
             ResultSet result = null;
             PreparedStatement statement = conn.prepareStatement(SELECT);
             setStatementListe(statement, numPage, nbElement);

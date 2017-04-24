@@ -67,7 +67,7 @@
 		</div>
 
 		<form id="deleteForm" action="#" method="POST">
-			<input type="hidden" name="selection" value="">
+			<input type="hidden" name="selection" value="2">
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
@@ -78,7 +78,7 @@
 						<!-- Table header for Computer Name -->
 
 						<th class="editMode" style="width: 60px; height: 22px;"><input
-							type="checkbox" id="selectall" /> <span
+							type="checkbox" id="selectall"/> <span
 							style="vertical-align: top;"> - <a href="#"
 								id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
 									class="fa fa-trash-o fa-lg"></i>
@@ -104,7 +104,7 @@
 					                Object o = listeComputer.getPage().get(i);
 					                if (o instanceof ComputerDTO) {
 					                    ComputerDTO computerDTO = (ComputerDTO) o;
-					                    String affichage = "<tr> <td class=\"editMode\"><input type=\"checkbox\" name=\"cb\"class=\"cb\" value=\"0\"></td><td><a href=\"EditComputer?id="+computerDTO.getId()+"\" onclick=\"\">"
+					                    String affichage = "<tr> <td class=\"editMode\"><input type=\"checkbox\" name=\"cb\"class=\"cb\" value=\""+computerDTO.getId()+"\"></td><td><a href=\"EditComputer?id="+computerDTO.getId()+"\" onclick=\"\">"
 					                            + computerDTO.getName() + "</a></td>";
 					                    affichage += "<td>" + computerDTO.getIntroduced() + "</td>";
 					                    affichage += "<td>" + computerDTO.getDiscontinued() + "</td>";

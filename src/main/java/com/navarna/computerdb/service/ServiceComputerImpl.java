@@ -27,7 +27,7 @@ public class ServiceComputerImpl implements ServiceComputer {
 
     @Override
     public int delete(long id) {
-        if (id >= 0) {
+        if (id > 0) {
             return this.dComputerImpl.delete(id);
         }
         return 0;
