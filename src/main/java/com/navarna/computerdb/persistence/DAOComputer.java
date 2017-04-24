@@ -47,4 +47,17 @@ public interface DAOComputer {
      * @return Page<Computer> : Une page contenant une liste de computer
      */
     Page<Computer> list(int numPage, int nbElement);
+
+    /**
+     * Ecris une requête à la base de donnée afin d'avoir le nombre de computer
+     * @return int : nombre de computer dans la base de donnée
+     */
+    int countComputer ();
+
+    /**
+     * Ecris une requête à la base de donnée afin d'avoir le nombre de computer ayant le nom name
+     * @param name : name des computer
+     * @return int : nombre de computer dans la base de donnée
+     */
+    int countComputerName(String name);
 }

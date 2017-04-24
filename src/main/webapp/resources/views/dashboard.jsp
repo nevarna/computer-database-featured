@@ -2,18 +2,18 @@
 	pageEncoding="UTF-8"%>
 <%@page import="com.navarna.computerdb.mapper.*"%>
 <%@page import="com.navarna.computerdb.model.*"%>
+<%@page import="com.navarna.computerdb.dto.*" %>
 <%@page import="com.navarna.computerdb.controller.*"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="test"%>
-<% String finUrl ; 
-Object obj = request.getAttribute("research");
-if(obj instanceof String){
-    finUrl =(String) obj ;
-    finUrl +="&";
-}
-else {
-    finUrl="?";
-}
-finUrl +="page=";
+<%
+    String finUrl;
+    Object obj = request.getAttribute("research");
+    if (obj instanceof String) {
+        finUrl = (String) obj;
+        finUrl += "&";
+    } else {
+        finUrl = "?";
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -30,25 +30,31 @@ finUrl +="page=";
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard.html"> Application -
+			<a class="navbar-brand" href="Dashboard"> Application -
 				Computer Database </a>
 		</div>
 	</header>
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">121 Computers found</h1>
+			<h1 id="homeTitle">
+			<%obj = request.getAttribute("totalElement");
+			if(obj instanceof Integer){
+			    Integer totalElement = (Integer) obj;
+			    String affichage = totalElement.toString() + " Computers found";
+			    out.print(affichage);
+			}
+			%></h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="" method="GET" class="form-inline">
 
 						<input type="search" id="searchbox" name="search"
-							class="form-control" placeholder="Search name" 
-							<%if ((request.getAttribute("name")!=null)&&(request.getAttribute("name") instanceof String)){
-							    String nouvelleBalise = "value=\""+request.getAttribute("name")+"\"";
-							    out.print(nouvelleBalise);
-							}    %>/> <input
-							
-							type="submit" id="searchsubmit" value="Filter by name"
+							class="form-control" placeholder="Search name"
+							<%if ((request.getAttribute("name") != null) && (request.getAttribute("name") instanceof String)) {
+                String nouvelleBalise = "value=\"" + request.getAttribute("name") + "\"";
+                out.print(nouvelleBalise);
+            }%> />
+						<input type="submit" id="searchsubmit" value="Filter by name"
 							class="btn btn-primary" />
 					</form>
 				</div>
@@ -90,26 +96,26 @@ finUrl +="page=";
 				<!-- Browse attribute computers -->
 				<tbody id="results">
 					<%
-					try{
-					    if(request.getAttribute("computers") instanceof Page<?>){
-					        Page<?> listeComputer = (Page<?>) request.getAttribute("computers");
-					           
-					        for (int i = 0 ; i < listeComputer.getPage().size(); i++){
-					            Object o = listeComputer.getPage().get(i);
-					            if( o instanceof Computer){
-					                Computer computer = (Computer) o;
-					                String affichage = "<tr> <td class=\"editMode\"><input type=\"checkbox\" name=\"cb\"class=\"cb\" value=\"0\"></td><td><a href=\"editComputer.html\" onclick=\"\">"
-		                                    + computer.getName() + "</a></td>";
-		                            affichage += "<td>" + computer.getIntroduced() + "</td>";
-		                            affichage += "<td>" + computer.getDiscontinued() + "</td>";
-		                            affichage += "<td>" + computer.getCompany().getName() + "</td></tr>";
-		                            out.println(affichage);
+					    try {
+					        if (request.getAttribute("computers") instanceof Page<?>) {
+					            Page<?> listeComputer = (Page<?>) request.getAttribute("computers");
+
+					            for (int i = 0; i < listeComputer.getPage().size(); i++) {
+					                Object o = listeComputer.getPage().get(i);
+					                if (o instanceof ComputerDTO) {
+					                    ComputerDTO computerDTO = (ComputerDTO) o;
+					                    String affichage = "<tr> <td class=\"editMode\"><input type=\"checkbox\" name=\"cb\"class=\"cb\" value=\"0\"></td><td><a href=\"EditComputer?id="+computerDTO.getId()+"\" onclick=\"\">"
+					                            + computerDTO.getName() + "</a></td>";
+					                    affichage += "<td>" + computerDTO.getIntroduced() + "</td>";
+					                    affichage += "<td>" + computerDTO.getDiscontinued() + "</td>";
+					                    affichage += "<td>" + computerDTO.getNameCompany() + "</td></tr>";
+					                    out.println(affichage);
+					                }
 					            }
 					        }
+					    } catch (ClassCastException ce) {
+					        throw new ControllerException("Le cast de page<Computer> à echouer", ce);
 					    }
-					} catch (ClassCastException ce){
-					    throw new ControllerException ("Le cast de page<Computer> à echouer", ce);
-					}
 					%>
 				</tbody>
 			</table>
@@ -119,24 +125,26 @@ finUrl +="page=";
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-			<%
-			String preview = "<li><a href="+finUrl+"-1 aria-label=\"Previous\"> <span aria-hidden=\"true\">&laquo;</span></a></li>";
-			out.println(preview);
-			for (int i = 1 ; i < 6 ; i++){
-			    String affiche = "<li><a href=\""+finUrl+i+"\">"+i+"</a></li>";
-			    out.println(affiche);
-			}
-			String next = "<li><a href="+finUrl+"0 aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>";
-            out.println(next);			
-			%>
+				<%
+				    String preview = "<li><a href=" + finUrl
+				            + "-1 aria-label=\"Previous\"> <span aria-hidden=\"true\">&laquo;</span></a></li>";
+				    out.println(preview);
+				    for (int i = 1; i < 7; i++) {
+				        String affiche = "<li><a href=\"" + finUrl +"page="+ i + "\">" + i + "</a></li>";
+				        out.println(affiche);
+				    }
+				    String next = "<li><a href=" + finUrl
+				            + "0 aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>";
+				    out.println(next);
+				%>
 			</ul>
-		</div>
-		<div class="btn-group btn-group-sm pull-right" role="group">
-			<button type="button" class="btn btn-default">10</button>
-			<button type="button" class="btn btn-default">50</button>
-			<button type="button" class="btn btn-default">100</button>
-		</div>
 
+			<div class="btn-group btn-group-sm pull-right" role="group">
+				<button type="button" class="btn btn-default" <%String lien = "onClick=\"javascript:document.location.href='"+finUrl+"nbElement=10"+"'\""; out.print(lien); %>>10</button>
+				<button type="button" class="btn btn-default"<%lien = "onClick=\"javascript:document.location.href='"+finUrl+"nbElement=50"+"'\""; out.print(lien); %>>50</button>
+				<button type="button" class="btn btn-default"<%lien = "onClick=\"javascript:document.location.href='"+finUrl+"nbElement=100"+"'\""; out.print(lien); %>>100</button>
+			</div>
+		</div>
 	</footer>
 	<script src="resources/js/jquery.min.js"></script>
 	<script src="resources/js/bootstrap.min.js"></script>

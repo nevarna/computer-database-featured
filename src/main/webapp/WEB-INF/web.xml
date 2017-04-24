@@ -16,6 +16,12 @@
   	<description></description>
   	<servlet-class>com.navarna.computerdb.controller.AddComputer</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>EditComputer</servlet-name>
+  	<display-name>EditComputer</display-name>
+  	<description></description>
+  	<servlet-class>com.navarna.computerdb.controller.EditComputer</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>Dashboard</servlet-name>
   	<url-pattern>/Dashboard</url-pattern>
@@ -24,4 +30,20 @@
   	<servlet-name>AddComputer</servlet-name>
   	<url-pattern>/AddComputer</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>EditComputer</servlet-name>
+  	<url-pattern>/EditComputer</url-pattern>
+  </servlet-mapping>
+    <error-page>
+    <error-code>404</error-code>
+    <location>/resources/views/404.html</location>
+  </error-page>
+      <error-page>
+    <error-code>403</error-code>
+    <location>/resources/views/403.html</location>
+  </error-page>
+      <error-page>
+    <error-code>500</error-code>
+    <location>/resources/views/500.html</location>
+  </error-page>
 </web-app>

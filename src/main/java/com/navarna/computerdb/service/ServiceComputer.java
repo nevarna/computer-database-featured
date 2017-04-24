@@ -51,4 +51,17 @@ public interface ServiceComputer {
      * @return Page<Computer> : page des computer avec tout leus détails
      */
     Page<Computer> show(String name,int numPage , int nbElement);
+
+    /**
+     * Demande au DAOComputer le nombre de computer
+     * @return int : nombre de computer
+     */
+    int countComputer ();
+
+    /**
+     * Demande au DAOComputer le nombre de computer ayant le nom de l'arguments.
+     * @param name : name des computer
+     * @return int : nombre de computer
+     */
+    int countComputerName(String name);
 }

@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.navarna.computerdb.model.Computer;
+import com.navarna.computerdb.dto.ComputerDTO;
+import com.navarna.computerdb.mapper.TransformationToDTO;
 import com.navarna.computerdb.model.Page;
 import com.navarna.computerdb.service.ServiceComputerImpl;
 
@@ -21,7 +22,8 @@ public class Dashboard extends HttpServlet {
 	private int numPage =0;
 	private int nbElement = 20;
 	private String name ;
-	private Page<Computer> pageComputer = null ;
+	private Page<ComputerDTO> pageComputer = null ;
+	private int totalElement = 0;
 	
 	public void changerPage(String page) {
 	    try {
@@ -41,6 +43,7 @@ public class Dashboard extends HttpServlet {
 	        case 3 :
 	        case 4 :
 	        case 5 :
+	        case 6 :
 	            numPage = numero-1;
 	            break;
 	        default:
@@ -50,6 +53,26 @@ public class Dashboard extends HttpServlet {
 	    } catch (NumberFormatException ne) {
 	        throw new ControllerException("l'argument parametre de page n'est pas un nombre", ne);
 	    }
+	}
+	
+	public void changerNbElement (String nombreElement) {
+	       try {
+	            int numero = nombreElement == null ? 0 : Integer.parseInt(nombreElement);
+	            switch(numero) {
+	            case 0 :
+	                break;
+	            case 10 :
+	            case 50 :
+	            case 100 :
+	                nbElement = numero;
+	                break;
+	            default:
+	                throw new ControllerException("Le nombre parametre de page n'est pas correct");
+	            
+	            }
+	        } catch (NumberFormatException ne) {
+	            throw new ControllerException("l'argument parametre de page n'est pas un nombre", ne);
+	        }
 	}
 	
 	public String transforme() {
@@ -63,6 +86,8 @@ public class Dashboard extends HttpServlet {
 	public void lireParametre (HttpServletRequest request) {
 	    String page = request.getParameter("page");
         changerPage(page);
+        String nombreElement = request.getParameter("nbElement");
+        changerNbElement(nombreElement);
         name = request.getParameter("search");
         if(name == "") {
             name = null;
@@ -71,10 +96,12 @@ public class Dashboard extends HttpServlet {
 	
 	public void creationListe () {
 	    if(name == null) {
-	        pageComputer = servComputer.liste(numPage, nbElement);
+	        pageComputer = TransformationToDTO.pageComputerToPageDTO(servComputer.liste(numPage, nbElement));
+	        totalElement = servComputer.countComputer();
 	    }
 	    else {
-	        pageComputer = servComputer.show(name, numPage, nbElement);
+	        pageComputer = TransformationToDTO.pageComputerToPageDTO(servComputer.show(name, numPage, nbElement));
+	        totalElement = servComputer.countComputerName(name);
 	    }
 	}
 	
@@ -84,6 +111,7 @@ public class Dashboard extends HttpServlet {
 	        request.setAttribute("name", name);
 	        request.setAttribute("research", transforme());
 	    }
+	    request.setAttribute("totalElement", totalElement);
 	}
 
 	/**

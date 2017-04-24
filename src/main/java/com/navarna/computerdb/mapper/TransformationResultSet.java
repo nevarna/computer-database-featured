@@ -135,4 +135,16 @@ public class TransformationResultSet {
             throw new MapperException("Erreur de result.next()", se);
         }
     }
+
+    public static int extraireNombreElement (ResultSet result) {
+        try {
+            if(result.next()) {
+                int compteur = result.getInt(1);
+                return compteur;
+            }
+            return 0;
+        } catch (SQLException se) {
+            throw new MapperException("Erreur de result.next column 0", se);
+        }
+    }
 }

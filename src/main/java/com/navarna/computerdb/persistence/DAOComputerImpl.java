@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Optional;
@@ -29,6 +30,8 @@ public final class DAOComputerImpl implements DAOComputer {
     public static final String SELECT_LIST;
     public static final String SHOW_ID;
     public static final String SHOW_NAME;
+    public static final String COUNT ;
+    public static final String COUNT_NAME;
 
     static {
         INSERT = "INSERT INTO computer VALUES ( ?, ?, ?, ?, ? )";
@@ -37,6 +40,8 @@ public final class DAOComputerImpl implements DAOComputer {
         SELECT_LIST = "SELECT * from computer left join company on company_id = company.id LIMIT ? OFFSET ?";
         SHOW_ID = "SELECT * from computer left join company on company_id = company.id where computer.id = ?";
         SHOW_NAME = "SELECT * from computer left join company on company_id = company.id where computer.name = ? LIMIT ? OFFSET ?";
+        COUNT = "SELECT count(id) from computer";
+        COUNT_NAME = "SELECT count(id) from computer where name = ?";
         INSTANCE = new DAOComputerImpl();
     }
 
@@ -210,5 +215,38 @@ public final class DAOComputerImpl implements DAOComputer {
         statement.setString(1, name);
         statement.setInt(2, nbElement);
         statement.setInt(3, numPage * nbElement);
+    }
+
+    @Override
+    public int countComputer() {
+        try {
+            Connection conn = ConnectionDb.getInstance().open();
+            ResultSet result = null;
+            Statement statement = conn.createStatement();
+            result = statement.executeQuery(COUNT);
+            int retour = TransformationResultSet.extraireNombreElement(result);
+            statement.close();
+            ConnectionDb.getInstance().close();
+            return retour;
+        } catch (SQLException se) {
+            throw new DAOException("Erreur de base de donnée", se);
+        }
+    }
+
+    @Override
+    public int countComputerName(String name) {
+        try {
+            Connection conn = ConnectionDb.getInstance().open();
+            ResultSet result = null;
+            PreparedStatement statement = conn.prepareStatement(COUNT_NAME);
+            statement.setString(1, name);
+            result = statement.executeQuery();
+            int retour = TransformationResultSet.extraireNombreElement(result);
+            statement.close();
+            ConnectionDb.getInstance().close();
+            return retour;
+        } catch (SQLException se) {
+            throw new DAOException("Erreur de base de donnée", se);
+        }
     }
 }

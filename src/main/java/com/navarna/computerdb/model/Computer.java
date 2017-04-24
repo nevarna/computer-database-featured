@@ -27,7 +27,7 @@ public class Computer {
     }
 
     public Long getId() {
-        return this.id == null ? new Long(0) : id;
+        return this.id == null ? new Long(0) : this.id;
     }
 
     @Override

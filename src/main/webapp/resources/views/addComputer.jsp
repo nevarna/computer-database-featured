@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="com.navarna.computerdb.model.*"%>
+<%@page import="com.navarna.computerdb.dto.*"%>
 
 <!DOCTYPE html>
 <html>
@@ -18,7 +18,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard.html"> Application -
+			<a class="navbar-brand" href="Dashboard"> Application -
 				Computer Database </a>
 		</div>
 	</header>
@@ -27,7 +27,7 @@
 	    if ((attribut != null) && (attribut instanceof Integer)) {
 	        int reponseInsertion = (Integer) attribut;
 	        String affiche = "";
-	        if(reponseInsertion == 0){
+	        if(reponseInsertion == 1){
 	            affiche ="Le Computer a été inséré";
 	        }
 	        else {
@@ -69,8 +69,8 @@
 									    if (attribut instanceof ArrayList) {
 									        ArrayList<?> liste = (ArrayList<?>) attribut;
 									        for (Object o : liste) {
-									            if (o instanceof Company) {
-									                Company company = (Company) o;
+									            if (o instanceof CompanyDTO) {
+									                CompanyDTO company = (CompanyDTO) o;
 									                String affiche = "<option value=\"" + company.getId() + "\">" + company.getName() + "</option>";
 									                out.println(affiche);
 									            }

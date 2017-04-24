@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.navarna.computerdb.dto.CompanyDTO;
+import com.navarna.computerdb.mapper.TransformationToDTO;
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Company.CompanyBuilder;
 import com.navarna.computerdb.model.Computer;
@@ -30,17 +32,17 @@ public class AddComputer extends HttpServlet {
     private int numPage = 0 ;
     private int nbElement = 100;
 
-    protected ArrayList<Company> initialisationListeCompany() {
-        ArrayList<Company> informationCompany = new ArrayList<Company>();
+    protected ArrayList<CompanyDTO> initialisationListeCompany() {
+        ArrayList<CompanyDTO> informationCompany = new ArrayList<CompanyDTO>();
         boolean fini = false;
-        numPage = 0;
+        numPage =0;
         while (!fini) {
-            Page<Company> page = servCompany.liste(numPage, nbElement);
+            Page<CompanyDTO> page = TransformationToDTO.pageCompanyToPageDTO(servCompany.liste(numPage, nbElement));
             numPage++;
             if (page.estVide()) {
                 fini = true;
             } else {
-                for (Company company : page.getPage()) {
+                for (CompanyDTO company : page.getPage()) {
                     informationCompany.add(company);
                 }
             }
@@ -49,9 +51,7 @@ public class AddComputer extends HttpServlet {
     }
 
     public void demandeInsert(String name, String introduced, String discontinued, String idCompany) {
-        System.out.println(name + " "+ introduced+ " "+discontinued+ " "+idCompany);
         if (ValidationEntrer.entrerValide(name, introduced, discontinued, idCompany)) {
-            System.out.println("C est valide");
             LocalDate pIntroduced = LocalDate.parse(introduced);
             LocalDate pDiscontinued = LocalDate.parse(discontinued);
             int id = ValidationEntrer.stringEnIntPositif(idCompany);
@@ -77,7 +77,7 @@ public class AddComputer extends HttpServlet {
     }
 
     public void ecrireAttribute(HttpServletRequest request) {
-        ArrayList<Company> informationCompany = initialisationListeCompany();
+        ArrayList<CompanyDTO> informationCompany = initialisationListeCompany();
         request.setAttribute("listeCompany", informationCompany);
         if(reponse!=null) {
             request.setAttribute("reponse", reponse);

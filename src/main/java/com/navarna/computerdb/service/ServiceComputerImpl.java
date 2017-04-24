@@ -53,4 +53,17 @@ public class ServiceComputerImpl implements ServiceComputer {
         }
         return new Page<Computer>();
     }
+
+    @Override
+    public int countComputer() {
+        return this.dComputerImpl.countComputer();
+    }
+
+    @Override
+    public int countComputerName(String name) {
+        if(name != null) {
+            return this.dComputerImpl.countComputerName(name);
+        }
+        return 0;
+    }
 }

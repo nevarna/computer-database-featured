@@ -14,7 +14,7 @@ import com.navarna.computerdb.model.Page;
 
 public class TransformationToDTO {
 
-    public static Optional<ComputerDTO> ComputerToDTO (Computer computer) {
+    public static Optional<ComputerDTO> computerToDTO (Computer computer) {
         if(computer == null) {
             return Optional.empty();
         }
@@ -66,11 +66,12 @@ public class TransformationToDTO {
         return Optional.of(computer);
     }
     
-    public static Optional<CompanyDTO> CompanyToDTO (Company company) {
+    public static Optional<CompanyDTO> companyToDTO (Company company) {
         if(company.getName() == null){
             return Optional.empty();
         }
         CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setName(company.getName());
         if(company.getId() != null) {
             companyDTO.setId(company.getId());
         }
@@ -86,10 +87,10 @@ public class TransformationToDTO {
         return Optional.empty();
     }
     
-    public static Page<ComputerDTO> PageComputerToPageDTO (Page<Computer> page){
+    public static Page<ComputerDTO> pageComputerToPageDTO (Page<Computer> page){
         Page<ComputerDTO> pageDTO = new Page<ComputerDTO>(page.getNbPage(),page.getNbElementPage());
         for(Computer computer : page.getPage()) {
-            Optional<ComputerDTO> computerDTO = ComputerToDTO(computer); 
+            Optional<ComputerDTO> computerDTO = computerToDTO(computer); 
             if(computerDTO.isPresent()) {
                 pageDTO.addElement(computerDTO.get());
             }
@@ -97,10 +98,10 @@ public class TransformationToDTO {
         return pageDTO;
     }
     
-    public static Page<CompanyDTO> PageCompanyToPageDTO (Page<Company> page){
+    public static Page<CompanyDTO> pageCompanyToPageDTO (Page<Company> page){
         Page<CompanyDTO> pageDTO = new Page<CompanyDTO>(page.getNbPage(),page.getNbElementPage());
         for(Company company : page.getPage()) {
-            Optional<CompanyDTO> companyDTO = CompanyToDTO(company);
+            Optional<CompanyDTO> companyDTO = companyToDTO(company);
             if(companyDTO.isPresent()) {
                 pageDTO.addElement(companyDTO.get());
             }
