@@ -24,40 +24,67 @@ public interface DAOComputer {
     /**
      * Ecris une requête à la base de donnée afin de supprimer un computer.
      * @param id : id de l'élément à supprimer
-     * @return int : nombre de ligne modifié par la requête
+     * @return long : nombre de ligne modifié par la requête
      */
     int delete(long id);
 
     /**
-     * Ecris une requête à la base de donnée afin d'avoir les détails un computer.
+     * Ecris une requête à la base de donnée afin d'avoir les détails un
+     * computer.
      * @param id : id de l'élément
      * @return int : nombre de ligne modifié par la requête
      */
     Optional<Computer> showId(long id);
 
     /**
-     * Ecris une requête à la base de donnée afin d'avoir les détails de computer.
+     * Ecris une requête à la base de donnée afin d'avoir les détails de
+     * computer.
      * @param name : nom du computer
-     * @return Page<Computer> : une page contenant tout les computer ayant le nom passé en arguments
+     * @param numPage : numero de la page
+     * @param nbElement : nombre d'élément par page
+     * @return Page<Computer> : une page contenant tout les computer ayant le
+     *         nom passé en arguments
      */
     Page<Computer> showName(String name, int numPage, int nbElement);
 
     /**
+     * Ecris une requête à la base de donnée afin d'avoir les détails de
+     * computer.
+     * @param nameCompany : nom du computer
+     * @param numPage : numero de la page
+     * @param nbElement : nombre d'élément par page
+     * @return Page<Computer> : une page contenant tout les computer ayant le
+     *         nom passé en arguments
+     */
+    Page<Computer> showCompany(String nameCompany, int numPage, int nbElement);
+
+    /**
      * Ecris une requête à la base de donnée afin d'avoir la liste des computer.
+     * @param numPage : numero de la page
+     * @param nbElement : nombre d'élément par page
      * @return Page<Computer> : Une page contenant une liste de computer
      */
     Page<Computer> list(int numPage, int nbElement);
 
     /**
-     * Ecris une requête à la base de donnée afin d'avoir le nombre de computer
+     * Ecris une requête à la base de donnée afin d'avoir le nombre de computer.
      * @return int : nombre de computer dans la base de donnée
      */
-    int countComputer ();
+    int countComputer();
 
     /**
-     * Ecris une requête à la base de donnée afin d'avoir le nombre de computer ayant le nom name
+     * Ecris une requête à la base de donnée afin d'avoir le nombre de computer.
+     * ayant le nom name
      * @param name : name des computer
      * @return int : nombre de computer dans la base de donnée
      */
     int countComputerName(String name);
+
+    /**
+     * Ecris une requête à la base de donnée afin d'avoir le nombre de computer.
+     * ayant la company name
+     * @param nameCompany : name de la company
+     * @return int : nombre de computer dans la base de donnée
+     */
+    int countComputerNameCompany(String nameCompany);
 }

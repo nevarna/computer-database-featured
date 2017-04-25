@@ -7,11 +7,24 @@ public class ComputerDTO {
     private String discontinued;
     private long idCompany;
     private String nameCompany;
-    
+
+    /**
+     * Constructeur vide.
+     */
     public ComputerDTO() {
     }
 
-    public ComputerDTO(long id, String name, String introduced, String discontinued, long idCompany, String nameCompany) {
+    /**
+     * Constucteur avec tout les arguments.
+     * @param id : id du computer
+     * @param name :nom du computer
+     * @param introduced : date de mise en marche
+     * @param discontinued : date d'arret
+     * @param idCompany : id de la company
+     * @param nameCompany : nom de la company
+     */
+    public ComputerDTO(long id, String name, String introduced, String discontinued, long idCompany,
+            String nameCompany) {
         this.id = id;
         this.name = name;
         this.introduced = introduced;

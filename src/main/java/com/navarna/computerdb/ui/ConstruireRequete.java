@@ -12,17 +12,21 @@ import com.navarna.computerdb.service.ServiceComputerImpl;
 import com.navarna.computerdb.validator.ValidationEntrer;
 
 public class ConstruireRequete {
-    private ServiceComputer servComputerImpl ;
-    private ServiceCompany servCompanyImpl ;
+    private ServiceComputer servComputerImpl;
+    private ServiceCompany servCompanyImpl;
     private EntrerUtilisateur entrerUtilisateur;
-    private int nbElement = 20 ;
-    private int numPage = 0 ;
+    private int nbElement = 20;
+    private int numPage = 0;
+
+    /**
+     * Constructeur.
+     * @param entrerUtilisateur : entrer Utilisateur qui utilise cette instance
+     */
     public ConstruireRequete(EntrerUtilisateur entrerUtilisateur) {
         servCompanyImpl = new ServiceCompanyImpl();
         servComputerImpl = new ServiceComputerImpl();
         this.entrerUtilisateur = entrerUtilisateur;
     }
-
 
     /**
      * L UI appelle le service pour satisfaire la demande de l'utilisateur.
@@ -48,14 +52,23 @@ public class ConstruireRequete {
             throw new CLIException("fonction demandeListe arguments incorect");
         }
     }
-    
-    public void demandePageSuivante (String type) {
-        this.numPage ++;
+
+    /**
+     *L UI appelle le service pour satisfaire la demande de l'utilisateur.
+     * demande : la page suivante.
+     * @param type : indique si c'est pour une companies ou un computer
+     */
+    public void demandePageSuivante(String type) {
+        this.numPage++;
         demandeListe(type);
     }
-    
-    public void resetList (String type) {
-        this.numPage =0;
+
+    /**
+     * remet numpage à zero.
+     * @param type : indique si c'est pour une companies ou un computer
+     */
+    public void resetList(String type) {
+        this.numPage = 0;
     }
 
     /**
@@ -67,10 +80,9 @@ public class ConstruireRequete {
         int ids = ValidationEntrer.stringEnIntPositif(id);
         if (ids != -1) {
             Optional<Computer> computer = servComputerImpl.show(ids);
-            if(computer.isPresent()) {
-            SortieUtilisateur.lireDetailsComputer(computer.get());
-            }
-            else {
+            if (computer.isPresent()) {
+                SortieUtilisateur.lireDetailsComputer(computer.get());
+            } else {
                 SortieUtilisateur.lireAucuneDonnee();
             }
         } else {
@@ -84,7 +96,7 @@ public class ConstruireRequete {
      * @param name : nom de du computer
      */
     public void demandeShowName(String name) {
-        Page<Computer> page = servComputerImpl.show(name, numPage, nbElement);
+        Page<Computer> page = servComputerImpl.showName(name, numPage, nbElement);
         if (!page.estVide()) {
             SortieUtilisateur.lireDetailsComputers(page);
         } else {
@@ -137,8 +149,21 @@ public class ConstruireRequete {
 
     /**
      * L UI appelle le service pour satisfaire la demande de l'utilisateur.
+     * demande : supprimer une company et ses ordinateurs par rapport à son id.
+     * @param id : id de la company
+     */
+    public void demandeDeleteCompany(String id) {
+        int ids = ValidationEntrer.stringEnIntPositif(id);
+        if (ids != -1) {
+            SortieUtilisateur.lireValidationChangement(servCompanyImpl.delete(ids));
+        } else {
+            throw new CLIException("fonction demandeUpdate arguments incorect");
+        }
+    }
+
+    /**
+     * L UI appelle le service pour satisfaire la demande de l'utilisateur.
      * demande : changer le nombre d'élément par page
-     * @param type : company ou computer
      * @param nbElement : le nombre d'éléments demandé
      */
     public void demandeChangeNbElement(int nbElement) {
@@ -152,11 +177,10 @@ public class ConstruireRequete {
     /**
      * L UI appelle le service pour satisfaire la demande de l'utilisateur.
      * demande : changer le numero de page.
-     * @param type : company ou computer
      * @param nbPage : numero de page demandé
      */
     public void demandeChangeNbPage(int nbPage) {
-        if(nbPage >= 0) {
+        if (nbPage >= 0) {
             this.numPage = nbPage;
         } else {
             throw new CLIException("fonction demandeChangeNbPage arguments incorect");
@@ -190,6 +214,8 @@ public class ConstruireRequete {
             case "Delete":
                 demandeDelete(command[1]);
                 break;
+            case "DeleteCompany":
+                demandeDeleteCompany(command[1]);
             }
         }
     }

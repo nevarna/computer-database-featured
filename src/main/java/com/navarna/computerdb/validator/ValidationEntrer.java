@@ -5,6 +5,11 @@ import java.text.SimpleDateFormat;
 
 public class ValidationEntrer {
 
+    /**
+     * Vérifie que l'heure soit correct.
+     * @param temps : un string contenant l'heure
+     * @return boolean : si oui ou non l'
+     */
     public static boolean verificationHeure(String temps) {
         String[] tempsDecouper = temps.split(":");
         if (tempsDecouper.length != 3) {
@@ -19,6 +24,12 @@ public class ValidationEntrer {
         return true;
     }
 
+    /**
+     * Vérifie si la date est correcte.
+     * @param dateCouper : tableau de string représentant une date decouper en
+     *            date et heure.
+     * @return boolean : reponse si oui ou non la date est correct
+     */
     public static boolean verificationDate(String[] dateCouper) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         df.setLenient(false);
@@ -37,7 +48,7 @@ public class ValidationEntrer {
     /*
      * Verifie si la date en String est correct.
      * 
-     * @param timestamp : timeStamp en type String
+     * @param date : date en type String
      * 
      * @return boolean : true or false
      */
@@ -53,8 +64,7 @@ public class ValidationEntrer {
     /**
      * transforme un String en int.
      * 
-     * @param nombre
-     *            : nombre en ype String
+     * @param nombre : nombre en ype String
      * @return int : le nombre en type int -> -1 si le nombre n'est pas correct
      */
     public static int stringEnIntPositif(String nombre) {
@@ -70,6 +80,14 @@ public class ValidationEntrer {
         return retour;
     }
 
+    /**
+     * Vérifie si l'entrée représantant un computer est valide.
+     * @param name : nom du computer
+     * @param introduced : date de la mise en marche
+     * @param discontinued : date de l'arret
+     * @param idCompany : id de la company
+     * @return boolean : true or false
+     */
     public static boolean entrerValide(String name, String introduced, String discontinued, String idCompany) {
         if (name == null) {
             return false;

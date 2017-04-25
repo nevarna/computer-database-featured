@@ -33,7 +33,7 @@ public class DAOException extends RuntimeException {
      */
     public DAOException(String message, Throwable cause) {
         super(message, cause);
-        LOGGER.debug(message+"\n"+cause.getMessage());
+        LOGGER.debug(message + "\n" + cause.getMessage());
     }
 
     /**
@@ -45,7 +45,7 @@ public class DAOException extends RuntimeException {
      */
     public DAOException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
-        LOGGER.debug(message+"\n"+cause.getMessage());
+        LOGGER.debug(message + "\n" + cause.getMessage());
     }
 
 }

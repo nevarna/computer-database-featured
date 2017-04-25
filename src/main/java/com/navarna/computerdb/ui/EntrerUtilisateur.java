@@ -13,19 +13,16 @@ import com.navarna.computerdb.validator.ValidationEntrer;
 
 public class EntrerUtilisateur {
 
-    public final Scanner sc ;
+    public final Scanner sc;
     public final ConstruireRequete construireRequete;
-    
+
     public EntrerUtilisateur() {
         sc = new Scanner(System.in);
         this.construireRequete = new ConstruireRequete(this);
     }
 
     /**
-     
-
-    /**
-     * Demande à l'utilisateur d'entrer les informations d'un ordinateur.
+     * Demande à l'utilisateur d'entrer les informations d'un ordinateur. 
      * @param idComputer : id du computer
      * @return Computer : un Computer avec les données insérer
      */
@@ -68,7 +65,8 @@ public class EntrerUtilisateur {
     }
 
     /**
-     *  Demande à l'utilisateur de choisir si il souhaite les détails d'un computer grace à un id ou grace à son nom.
+     * Demande à l'utilisateur de choisir si il souhaite les détails d'un
+     * computer grace à un id ou grace à son nom.
      */
     public void demandeShow() {
         System.out.println("\n1 : par id\n2 : par nom");
@@ -104,6 +102,7 @@ public class EntrerUtilisateur {
 
     /**
      * Demande à l'utilisateur d'entrer un id.
+     * 
      * @return int
      */
     public int demandeId() {
@@ -114,6 +113,7 @@ public class EntrerUtilisateur {
 
     /**
      * Demande à l'utilisateur d'entrer un nom.
+     * 
      * @return String : le nom
      */
     public String demandeName() {
@@ -123,7 +123,9 @@ public class EntrerUtilisateur {
     }
 
     /**
-     * Demande à l'utilisateur le numero de la page et le nombre d'élément par page.
+     * Demande à l'utilisateur le numero de la page et le nombre d'élément par
+     * page.
+     * 
      * @param type : companies ou computer
      */
     public void demandeChangeNbListe(String type) {
@@ -148,6 +150,7 @@ public class EntrerUtilisateur {
 
     /**
      * Permet à l'utilisateur de naviguer dans la liste.
+     * 
      * @param command : commande de l'utilisateur
      */
     public void retourList(String[] command) {
@@ -176,10 +179,12 @@ public class EntrerUtilisateur {
         boolean fini = false;
 
         while (!fini) {
-            System.out.println(
-                    "Que souhaitez-vous faire? (Entrer un chiffre)\n1 - Liste des ordinateurs\n2 - Liste des compagnies\n3 - Détails d'un ordinateur"
-                            + "\n4 - Enregistrer un ordinateur dans la base de donnée\n5 - Modifier un ordinateur dans la base de donnée\n6 - Supprimer un ordinateur de la base de donnée"
-                            + "\n7 Quitter le programme");
+            System.out.println("Que souhaitez-vous faire? (Entrer un chiffre)\n" + "1 - Liste des ordinateurs\n"
+                    + "2 - Liste des compagnies\n" + "3 - Détails d'un ordinateur\n"
+                    + "4 - Enregistrer un ordinateur dans la base de donnée\n"
+                    + "5 - Modifier un ordinateur dans la base de donnée\n"
+                    + "6 - Supprimer un ordinateur de la base de donnée\n" + "7 - supprimer une company\n"
+                    + "8 - Quitter le programme");
             if (sc.hasNext()) {
                 try {
                     entree = ValidationEntrer.stringEnIntPositif(sc.nextLine());
@@ -225,6 +230,14 @@ public class EntrerUtilisateur {
                         }
                         break;
                     case 7:
+                        id = demandeId();
+                        if (id != -1) {
+                            command[0] = "DeleteCompany";
+                            command[1] = "" + id;
+                            construireRequete.command(command);
+                        }
+                        break;
+                    case 8:
                         fini = true;
                         System.out.println("fermeture du programme");
                         break;

@@ -16,24 +16,23 @@ import com.navarna.computerdb.model.Computer.ComputerBuilder;
 
 public class TransformationResultSet {
 
-
     /**
      * extrait du ResultSet une liste de compagnie.
      * @param result : ResultSet de la requête
+     * @param numPage : numero de page
+     * @param nbElement : nombre d'élément par page
      * @return Page<Company> : une page contenant la liste de compagnie
      */
-    public static Page<Company> extraireListeCompany(ResultSet result, int numPage , int nbElement) {
+    public static Page<Company> extraireListeCompany(ResultSet result, int numPage, int nbElement) {
         try {
-            Page<Company> page = new Page<Company>(numPage,nbElement);
+            Page<Company> page = new Page<Company>(numPage, nbElement);
             while (result.next()) {
                 Long id = result.getLong("id");
                 String name = result.getString("name");
-                Company company = new CompanyBuilder(name)
-                        .setId(id)
-                        .build();
+                Company company = new CompanyBuilder(name).setId(id).build();
                 page.addElement(company);
             }
-            return page ;
+            return page;
         } catch (SQLException se) {
             throw new MapperException("Erreur de result.next (fonction extraireListeCompany())", se);
         }
@@ -67,26 +66,20 @@ public class TransformationResultSet {
                 String tIntroduced = result.getString("introduced");
                 LocalDate introduced = null;
                 if (tIntroduced != null) {
-                    Optional<LocalDate> OpInroduced = recupererDate(tIntroduced);                   
-                    introduced = OpInroduced.isPresent()? OpInroduced.get() : null ;
+                    Optional<LocalDate> OpInroduced = recupererDate(tIntroduced);
+                    introduced = OpInroduced.isPresent() ? OpInroduced.get() : null;
                 }
                 String tDiscontinued = result.getString("discontinued");
                 LocalDate discontinued = null;
                 if (tDiscontinued != null) {
                     Optional<LocalDate> OpDiscontinued = recupererDate(tDiscontinued);
-                    discontinued = OpDiscontinued.isPresent()? OpDiscontinued.get() : null ;
+                    discontinued = OpDiscontinued.isPresent() ? OpDiscontinued.get() : null;
                 }
-                Long companyId  = result.getLong("company_id");
+                Long companyId = result.getLong("company_id");
                 String nameCompany = result.getString("company.name");
-                Company company = new CompanyBuilder(nameCompany)
-                        .setId(companyId)
-                        .build();
-                Computer computer = new ComputerBuilder(nameComputer)
-                        .setId(id)
-                        .setIntroduced(introduced)
-                        .setDiscontinued(discontinued)
-                        .setCompany(company)
-                        .build();
+                Company company = new CompanyBuilder(nameCompany).setId(companyId).build();
+                Computer computer = new ComputerBuilder(nameComputer).setId(id).setIntroduced(introduced)
+                        .setDiscontinued(discontinued).setCompany(company).build();
                 return Optional.of(computer);
             } else {
                 return Optional.empty();
@@ -99,11 +92,13 @@ public class TransformationResultSet {
     /**
      * extrait du ResultSet une liste de computer avec tout leurs détails.
      * @param result : ResultSet de la requête
+     * @param numPage : numero de page
+     * @param nbElement : nombre d'élément par page
      * @return Page<Computer> : une liste de computer
      */
     public static Page<Computer> extraireDetailsComputers(ResultSet result, int numPage, int nbElement) {
         try {
-            Page<Computer> page = new Page<Computer>(numPage,nbElement);
+            Page<Computer> page = new Page<Computer>(numPage, nbElement);
             while (result.next()) {
                 Long id = result.getLong("id");
                 String nameComputer = result.getString("computer.name");
@@ -117,17 +112,11 @@ public class TransformationResultSet {
                 if (tDiscontinued != null) {
                     discontinued = tDiscontinued.toLocalDateTime().toLocalDate();
                 }
-                Long companyId  = result.getLong("company_id");
+                Long companyId = result.getLong("company_id");
                 String nameCompany = result.getString("company.name");
-                Company company = new CompanyBuilder(nameCompany)
-                        .setId(companyId)
-                        .build();
-                Computer computer = new ComputerBuilder(nameComputer)
-                        .setId(id)
-                        .setIntroduced(introduced)
-                        .setDiscontinued(discontinued)
-                        .setCompany(company)
-                        .build();
+                Company company = new CompanyBuilder(nameCompany).setId(companyId).build();
+                Computer computer = new ComputerBuilder(nameComputer).setId(id).setIntroduced(introduced)
+                        .setDiscontinued(discontinued).setCompany(company).build();
                 page.addElement(computer);
             }
             return page;
@@ -136,9 +125,14 @@ public class TransformationResultSet {
         }
     }
 
-    public static int extraireNombreElement (ResultSet result) {
+    /**
+     * extrait du ResultSet le nombre d'élément satisfaisant la requête.
+     * @param result : ResultSet de la requête
+     * @return int : retourne le nombre d'élément satisfaisant la requête
+     */
+    public static int extraireNombreElement(ResultSet result) {
         try {
-            if(result.next()) {
+            if (result.next()) {
                 int compteur = result.getInt(1);
                 return compteur;
             }

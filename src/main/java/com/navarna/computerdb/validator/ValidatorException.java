@@ -1,28 +1,24 @@
-package com.navarna.computerdb.controller;
+package com.navarna.computerdb.validator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class ControllerException extends RuntimeException {
+public class ValidatorException extends RuntimeException {
     private static final long serialVersionUID = 1L;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ControllerException.class);
 
     /**
      * Constructeur avec seulement un message.
      * @param message : message de l'erreur
      */
-    public ControllerException(String message) {
+    public ValidatorException(String message) {
         super(message);
-        LOGGER.debug(message);
+        // TODO Auto-generated constructor stub
     }
 
     /**
      * Constructeur avec seulement la cause de l'erreur.
      * @param cause : erreur du programme
      */
-    public ControllerException(Throwable cause) {
+    public ValidatorException(Throwable cause) {
         super(cause);
-        LOGGER.debug(cause.getMessage());
+        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -30,9 +26,9 @@ public class ControllerException extends RuntimeException {
      * @param message : message de l'erreur
      * @param cause : erreur du programme
      */
-    public ControllerException(String message, Throwable cause) {
+    public ValidatorException(String message, Throwable cause) {
         super(message, cause);
-        LOGGER.debug(message + "\n" + cause.getMessage());
+        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -42,9 +38,9 @@ public class ControllerException extends RuntimeException {
      * @param enableSuppression : indique si l'exception est suppressé
      * @param writableStackTrace : indique si elle est écrite
      */
-    public ControllerException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public ValidatorException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
-        LOGGER.debug(message + "\n" + cause.getMessage());
+        // TODO Auto-generated constructor stub
     }
 
 }

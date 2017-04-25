@@ -34,9 +34,11 @@ public interface ServiceComputer {
 
     /**
      * Demande au DAOComputer la liste des computer.
+     * @param numPage : numero de page
+     * @param nbElement : nombre d'élément par page
      * @return Page<Computer> : page de la liste de computer
      */
-    Page<Computer> liste(int numPage , int nbElement);
+    Page<Computer> liste(int numPage, int nbElement);
 
     /**
      * Demande au DAOComputer les détails du computer ayant l'id de l'arguments.
@@ -46,17 +48,30 @@ public interface ServiceComputer {
     Optional<Computer> show(long id);
 
     /**
-     * Demande au DAOComputer les détails des computer ayant le nom de l'arguments.
+     * Demande au DAOComputer les détails des computer ayant le nom de
+     * l'arguments.
      * @param name : name des computer
+     * @param numPage : numero de page
+     * @param nbElement : nombre d'élément par page
      * @return Page<Computer> : page des computer avec tout leus détails
      */
-    Page<Computer> show(String name,int numPage , int nbElement);
+    Page<Computer> showName(String name, int numPage, int nbElement);
 
     /**
-     * Demande au DAOComputer le nombre de computer
+     * Demande au DAOComputer les détails des computer ayant le nom de
+     * l'arguments.
+     * @param nameCompany : name des computer
+     * @param numPage : numero de page
+     * @param nbElement : nombre d'élément par page
+     * @return Page<Computer> : page des computer avec tout leus détails
+     */
+    Page<Computer> showCompany(String nameCompany, int numPage, int nbElement);
+
+    /**
+     * Demande au DAOComputer le nombre de computer.
      * @return int : nombre de computer
      */
-    int countComputer ();
+    int countComputer();
 
     /**
      * Demande au DAOComputer le nombre de computer ayant le nom de l'arguments.
@@ -64,4 +79,12 @@ public interface ServiceComputer {
      * @return int : nombre de computer
      */
     int countComputerName(String name);
+
+    /**
+     * Demande au DAOComputer le nombre de computer ayant le nom de l'arguments
+     * en company.
+     * @param nameCompany : name de la company
+     * @return int : nombre de computer
+     */
+    int countComputerNameCompany(String nameCompany);
 }

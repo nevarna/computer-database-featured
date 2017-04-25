@@ -9,5 +9,7 @@ public interface ServiceCompany {
      * Demande au DAOCompany la liste des compagnies.
      * @return Page<Company> : page de la liste de companie
      */
-    Page<Company> liste(int numPage , int nbElement);
+    Page<Company> liste(int numPage, int nbElement);
+
+    int delete(long id);
 }

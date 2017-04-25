@@ -21,6 +21,10 @@ import com.navarna.computerdb.model.Page;
  * @author excilys
  *
  */
+/**
+ * @author excilys
+ *
+ */
 public final class DAOComputerImpl implements DAOComputer {
     private static final DAOComputerImpl INSTANCE;
 
@@ -30,8 +34,10 @@ public final class DAOComputerImpl implements DAOComputer {
     public static final String SELECT_LIST;
     public static final String SHOW_ID;
     public static final String SHOW_NAME;
-    public static final String COUNT ;
+    public static final String SHOW_COMPANY;
+    public static final String COUNT;
     public static final String COUNT_NAME;
+    public static final String COUNT_NAME_COMPANY;
 
     static {
         INSERT = "INSERT INTO computer VALUES ( ?, ?, ?, ?, ? )";
@@ -40,8 +46,10 @@ public final class DAOComputerImpl implements DAOComputer {
         SELECT_LIST = "SELECT * from computer left join company on company_id = company.id LIMIT ? OFFSET ?";
         SHOW_ID = "SELECT * from computer left join company on company_id = company.id where computer.id = ?";
         SHOW_NAME = "SELECT * from computer left join company on company_id = company.id where computer.name = ? LIMIT ? OFFSET ?";
+        SHOW_COMPANY = "SELECT * from computer left join company on company_id = company.id where company.name = ? LIMIT ? OFFSET ?";
         COUNT = "SELECT count(id) from computer";
         COUNT_NAME = "SELECT count(id) from computer where name = ?";
+        COUNT_NAME_COMPANY = "SELECT count(computer.id) from computer left join company on company_id = company.id where company.name = ?";
         INSTANCE = new DAOComputerImpl();
     }
 
@@ -57,7 +65,7 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int insert(Computer computer) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open()){
+        try (Connection conn = ConnectionPoolDB.getInstance().open()) {
             int result = 0;
             PreparedStatement statement = conn.prepareStatement(INSERT);
             setStatementInsert(statement, computer);
@@ -71,7 +79,7 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int update(Computer computer) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open()){
+        try (Connection conn = ConnectionPoolDB.getInstance().open()) {
             int result = 0;
             PreparedStatement statement = conn.prepareStatement(UPDATE);
             setStatementUpdate(statement, computer);
@@ -85,7 +93,7 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int delete(long id) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open()){
+        try (Connection conn = ConnectionPoolDB.getInstance().open()) {
             int result = 0;
             PreparedStatement statement = conn.prepareStatement(DELETE);
             statement.setLong(1, id);
@@ -99,7 +107,7 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public Page<Computer> list(int numPage, int nbElement) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open()){
+        try (Connection conn = ConnectionPoolDB.getInstance().open()) {
             ResultSet result = null;
             PreparedStatement statement = conn.prepareStatement(SELECT_LIST);
             setStatementListe(statement, numPage, nbElement);
@@ -114,7 +122,7 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public Optional<Computer> showId(long id) {
-        try(Connection conn = ConnectionPoolDB.getInstance().open()) {
+        try (Connection conn = ConnectionPoolDB.getInstance().open()) {
             ResultSet result = null;
             PreparedStatement statement = conn.prepareStatement(SHOW_ID);
             statement.setLong(1, id);
@@ -129,7 +137,7 @@ public final class DAOComputerImpl implements DAOComputer {
 
     @Override
     public Page<Computer> showName(String name, int numPage, int nbElement) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open()){
+        try (Connection conn = ConnectionPoolDB.getInstance().open()) {
             ResultSet result = null;
             PreparedStatement statement = conn.prepareStatement(SHOW_NAME);
             setStatementShowName(statement, name, numPage, nbElement);
@@ -142,11 +150,84 @@ public final class DAOComputerImpl implements DAOComputer {
         }
     }
 
+    @Override
+    public Page<Computer> showCompany(String nameCompany, int numPage, int nbElement) {
+        try (Connection conn = ConnectionPoolDB.getInstance().open()) {
+            ResultSet result = null;
+            PreparedStatement statement = conn.prepareStatement(SHOW_COMPANY);
+            setStatementShowName(statement, nameCompany, numPage, nbElement);
+            result = statement.executeQuery();
+            Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result, numPage, nbElement);
+            statement.close();
+            return page;
+        } catch (SQLException se) {
+            throw new DAOException("Erreur de base de donnée", se);
+        }
+    }
+
+    @Override
+    public int countComputer() {
+        try (Connection conn = ConnectionPoolDB.getInstance().open()) {
+            ResultSet result = null;
+            Statement statement = conn.createStatement();
+            result = statement.executeQuery(COUNT);
+            int retour = TransformationResultSet.extraireNombreElement(result);
+            statement.close();
+            return retour;
+        } catch (SQLException se) {
+            throw new DAOException("Erreur de base de donnée", se);
+        }
+    }
+
+    @Override
+    public int countComputerName(String name) {
+        try (Connection conn = ConnectionPoolDB.getInstance().open()) {
+            ResultSet result = null;
+            PreparedStatement statement = conn.prepareStatement(COUNT_NAME);
+            statement.setString(1, name);
+            result = statement.executeQuery();
+            int retour = TransformationResultSet.extraireNombreElement(result);
+            statement.close();
+            return retour;
+        } catch (SQLException se) {
+            throw new DAOException("Erreur de base de donnée", se);
+        }
+    }
+
+    @Override
+    public int countComputerNameCompany(String nameCompany) {
+        try (Connection conn = ConnectionPoolDB.getInstance().open()) {
+            ResultSet result = null;
+            PreparedStatement statement = conn.prepareStatement(COUNT_NAME_COMPANY);
+            statement.setString(1, nameCompany);
+            result = statement.executeQuery();
+            int retour = TransformationResultSet.extraireNombreElement(result);
+            statement.close();
+            return retour;
+        } catch (SQLException se) {
+            throw new DAOException("Erreur de base de donnée", se);
+        }
+    }
+
+    /**
+     * Introduit les arguments de la fonction dans le statement(fonction list).
+     * @param statement : Preparedstatement en cours
+     * @param numPage : numero de page
+     * @param nbElement : nombre d'élément
+     * @throws SQLException : SQL exception possible
+     */
     private void setStatementListe(PreparedStatement statement, int numPage, int nbElement) throws SQLException {
         statement.setInt(1, nbElement);
         statement.setInt(2, numPage * nbElement);
     }
 
+    /**
+     * Introduit les arguments de la fonction dans le statement(fonction
+     * insert).
+     * @param statement : Preparedstatement en cours
+     * @param computer : computer à insérer
+     * @throws SQLException : SQL exception possible
+     */
     private void setStatementInsert(PreparedStatement statement, Computer computer) throws SQLException {
         if (computer.getId() != null) {
             statement.setLong(1, computer.getId());
@@ -171,6 +252,13 @@ public final class DAOComputerImpl implements DAOComputer {
         }
     }
 
+    /**
+     * Introduit les arguments de la fonction dans le statement(fonction
+     * update).
+     * @param statement : Preparedstatement en cours
+     * @param computer : computer à insérer
+     * @throws SQLException : SQL exception possible
+     */
     private void setStatementUpdate(PreparedStatement statement, Computer computer) throws SQLException {
         if (computer.getId() != null) {
             statement.setLong(5, computer.getId());
@@ -197,39 +285,19 @@ public final class DAOComputerImpl implements DAOComputer {
 
     }
 
+    /**
+     * Introduit les arguments de la fonction dans le statement(fonction
+     * showName).
+     * @param statement : Preparedstatement en cours
+     * @param name : nom du computer
+     * @param numPage : numero de page
+     * @param nbElement : nombre d'élément
+     * @throws SQLException : SQL exception possible
+     */
     private void setStatementShowName(PreparedStatement statement, String name, int numPage, int nbElement)
             throws SQLException {
         statement.setString(1, name);
         statement.setInt(2, nbElement);
         statement.setInt(3, numPage * nbElement);
-    }
-
-    @Override
-    public int countComputer() {
-        try (Connection conn = ConnectionPoolDB.getInstance().open()){      
-            ResultSet result = null;
-            Statement statement = conn.createStatement();
-            result = statement.executeQuery(COUNT);
-            int retour = TransformationResultSet.extraireNombreElement(result);
-            statement.close();
-            return retour;
-        } catch (SQLException se) {
-            throw new DAOException("Erreur de base de donnée", se);
-        }
-    }
-
-    @Override
-    public int countComputerName(String name) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open()){
-            ResultSet result = null;
-            PreparedStatement statement = conn.prepareStatement(COUNT_NAME);
-            statement.setString(1, name);
-            result = statement.executeQuery();
-            int retour = TransformationResultSet.extraireNombreElement(result);
-            statement.close();
-            return retour;
-        } catch (SQLException se) {
-            throw new DAOException("Erreur de base de donnée", se);
-        }
     }
 }

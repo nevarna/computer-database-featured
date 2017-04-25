@@ -34,8 +34,8 @@ public class ServiceComputerImpl implements ServiceComputer {
     }
 
     @Override
-    public Page<Computer> liste(int numPage , int nbElement) {
-        return this.dComputerImpl.list(numPage ,nbElement);
+    public Page<Computer> liste(int numPage, int nbElement) {
+        return this.dComputerImpl.list(numPage, nbElement);
     }
 
     @Override
@@ -47,9 +47,17 @@ public class ServiceComputerImpl implements ServiceComputer {
     }
 
     @Override
-    public Page<Computer> show(String name,int numPage , int nbElement) {
+    public Page<Computer> showName(String name, int numPage, int nbElement) {
         if (name != null) {
             return this.dComputerImpl.showName(name, numPage, nbElement);
+        }
+        return new Page<Computer>();
+    }
+
+    @Override
+    public Page<Computer> showCompany(String nameCompany, int numPage, int nbElement) {
+        if (nameCompany != null) {
+            return this.dComputerImpl.showCompany(nameCompany, numPage, nbElement);
         }
         return new Page<Computer>();
     }
@@ -61,8 +69,16 @@ public class ServiceComputerImpl implements ServiceComputer {
 
     @Override
     public int countComputerName(String name) {
-        if(name != null) {
+        if (name != null) {
             return this.dComputerImpl.countComputerName(name);
+        }
+        return 0;
+    }
+
+    @Override
+    public int countComputerNameCompany(String nameCompany) {
+        if (nameCompany != null) {
+            return this.dComputerImpl.countComputerNameCompany(nameCompany);
         }
         return 0;
     }

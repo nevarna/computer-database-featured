@@ -9,7 +9,6 @@ public class Computer {
     private LocalDate discontinued;
     private Company company;
 
-
     public String getName() {
         return this.name;
     }
@@ -48,29 +47,29 @@ public class Computer {
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
-    public boolean equals2(Object objet) {
+
+    @Override
+    public boolean equals(Object objet) {
         if (objet == this) {
             return true;
         }
-        if(objet == null) {
+        if (objet == null) {
             return false;
         }
         if (objet instanceof Computer) {
             Computer oComputer = (Computer) objet;
-            if ((this.name == oComputer.getName()) 
-                    && (this.company.equals(oComputer.getCompany()))
-                    &&(this.introduced.equals(oComputer.getIntroduced()))
-                    &&(this.discontinued.equals(oComputer.getDiscontinued()))) {
+            if ((this.name == oComputer.getName()) && (this.company.equals(oComputer.getCompany()))
+                    && (this.introduced.equals(oComputer.getIntroduced()))
+                    && (this.discontinued.equals(oComputer.getDiscontinued()))) {
                 return true;
             }
         }
         return false;
     }
 
-
-
     public static final class ComputerBuilder {
         private Computer computer;
+
         /**
          * Constructeur de classe : un argument obligatoire.
          * @param pName : String argument obligatoire

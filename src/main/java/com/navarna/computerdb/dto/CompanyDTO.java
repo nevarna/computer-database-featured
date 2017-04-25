@@ -4,8 +4,17 @@ public class CompanyDTO {
     private long id;
     private String name;
 
+    /**
+     * Constructeur vide.
+     */
     public CompanyDTO() {
     }
+
+    /**
+     * Constructeur avec tout les arguments.
+     * @param id : id de company
+     * @param name : name de company
+     */
     public CompanyDTO(long id, String name) {
         this.id = id;
         this.name = name;

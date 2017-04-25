@@ -17,7 +17,7 @@ public class MapperException extends RuntimeException {
      */
     public MapperException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
-        LOGGER.debug(message+"\n"+cause.getMessage());
+        LOGGER.debug(message + "\n" + cause.getMessage());
     }
 
     /**
@@ -27,9 +27,8 @@ public class MapperException extends RuntimeException {
      */
     public MapperException(String message, Throwable cause) {
         super(message, cause);
-        LOGGER.debug(message+"\n"+cause.getMessage());
+        LOGGER.debug(message + "\n" + cause.getMessage());
     }
-
 
     /**
      * Constructeur avec seulement un message.
@@ -37,7 +36,7 @@ public class MapperException extends RuntimeException {
      */
     public MapperException(String message) {
         super(message);
-        LOGGER.debug(message+"\n");
+        LOGGER.debug(message + "\n");
     }
 
     /**
