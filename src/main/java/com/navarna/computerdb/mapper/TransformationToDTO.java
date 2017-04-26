@@ -24,7 +24,7 @@ public class TransformationToDTO {
             return Optional.empty();
         } else {
             ComputerDTO computerDTO = new ComputerDTO();
-            if (computer.getId() != null) {
+            if (computer.getId() != 0) {
                 computerDTO.setId(computer.getId());
             }
             if (computer.getName() != null) {
@@ -37,7 +37,7 @@ public class TransformationToDTO {
                 computerDTO.setDiscontinued(computer.getDiscontinued().toString());
             }
             if (computer.getCompany() != null) {
-                if (computer.getCompany().getId() != null) {
+                if (computer.getCompany().getId() != 0) {
                     computerDTO.setIdCompany(computer.getCompany().getId());
                 }
                 if (computer.getCompany().getName() != null) {
@@ -57,8 +57,8 @@ public class TransformationToDTO {
         if ((computerDTO.getName() == null) || (computerDTO.getNameCompany() == null)) {
             return Optional.empty();
         }
-        ComputerBuilder computerBuilder = new ComputerBuilder(computerDTO.getName()).setId(computerDTO.getId());
-        CompanyBuilder companyBuilder = new CompanyBuilder(computerDTO.getName()).setId(computerDTO.getIdCompany());
+        ComputerBuilder computerBuilder = new Computer.ComputerBuilder(computerDTO.getName()).setId(computerDTO.getId());
+        CompanyBuilder companyBuilder = new Company.CompanyBuilder(computerDTO.getName()).setId(computerDTO.getIdCompany());
         try {
             if (computerDTO.getIntroduced() != null) {
                 LocalDate introduced = LocalDate.parse(computerDTO.getIntroduced());
@@ -86,7 +86,7 @@ public class TransformationToDTO {
         }
         CompanyDTO companyDTO = new CompanyDTO();
         companyDTO.setName(company.getName());
-        if (company.getId() != null) {
+        if (company.getId() != 0) {
             companyDTO.setId(company.getId());
         }
         return Optional.of(companyDTO);
@@ -99,8 +99,7 @@ public class TransformationToDTO {
      */
     public static Optional<Company> DTOToCompany(CompanyDTO companyDTO) {
         if (companyDTO.getName() != null) {
-            CompanyBuilder companyBuilder = new CompanyBuilder(companyDTO.getName()).setId(companyDTO.getId());
-            Company company = companyBuilder.build();
+            Company company = new Company.CompanyBuilder(companyDTO.getName()).setId(companyDTO.getId()).build();
             return Optional.of(company);
         }
         return Optional.empty();

@@ -6,13 +6,12 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import com.navarna.computerdb.model.Company;
-import com.navarna.computerdb.model.Company.CompanyBuilder;
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
-import com.navarna.computerdb.model.Computer.ComputerBuilder;
 
 public class TransformationResultSet {
 
@@ -23,13 +22,13 @@ public class TransformationResultSet {
      * @param nbElement : nombre d'élément par page
      * @return Page<Company> : une page contenant la liste de compagnie
      */
-    public static Page<Company> extraireListeCompany(ResultSet result, int numPage, int nbElement) {
+    public static Page<Company> extraireListePartielleCompany(ResultSet result, int numPage, int nbElement) {
         try {
             Page<Company> page = new Page<Company>(numPage, nbElement);
             while (result.next()) {
                 Long id = result.getLong("id");
                 String name = result.getString("name");
-                Company company = new CompanyBuilder(name).setId(id).build();
+                Company company = new Company.CompanyBuilder(name).setId(id).build();
                 page.addElement(company);
             }
             return page;
@@ -38,6 +37,25 @@ public class TransformationResultSet {
         }
     }
 
+    /**
+     * extrait du ResultSet une liste de compagnie.
+     * @param result : ResultSet de la requête
+     * @return ArrayList<Company> : une arrayList contenant la liste  des companies
+     */
+    public static ArrayList<Company> extraireListeCompleteCompany(ResultSet result) {
+        try {
+            ArrayList<Company> liste = new ArrayList<Company>();
+            while (result.next()) {
+                long id = result.getLong("id");
+                String name = result.getString("name");
+                Company company = new Company.CompanyBuilder(name).setId(id).build();
+                liste.add(company);
+            }
+            return liste;
+        } catch (SQLException se) {
+            throw new MapperException("Erreur de result.next (fonction extraireListeCompany())", se);
+        }
+    }
     /**
      * transforme une date de type String en date de type LocalDate.
      * @param dateEnString : date en type String
@@ -61,7 +79,7 @@ public class TransformationResultSet {
     public static Optional<Computer> extraireDetailsComputer(ResultSet result) {
         try {
             if (result.next()) {
-                Long id = result.getLong("id");
+                long id = result.getLong("id");
                 String nameComputer = result.getString("computer.name");
                 String tIntroduced = result.getString("introduced");
                 LocalDate introduced = null;
@@ -75,10 +93,10 @@ public class TransformationResultSet {
                     Optional<LocalDate> OpDiscontinued = recupererDate(tDiscontinued);
                     discontinued = OpDiscontinued.isPresent() ? OpDiscontinued.get() : null;
                 }
-                Long companyId = result.getLong("company_id");
+                long companyId = result.getLong("company_id");
                 String nameCompany = result.getString("company.name");
-                Company company = new CompanyBuilder(nameCompany).setId(companyId).build();
-                Computer computer = new ComputerBuilder(nameComputer).setId(id).setIntroduced(introduced)
+                Company company = new Company.CompanyBuilder(nameCompany).setId(companyId).build();
+                Computer computer = new Computer.ComputerBuilder(nameComputer).setId(id).setIntroduced(introduced)
                         .setDiscontinued(discontinued).setCompany(company).build();
                 return Optional.of(computer);
             } else {
@@ -100,7 +118,7 @@ public class TransformationResultSet {
         try {
             Page<Computer> page = new Page<Computer>(numPage, nbElement);
             while (result.next()) {
-                Long id = result.getLong("id");
+                long id = result.getLong("id");
                 String nameComputer = result.getString("computer.name");
                 Timestamp tIntroduced = result.getTimestamp("introduced");
                 LocalDate introduced = null;
@@ -112,10 +130,10 @@ public class TransformationResultSet {
                 if (tDiscontinued != null) {
                     discontinued = tDiscontinued.toLocalDateTime().toLocalDate();
                 }
-                Long companyId = result.getLong("company_id");
+                long companyId = result.getLong("company_id");
                 String nameCompany = result.getString("company.name");
-                Company company = new CompanyBuilder(nameCompany).setId(companyId).build();
-                Computer computer = new ComputerBuilder(nameComputer).setId(id).setIntroduced(introduced)
+                Company company = new Company.CompanyBuilder(nameCompany).setId(companyId).build();
+                Computer computer = new Computer.ComputerBuilder(nameComputer).setId(id).setIntroduced(introduced)
                         .setDiscontinued(discontinued).setCompany(company).build();
                 page.addElement(computer);
             }
