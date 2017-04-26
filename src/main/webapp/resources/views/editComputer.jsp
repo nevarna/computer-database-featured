@@ -51,7 +51,7 @@
                     <h1>Edit Computer</h1>
 
                     <form action="EditComputer" method="POST">
-                        <input type="hidden" <%out.println("value=\""+id+"\""); %> id="id"/> 
+                        <input type="hidden" <%out.println("value=\""+id+"\""); %> id="id"name="id"/> 
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>

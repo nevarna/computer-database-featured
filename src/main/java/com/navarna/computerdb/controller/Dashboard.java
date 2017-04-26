@@ -20,81 +20,54 @@ import com.navarna.computerdb.validator.ValidationNavigation;
 public class Dashboard extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ServiceComputerImpl servComputer = new ServiceComputerImpl();
-    private int numPage = 0;
-    private int nbElement = 20;
-    private String name;
-    private String typeSearch;
-    private Page<ComputerDTO> pageComputer = null;
-    private int totalElement = 0;
 
     /**
      * Demande la validation de l'argument et set numPage.
-     * @param page : numero de page
+     * @param page : numero de page recu en parametre
+     * @return int : numero de page 
      */
-    public void changerPage(String page) {
-        if(ValidationNavigation.verificationPage(page, totalElement / nbElement)) {
-            numPage = Integer.parseInt(page) -1;
+    public int changerPage(String page) {
+        if(ValidationNavigation.verificationPage(page)) {
+            return Integer.parseInt(page) -1;
         }
         else {
-            numPage = 0;
+            return 0;
         }
     }
 
     /**
      * Demande la validation de l'argument et set nbElement.
-     * @param nombreElement : nombre d'élément par page
+     * @param nombreElement : nombre d'élément par page reçu en paramêtre
+     * @return int : nombre d'élément par page
      */
-    public void changerNbElement(String nombreElement) {
+    public int changerNbElement(String nombreElement) {
         if(ValidationNavigation.verificationNbElement(nombreElement)) {
-            nbElement = Integer.parseInt(nombreElement);
+            return Integer.parseInt(nombreElement);
         }
+        return 10;
     }
 
     /**
-     * Vérifie l'existence des attribut de recherche et les vérifient si ils
-     * existent.
-     */
-    public void argumentsSearch() {
-        if (name == "") {
-            name = null;
-            typeSearch = null;
-        }
-        if (typeSearch != null) {
-            ValidationNavigation.verificationTypeSearch(typeSearch);
-        }
-    }
-
-    /**
-     * Transforme les valeurs name et typeSearch en un seul String de forme get.
-     * @return String : partie de l'url avec la recherche
-     */
-    public String transformeSearchEnFormeGet() {
-        String retour = "";
-        retour = name.replace("+", "%2B");
-        retour = name.replace(" ", "+");
-        retour = "?search=" + retour + "&type=" + typeSearch;
-        return retour;
-    }
-
-    /**
-     * Lit les paramêtre reçu en de manière GET.
+     * Lit les paramêtre reçu en de manière GET et les utilisent.
      * @param request : request reçu par le servlet
      */
-    public void lireParametreGet(HttpServletRequest request) {
+    public void UtilisationParametreGet(HttpServletRequest request) {
         String page = request.getParameter("page");
-        changerPage(page);
+        int numPage = changerPage(page);
         String nombreElement = request.getParameter("nbElement");
-        changerNbElement(nombreElement);
-        name = request.getParameter("search");
-        typeSearch = request.getParameter("type");
-        argumentsSearch();
+        int nbElement = changerNbElement(nombreElement);
+        String name = request.getParameter("search");
+        String typeSearch = request.getParameter("type");
+        int totalElement = compterElement(name, typeSearch);
+        Page<ComputerDTO> pageComputer = creationListe(name,typeSearch, numPage, nbElement);
+        ecrireAttribute(request, pageComputer, numPage, name, typeSearch, totalElement, nbElement);
     }
 
     /**
-     * Lis les paramêtre reçu de manière POST.
+     * Lis les paramêtre reçu de manière POST et les utilise.
      * @param request : request reçu par le servlet
      */
-    public void lireParametrePost(HttpServletRequest request) {
+    public void UtilisationParametrePost(HttpServletRequest request) {
         String[] tableauIdDelete = request.getParameter("selection").split(",");
         try {
             for (String numeroDelete : tableauIdDelete) {
@@ -108,36 +81,67 @@ public class Dashboard extends HttpServlet {
 
     /**
      * Créer la liste à afficher dans pageComputer.
+     * @param name : nom ecris en arguments 
+     * @param typeSearch : si on cherche une companies ou un computer
+     * @param numPage : numero de la page
+     * @param nbElement : nombre d'élément par page
+     * @return Page<ComputerDTO> : page contenant la liste à afficher 
      */
-    public void creationListe() {
-        if (name == null) {
+    public Page<ComputerDTO> creationListe(String name,String typeSearch, int numPage, int nbElement) {
+        Page<ComputerDTO> pageComputer = null; 
+        if (!ValidationNavigation.verificationSearch(name, typeSearch)) {
             pageComputer = TransformationToDTO.pageComputerToPageDTO(servComputer.liste(numPage, nbElement));
-            totalElement = servComputer.countComputer();
         } else {
             if (typeSearch.equals("Computer")) {
                 pageComputer = TransformationToDTO
                         .pageComputerToPageDTO(servComputer.showName(name, numPage, nbElement));
-                totalElement = servComputer.countComputerName(name);
             } else {
                 pageComputer = TransformationToDTO
                         .pageComputerToPageDTO(servComputer.showCompany(name, numPage, nbElement));
-                totalElement = servComputer.countComputerNameCompany(name);
             }
         }
+        return pageComputer;
     }
 
     /**
-     * Ecrit les attributs donnt a besoin le fichier JSP.
-     * @param request : request reçu par le servlet
+     * Compte le nombre d'élément de la liste complete.
+     * @param name : nom entrer dans la recherche
+     * @param typeSearch : si on cherche une company ou un computeur
+     * @return int : compteur d'élément.
      */
-    public void ecrireAttribute(HttpServletRequest request) {
+    public int compterElement (String name,String typeSearch) {
+        int totalElement = 0 ;
+        if (!ValidationNavigation.verificationSearch(name, typeSearch)) {
+            totalElement = servComputer.countComputer();
+        } else {
+            if (typeSearch.equals("Computer")) {
+                totalElement = servComputer.countComputerName(name);
+            } else {
+                totalElement = servComputer.countComputerNameCompany(name);
+            }
+        }
+        return totalElement;
+    }
+
+    /**
+     * Ecrit les attributs dont a besoin le fichier JSP.
+     * @param request: request reçu par le servlet
+     * @param pageComputer : page contenant la liste de computer
+     * @param numPage : numero de page
+     * @param name : nom de la recherche
+     * @param typeSearch : type de la recherche
+     * @param totalElement : nombre total d'élément de la recherche
+     * @param nbElement : nombre d'element par page
+     */
+    public void ecrireAttribute(HttpServletRequest request,Page<ComputerDTO> pageComputer, int numPage, String name
+            , String typeSearch, int totalElement, int nbElement) {
         request.setAttribute("computers", pageComputer);
         request.setAttribute("pageCurrente", numPage+1);
-        if (name != null) {
+        request.setAttribute("nbElement", nbElement);
+        if (ValidationNavigation.verificationSearch(name, typeSearch)) {
             request.setAttribute("name", name);
-            request.setAttribute("research", transformeSearchEnFormeGet());
+            request.setAttribute("research", typeSearch);
         }
-
         request.setAttribute("totalElement", totalElement);
         request.setAttribute("maxPage", totalElement / nbElement);
     }
@@ -151,9 +155,7 @@ public class Dashboard extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher fichierJSP = this.getServletContext().getRequestDispatcher("/resources/views/dashboard.jsp");
-        lireParametreGet(request);
-        creationListe();
-        ecrireAttribute(request);
+        UtilisationParametreGet(request);
         fichierJSP.forward(request, response);
     }
 
@@ -165,7 +167,7 @@ public class Dashboard extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        lireParametrePost(request);
+        UtilisationParametrePost(request);
         doGet(request, response);
     }
 

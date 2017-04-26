@@ -6,13 +6,27 @@
 <%@page import="com.navarna.computerdb.controller.*"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="test"%>
 <%
-    String finUrl;
-    Object obj = request.getAttribute("research");
-    if (obj instanceof String) {
+    String finUrl = null;
+    Object research = request.getAttribute("research");
+    Object obj = request.getAttribute("name");
+    if ((obj instanceof String) && (research instanceof String)) {
         finUrl = (String) obj;
+        String typeSearch = (String) research;
+        String retour = "";
+        retour = finUrl.replace("+", "%2B");
+        retour = finUrl.replace(" ", "+");
+        finUrl= "?search=" + retour + "&type=" + typeSearch;
         finUrl += "&";
     } else {
         finUrl = "?";
+    }
+    String urlComplete = null;
+    Object StringNbElement = request.getAttribute("nbElement");
+    if (StringNbElement instanceof Integer) {
+        int nbElement = (Integer) StringNbElement;
+        urlComplete = finUrl + "nbElement=" + nbElement + "&";
+    } else {
+        urlComplete = "?";
     }
 %>
 <!DOCTYPE html>
@@ -37,7 +51,7 @@
 	<section id="main">
 		<div class="container">
 			<h1 id="homeTitle">
-				<%
+				<% 
 				    obj = request.getAttribute("totalElement");
 				    if (obj instanceof Integer) {
 				        Integer totalElement = (Integer) obj;
@@ -139,23 +153,23 @@
 				        if (max != 0) {
 				            String preview;
 				            if (courant > 1) {
-				                preview = "<li><a href=" + finUrl + "page=" + (courant - 1)
+				                preview = "<li><a href=" + urlComplete + "page=" + (courant - 1)
 				                        + " aria-label=\"Previous\"> <span aria-hidden=\"true\">&laquo;</span></a></li>";
 				            } else {
-				                preview = "<li><a href=" + finUrl + "page=" + 1
+				                preview = "<li><a href=" + urlComplete + "page=" + 1
 				                        + " aria-label=\"Previous\"> <span aria-hidden=\"true\">&laquo;</span></a></li>";
 				            }
 				            out.println(preview);
-                            String next;
-                            if (courant < max) {
-                                next = "<li><a href=" + finUrl + "page=" + (courant + 1)
-                                        + " aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>";
+				            String next;
+				            if (courant < max) {
+				                next = "<li><a href=" + urlComplete + "page=" + (courant + 1)
+				                        + " aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>";
 
-                            } else {
-                                next = "<li><a href=" + finUrl + "page=" + max
-                                        + " aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>";
+				            } else {
+				                next = "<li><a href=" + urlComplete + "page=" + max
+				                        + " aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>";
 
-                            }
+				            }
 				            if (courant + 5 < max) {
 				                max = courant + 5;
 				            }
@@ -165,7 +179,7 @@
 				                courant = 1;
 				            }
 				            for (int i = courant; i < max; i++) {
-				                String affiche = "<li><a href=\"" + finUrl + "page=" + i + "\">" + i + "</a></li>";
+				                String affiche = "<li><a href=\"" + urlComplete + "page=" + i + "\">" + i + "</a></li>";
 				                out.println(affiche);
 				            }
 				            out.println(next);

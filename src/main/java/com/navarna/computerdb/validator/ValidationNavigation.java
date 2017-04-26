@@ -8,10 +8,10 @@ public class ValidationNavigation {
      * @param maxPage : numeroMaxDePage
      * @return boolean : true or false
      */
-    public static boolean verificationPage(String page, int maxPage) {
+    public static boolean verificationPage(String page) {
         try {
             int numero = page == null ? -2 : Integer.parseInt(page);
-            if ((numero < maxPage) && (numero > 0)) {
+            if (numero > 0) {
                 return true;
             } else {
                 return false;
@@ -45,5 +45,17 @@ public class ValidationNavigation {
             return false;
         }
         return true;
+    }
+    
+    public static boolean verificationSearch(String name,String typeSearch) {
+        if(name == null) {
+            return false;
+        }
+        else {
+            if(name.equals("")) {
+                return false;
+            }
+            return verificationTypeSearch(typeSearch);
+        }
     }
 }
