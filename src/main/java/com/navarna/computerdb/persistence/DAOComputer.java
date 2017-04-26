@@ -10,23 +10,26 @@ public interface DAOComputer {
     /**
      * Ecris une requête à la base de donnée afin d'insérer un computer.
      * @param computer : élément à inserer
-     * @return int : nombre de ligne modifié par la requête
+     * @return boolean : si oui ou non la base de donnée à été modifié par la
+     *         requête
      */
-    int insert(Computer computer);
+    boolean insert(Computer computer);
 
     /**
      * Ecris une requête à la base de donnée afin de modifier un computer.
      * @param computer : élément à modifier
-     * @return int : nombre de ligne modifié par la requête
+     * @return boolean : si oui ou non la base de donnée à été modifié par la
+     *         requête
      */
-    int update(Computer computer);
+    boolean update(Computer computer);
 
     /**
      * Ecris une requête à la base de donnée afin de supprimer un computer.
      * @param id : id de l'élément à supprimer
-     * @return long : nombre de ligne modifié par la requête
+     * @return boolean : si oui ou non la base de donnée à été modifié par la
+     *         requête
      */
-    int delete(long id);
+    boolean delete(long id);
 
     /**
      * Ecris une requête à la base de donnée afin d'avoir les détails un
@@ -34,7 +37,7 @@ public interface DAOComputer {
      * @param id : id de l'élément
      * @return int : nombre de ligne modifié par la requête
      */
-    Optional<Computer> showId(long id);
+    Optional<Computer> findById(long id);
 
     /**
      * Ecris une requête à la base de donnée afin d'avoir les détails de
@@ -45,7 +48,7 @@ public interface DAOComputer {
      * @return Page<Computer> : une page contenant tout les computer ayant le
      *         nom passé en arguments
      */
-    Page<Computer> showName(String name, int numPage, int nbElement);
+    Page<Computer> findByName(String name, int numPage, int nbElement);
 
     /**
      * Ecris une requête à la base de donnée afin d'avoir les détails de
@@ -56,7 +59,7 @@ public interface DAOComputer {
      * @return Page<Computer> : une page contenant tout les computer ayant le
      *         nom passé en arguments
      */
-    Page<Computer> showCompany(String nameCompany, int numPage, int nbElement);
+    Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement);
 
     /**
      * Ecris une requête à la base de donnée afin d'avoir la liste des computer.
@@ -70,7 +73,7 @@ public interface DAOComputer {
      * Ecris une requête à la base de donnée afin d'avoir le nombre de computer.
      * @return int : nombre de computer dans la base de donnée
      */
-    int countComputer();
+    int count();
 
     /**
      * Ecris une requête à la base de donnée afin d'avoir le nombre de computer.
@@ -78,7 +81,7 @@ public interface DAOComputer {
      * @param name : name des computer
      * @return int : nombre de computer dans la base de donnée
      */
-    int countComputerName(String name);
+    int countWithName(String name);
 
     /**
      * Ecris une requête à la base de donnée afin d'avoir le nombre de computer.
@@ -86,5 +89,5 @@ public interface DAOComputer {
      * @param nameCompany : name de la company
      * @return int : nombre de computer dans la base de donnée
      */
-    int countComputerNameCompany(String nameCompany);
+    int countWithNameCompany(String nameCompany);
 }

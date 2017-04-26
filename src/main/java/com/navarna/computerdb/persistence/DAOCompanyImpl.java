@@ -4,29 +4,27 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
+import com.navarna.computerdb.exception.DAOException;
 import com.navarna.computerdb.mapper.TransformationResultSet;
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Page;
 
-public final class DAOCompanyImpl implements DAOCompany {
-    private static final DAOCompanyImpl INSTANCE;
+public enum DAOCompanyImpl implements DAOCompany {
+    INSTANCE;
 
     private static final String SELECT;
+    private static final String SELECT_ALL;
     private static final String DELETE_COMPUTERS;
     private static final String DELETE_COMPANY;
 
     static {
         SELECT = "SELECT id,name from company LIMIT ? OFFSET ?";
+        SELECT_ALL = "SELECT id,name from company";
         DELETE_COMPUTERS = "DELETE from computer where company_id = ?";
         DELETE_COMPANY = "DELETE from company where id = ?";
-        INSTANCE = new DAOCompanyImpl();
-    }
-
-    /**
-     * Constructeur privé de l'instance.
-     */
-    private DAOCompanyImpl() {
     }
 
     public static DAOCompanyImpl getInstance() {
@@ -35,13 +33,12 @@ public final class DAOCompanyImpl implements DAOCompany {
 
     @Override
     public Page<Company> list(int numPage, int nbElement) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open()) {
+        try (Connection conn = ConnectionPoolDB.getInstance().open();
+                PreparedStatement statement = conn.prepareStatement(SELECT);) {
             ResultSet result = null;
-            PreparedStatement statement = conn.prepareStatement(SELECT);
             setStatementListe(statement, numPage, nbElement);
             result = statement.executeQuery();
-            Page<Company> page = TransformationResultSet.extraireListeCompany(result, numPage, nbElement);
-            statement.close();
+            Page<Company> page = TransformationResultSet.extraireListePartielleCompany(result, numPage, nbElement);
             return page;
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
@@ -70,6 +67,20 @@ public final class DAOCompanyImpl implements DAOCompany {
             } catch (SQLException e) {
                 throw new DAOException("Erreur de base de donnée, et de connection.rollback()", se);
             }
+            throw new DAOException("Erreur de base de donnée", se);
+        }
+    }
+
+
+    @Override
+    public ArrayList<Company> listeComplete() {
+        try (Connection conn = ConnectionPoolDB.getInstance().open();
+                Statement statement = conn.createStatement()) {
+            ResultSet result = null;
+            result = statement.executeQuery(SELECT_ALL);
+            ArrayList<Company> list = TransformationResultSet.extraireListeCompleteCompany(result);
+            return list;
+        } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
         }
     }

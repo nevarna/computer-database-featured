@@ -1,5 +1,7 @@
 package com.navarna.computerdb.persistence;
 
+import java.util.ArrayList;
+
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Page;
 
@@ -25,4 +27,11 @@ public interface DAOCompany {
      * @return int : nombre de ligne supprimé
      */
     int delete(long id);
+
+    /**
+     * liste des companies à la base de données - renvoie le
+     * résultat.
+     * @return ArrayList<Company> : liste des companies
+     */
+    ArrayList<Company> listeComplete();
 }
