@@ -79,7 +79,7 @@ public class ConstruireRequete {
     public void demandeShowId(String id) {
         int ids = ValidationEntrer.stringEnIntPositif(id);
         if (ids != -1) {
-            Optional<Computer> computer = servComputerImpl.show(ids);
+            Optional<Computer> computer = servComputerImpl.findById(ids);
             if (computer.isPresent()) {
                 SortieUtilisateur.lireDetailsComputer(computer.get());
             } else {
@@ -96,7 +96,7 @@ public class ConstruireRequete {
      * @param name : nom de du computer
      */
     public void demandeShowName(String name) {
-        Page<Computer> page = servComputerImpl.showName(name, numPage, nbElement);
+        Page<Computer> page = servComputerImpl.findByName(name, numPage, nbElement);
         if (!page.estVide()) {
             SortieUtilisateur.lireDetailsComputers(page);
         } else {
@@ -155,7 +155,7 @@ public class ConstruireRequete {
     public void demandeDeleteCompany(String id) {
         int ids = ValidationEntrer.stringEnIntPositif(id);
         if (ids != -1) {
-            SortieUtilisateur.lireValidationChangement(servCompanyImpl.delete(ids));
+            SortieUtilisateur.lireValidationChangement(servCompanyImpl.delete(ids) != 0);
         } else {
             throw new CLIException("fonction demandeUpdate arguments incorect");
         }
