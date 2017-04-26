@@ -8,19 +8,13 @@ public class Page<T> {
     private int nbElementPage;
 
     /**
-     * Constructeur vide.
-     */
-    public Page() {
-    }
-
-    /**
      * Constructeur à 2 éléments.
      * @param pNbPage : numero de page
      * @param pNbElementPage : nombre d'éléments maximum dans la page
      */
-    public Page(int pNbPage, int pNbElementPage) {
-        this.nbElementPage = pNbElementPage;
-        this.nbPage = pNbPage;
+    public Page(int nbPage, int nbElementPage) {
+        this.nbElementPage = nbElementPage;
+        this.nbPage = nbPage;
         this.page = new ArrayList<T>();
     }
 
@@ -32,10 +26,13 @@ public class Page<T> {
         return this.nbElementPage;
     }
 
-    public void setNbPage(int pNbPage) {
-        this.nbPage = pNbPage < 0 ? 0 : pNbPage;
+    public void setNbPage(int nbPage) {
+        this.nbPage = nbPage < 0 ? 0 : nbPage;
     }
 
+    public void setNbElement (int nbElementPage) {
+        this.nbElementPage = nbElementPage;
+    }
     public ArrayList<T> getPage() {
         return this.page;
     }

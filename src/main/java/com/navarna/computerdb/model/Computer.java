@@ -3,7 +3,7 @@ package com.navarna.computerdb.model;
 import java.time.LocalDate;
 
 public class Computer {
-    private Long id;
+    private long id;
     private String name;
     private LocalDate introduced;
     private LocalDate discontinued;
@@ -26,7 +26,27 @@ public class Computer {
     }
 
     public Long getId() {
-        return this.id == null ? new Long(0) : this.id;
+        return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIntroduced(LocalDate introduced) {
+        this.introduced = introduced;
+    }
+
+    public void setDiscontinued(LocalDate discontinued) {
+        this.discontinued = discontinued;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     @Override
@@ -42,7 +62,7 @@ public class Computer {
         int result = 1;
         result = prime * result + ((company == null) ? 0 : company.hashCode());
         result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + (int) (id ^ (id >>> 32));
         result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
@@ -74,9 +94,9 @@ public class Computer {
          * Constructeur de classe : un argument obligatoire.
          * @param pName : String argument obligatoire
          */
-        public ComputerBuilder(String pName) {
+        public ComputerBuilder(String name) {
             computer = new Computer();
-            computer.name = pName == null ? "undefined" : pName;
+            computer.name = name == null ? "" : name;
         }
 
         /**
@@ -84,8 +104,8 @@ public class Computer {
          * @param pId : id du computer
          * @return ComputerBuilder : l'instance de classe
          */
-        public ComputerBuilder setId(Long pId) {
-            computer.id = pId;
+        public ComputerBuilder setId(long id) {
+            computer.id = id;
             return this;
         }
 
@@ -94,8 +114,8 @@ public class Computer {
          * @param pIntroduced : date de mise en marche du computer
          * @return ComputerBuilder : l'instance de classe
          */
-        public ComputerBuilder setIntroduced(LocalDate pIntroduced) {
-            computer.introduced = pIntroduced;
+        public ComputerBuilder setIntroduced(LocalDate introduced) {
+            computer.introduced = introduced;
             return this;
         }
 
@@ -104,8 +124,8 @@ public class Computer {
          * @param pDiscontinued : date d'arret du computer
          * @return ComputerBuilder : l'instance de classe
          */
-        public ComputerBuilder setDiscontinued(LocalDate pDiscontinued) {
-            computer.discontinued = pDiscontinued;
+        public ComputerBuilder setDiscontinued(LocalDate discontinued) {
+            computer.discontinued = discontinued;
             return this;
         }
 
@@ -114,8 +134,8 @@ public class Computer {
          * @param pCompany : Company de l'ordinateur
          * @return ComputerBuilder : l'instance de classe
          */
-        public ComputerBuilder setCompany(Company pCompany) {
-            computer.company = pCompany;
+        public ComputerBuilder setCompany(Company company) {
+            computer.company = company;
             return this;
         }
 

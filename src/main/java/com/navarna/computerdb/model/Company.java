@@ -1,11 +1,11 @@
 package com.navarna.computerdb.model;
 
 public class Company {
-    private Long id;
+    private long id;
     private String name;
 
 
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
@@ -13,38 +13,52 @@ public class Company {
         return this.name;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
     @Override
     public String toString() {
         String affiche = "id : " + this.id + " name : " + this.name;
         return affiche;
     }
 
-
-
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + (int) (id ^ (id >>> 32));
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Company other = (Company) obj;
-        if(name.equals(other.getName())){
+        if (this == obj) {
             return true;
         }
-        return false;
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Company)) {
+            return false;
+        }
+        Company other = (Company) obj;
+        if (id != other.id) {
+            return false;
+        }
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+        return true;
     }
-
 
 
     public static final class CompanyBuilder {
@@ -54,9 +68,9 @@ public class Company {
          * Constructeur de classe : un argument obligatoire.
          * @param pName : String argument obligatoire
          */
-        public CompanyBuilder(String pName) {
+        public CompanyBuilder(String name) {
             company = new Company();
-            company.name =pName;
+            company.name = name ==null? "" : name;
         }
 
         /**
@@ -64,8 +78,8 @@ public class Company {
          * @param pId : id de la company
          * @return CompanyBuilder : l'instance de classe
          */
-        public CompanyBuilder setId(Long pId) {
-            company.id = pId;
+        public CompanyBuilder setId(long id) {
+            company.id = id;
             return this;
         }
 
