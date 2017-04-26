@@ -1,5 +1,9 @@
 package com.navarna.computerdb.validator;
 
+import java.text.Normalizer;
+
+import com.navarna.computerdb.exception.ValidatorException;
+
 public class ValidationNavigation {
 
     /**
@@ -40,11 +44,16 @@ public class ValidationNavigation {
         }
     }
 
+    public static String EnleverCaractereInterdit(String name) {
+        name = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
+        name = name.replaceAll("<[^>]*>|\\d|\\W|_", " ");
+         return name ; 
+    }
     public static boolean verificationTypeSearch(String typeSearch) {
-        if ((!typeSearch.equals("Computer")) && (!typeSearch.equals("Company"))) {
+        if(typeSearch == null) {
             return false;
         }
-        return true;
+        return ((!typeSearch.equals("Computer")) && (!typeSearch.equals("Company"))); 
     }
     
     public static boolean verificationSearch(String name,String typeSearch) {
