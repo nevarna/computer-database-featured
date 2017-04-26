@@ -10,27 +10,27 @@ public class ServiceComputerImpl implements ServiceComputer {
     private DAOComputerImpl dComputerImpl = DAOComputerImpl.getInstance();
 
     @Override
-    public int insert(Computer computer) {
+    public boolean insert(Computer computer) {
         if (computer.getName() != null) {
             return this.dComputerImpl.insert(computer);
         }
-        return 0;
+        return false;
     }
 
     @Override
-    public int update(Computer computer) {
+    public boolean update(Computer computer) {
         if (computer.getName() != null) {
             return this.dComputerImpl.update(computer);
         }
-        return 0;
+        return false;
     }
 
     @Override
-    public int delete(long id) {
+    public boolean delete(long id) {
         if (id > 0) {
             return this.dComputerImpl.delete(id);
         }
-        return 0;
+        return false;
     }
 
     @Override
@@ -39,46 +39,46 @@ public class ServiceComputerImpl implements ServiceComputer {
     }
 
     @Override
-    public Optional<Computer> show(long id) {
+    public Optional<Computer> findById(long id) {
         if (id >= 0) {
-            return this.dComputerImpl.showId(id);
+            return this.dComputerImpl.findById(id);
         }
         return Optional.empty();
     }
 
     @Override
-    public Page<Computer> showName(String name, int numPage, int nbElement) {
+    public Page<Computer> findByName(String name, int numPage, int nbElement) {
         if (name != null) {
-            return this.dComputerImpl.showName(name, numPage, nbElement);
+            return this.dComputerImpl.findByName(name, numPage, nbElement);
         }
-        return new Page<Computer>();
+        return new Page<Computer>(0,0);
     }
 
     @Override
-    public Page<Computer> showCompany(String nameCompany, int numPage, int nbElement) {
+    public Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement) {
         if (nameCompany != null) {
-            return this.dComputerImpl.showCompany(nameCompany, numPage, nbElement);
+            return this.dComputerImpl.findByCompany(nameCompany, numPage, nbElement);
         }
-        return new Page<Computer>();
+        return new Page<Computer>(0,0);
     }
 
     @Override
-    public int countComputer() {
-        return this.dComputerImpl.countComputer();
+    public int count() {
+        return this.dComputerImpl.count();
     }
 
     @Override
-    public int countComputerName(String name) {
+    public int countWithName(String name) {
         if (name != null) {
-            return this.dComputerImpl.countComputerName(name);
+            return this.dComputerImpl.countWithName(name);
         }
         return 0;
     }
 
     @Override
-    public int countComputerNameCompany(String nameCompany) {
+    public int countWithNameCompany(String nameCompany) {
         if (nameCompany != null) {
-            return this.dComputerImpl.countComputerNameCompany(nameCompany);
+            return this.dComputerImpl.countWithNameCompany(nameCompany);
         }
         return 0;
     }

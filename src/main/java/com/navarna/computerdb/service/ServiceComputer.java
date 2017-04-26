@@ -14,23 +14,23 @@ public interface ServiceComputer {
     /**
      * Demande au DAOComputer d'insérer le computer.
      * @param computer : Computer à insérer
-     * @return int : nombre de ligne changé
+     * @return boolean : si oui on non la base de données a été modfifié
      */
-    int insert(Computer computer);
+    boolean insert(Computer computer);
 
     /**
      * Demande au DAOComputer de modifier le computer.
      * @param computer : Computer à modifier
-     * @return int : nombre de ligne changé
+     * @return  boolean : si oui on non la base de données a été modfifié
      */
-    int update(Computer computer);
+    boolean update(Computer computer);
 
     /**
      * Demande au DAOComputer de supprimer un computer ayant un id prècis.
      * @param id : id du computer à supprimer
-     * @return int : nombre de ligne changé
+     * @return boolean : si oui on non la base de données a été modfifié
      */
-    int delete(long id);
+    boolean delete(long id);
 
     /**
      * Demande au DAOComputer la liste des computer.
@@ -45,7 +45,7 @@ public interface ServiceComputer {
      * @param id : id du computer
      * @return Computer : le computer avec tout ses détails
      */
-    Optional<Computer> show(long id);
+    Optional<Computer> findById(long id);
 
     /**
      * Demande au DAOComputer les détails des computer ayant le nom de
@@ -55,7 +55,7 @@ public interface ServiceComputer {
      * @param nbElement : nombre d'élément par page
      * @return Page<Computer> : page des computer avec tout leus détails
      */
-    Page<Computer> showName(String name, int numPage, int nbElement);
+    Page<Computer> findByName(String name, int numPage, int nbElement);
 
     /**
      * Demande au DAOComputer les détails des computer ayant le nom de
@@ -65,20 +65,20 @@ public interface ServiceComputer {
      * @param nbElement : nombre d'élément par page
      * @return Page<Computer> : page des computer avec tout leus détails
      */
-    Page<Computer> showCompany(String nameCompany, int numPage, int nbElement);
+    Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement);
 
     /**
      * Demande au DAOComputer le nombre de computer.
      * @return int : nombre de computer
      */
-    int countComputer();
+    int count();
 
     /**
      * Demande au DAOComputer le nombre de computer ayant le nom de l'arguments.
      * @param name : name des computer
      * @return int : nombre de computer
      */
-    int countComputerName(String name);
+    int countWithName(String name);
 
     /**
      * Demande au DAOComputer le nombre de computer ayant le nom de l'arguments
@@ -86,5 +86,5 @@ public interface ServiceComputer {
      * @param nameCompany : name de la company
      * @return int : nombre de computer
      */
-    int countComputerNameCompany(String nameCompany);
+    int countWithNameCompany(String nameCompany);
 }
