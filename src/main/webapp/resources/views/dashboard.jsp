@@ -4,6 +4,7 @@
 <%@page import="com.navarna.computerdb.model.*"%>
 <%@page import="com.navarna.computerdb.dto.*"%>
 <%@page import="com.navarna.computerdb.controller.*"%>
+<%@page import="com.navarna.computerdb.exception.*" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="test"%>
 <%
     String finUrl = null;
