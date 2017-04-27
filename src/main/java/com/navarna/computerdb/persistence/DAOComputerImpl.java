@@ -14,13 +14,13 @@ import com.navarna.computerdb.mapper.TransformationResultSet;
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
 
-
 public enum DAOComputerImpl implements DAOComputer {
     INSTANCE;
 
     public static final String INSERT;
     public static final String UPDATE;
     public static final String DELETE;
+    public static final String DELETE_LIST;
     public static final String SELECT_LIST;
     public static final String FIND_ID;
     public static final String FIND_NAME;
@@ -33,6 +33,7 @@ public enum DAOComputerImpl implements DAOComputer {
         INSERT = "INSERT INTO computer VALUES ( ?, ?, ?, ?, ? )";
         UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
         DELETE = "DELETE FROM computer where id = ?";
+        DELETE_LIST = "DELETE FROM computer where id in (";
         SELECT_LIST = "SELECT * from computer left join company on company_id = company.id LIMIT ? OFFSET ?";
         FIND_ID = "SELECT * from computer left join company on company_id = company.id where computer.id = ?";
         FIND_NAME = "SELECT * from computer left join company on company_id = company.id where computer.name = ? LIMIT ? OFFSET ?";
@@ -53,7 +54,7 @@ public enum DAOComputerImpl implements DAOComputer {
             int result = 0;
             setStatementInsert(statement, computer);
             result = statement.executeUpdate();
-            return result != 0 ;
+            return result != 0;
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
         }
@@ -75,10 +76,22 @@ public enum DAOComputerImpl implements DAOComputer {
     @Override
     public boolean delete(long id) {
         try (Connection conn = ConnectionPoolDB.getInstance().open();
-            PreparedStatement statement = conn.prepareStatement(DELETE)) {
+                PreparedStatement statement = conn.prepareStatement(DELETE)) {
             int result = 0;
             statement.setLong(1, id);
             result = statement.executeUpdate();
+            return result != 0;
+        } catch (SQLException se) {
+            throw new DAOException("Erreur de base de donnée", se);
+        }
+    }
+
+    @Override
+    public boolean deleteMultiple(long[] id) {
+        String requeteComplete = ecrireRequeteDeleteList(id);
+        try (Connection conn = ConnectionPoolDB.getInstance().open(); Statement statement = conn.createStatement()) {
+            int result = 0;
+            result = statement.executeUpdate(requeteComplete);
             return result != 0;
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
@@ -118,7 +131,7 @@ public enum DAOComputerImpl implements DAOComputer {
         try (Connection conn = ConnectionPoolDB.getInstance().open();
                 PreparedStatement statement = conn.prepareStatement(FIND_NAME)) {
             ResultSet result = null;
-            setStatementShowName(statement, name, numPage, nbElement);
+            setStatementFindByName(statement, name, numPage, nbElement);
             result = statement.executeQuery();
             Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result, numPage, nbElement);
             return page;
@@ -132,7 +145,7 @@ public enum DAOComputerImpl implements DAOComputer {
         try (Connection conn = ConnectionPoolDB.getInstance().open();
                 PreparedStatement statement = conn.prepareStatement(FIND_COMPANY)) {
             ResultSet result = null;
-            setStatementShowName(statement, nameCompany, numPage, nbElement);
+            setStatementFindByName(statement, nameCompany, numPage, nbElement);
             result = statement.executeQuery();
             Page<Computer> page = TransformationResultSet.extraireDetailsComputers(result, numPage, nbElement);
             return page;
@@ -143,8 +156,7 @@ public enum DAOComputerImpl implements DAOComputer {
 
     @Override
     public int count() {
-        try (Connection conn = ConnectionPoolDB.getInstance().open();
-                Statement statement = conn.createStatement()) {
+        try (Connection conn = ConnectionPoolDB.getInstance().open(); Statement statement = conn.createStatement()) {
             ResultSet result = null;
             result = statement.executeQuery(COUNT);
             int retour = TransformationResultSet.extraireNombreElement(result);
@@ -180,6 +192,23 @@ public enum DAOComputerImpl implements DAOComputer {
         } catch (SQLException se) {
             throw new DAOException("Erreur de base de donnée", se);
         }
+    }
+
+    /**
+     * Ecrit la requête complete permettant de supprimer les computers.
+     * @param id : tableau d'id à supprimer
+     * @return String : requete contenant les id à suprimer.
+     */
+    private String ecrireRequeteDeleteList(long[] id) {
+        String requeteDeleteMultiple = DELETE_LIST;
+        for (int i = 0; i < id.length; i++) {
+            requeteDeleteMultiple += id[i];
+            if (i != id.length - 1) {
+                requeteDeleteMultiple += ",";
+            }
+        }
+        requeteDeleteMultiple += ")";
+        return requeteDeleteMultiple;
     }
 
     /**
@@ -266,10 +295,11 @@ public enum DAOComputerImpl implements DAOComputer {
      * @param nbElement : nombre d'élément
      * @throws SQLException : SQL exception possible
      */
-    private void setStatementShowName(PreparedStatement statement, String name, int numPage, int nbElement)
+    private void setStatementFindByName(PreparedStatement statement, String name, int numPage, int nbElement)
             throws SQLException {
         statement.setString(1, name);
         statement.setInt(2, nbElement);
         statement.setInt(3, numPage * nbElement);
     }
+
 }

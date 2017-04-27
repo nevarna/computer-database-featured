@@ -33,6 +33,15 @@ public class ServiceComputerImpl implements ServiceComputer {
         return false;
     }
 
+
+    @Override
+    public boolean deleteMultiple(long[] id) {
+        if (id.length > 1) {
+            return this.dComputerImpl.deleteMultiple(id);
+        }
+        return false;
+    }
+
     @Override
     public Page<Computer> liste(int numPage, int nbElement) {
         return this.dComputerImpl.list(numPage, nbElement);

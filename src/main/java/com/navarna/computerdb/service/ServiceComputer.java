@@ -26,11 +26,18 @@ public interface ServiceComputer {
     boolean update(Computer computer);
 
     /**
-     * Demande au DAOComputer de supprimer un computer ayant un id prècis.
+     * Demande au DAOComputer de supprimer un computer ayant un id précis.
      * @param id : id du computer à supprimer
      * @return boolean : si oui on non la base de données a été modfifié
      */
     boolean delete(long id);
+
+    /**
+     * Demande au DAOComputer de supprimer des computers ayant un id dans le tableau.
+     * @param id : tableau d'id des computer à supprimer
+     * @return boolean : si oui on non la base de données a été modfifié
+     */
+    boolean deleteMultiple(long[] id);
 
     /**
      * Demande au DAOComputer la liste des computer.

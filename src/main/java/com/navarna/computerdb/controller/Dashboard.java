@@ -56,9 +56,16 @@ public class Dashboard extends HttpServlet {
      */
     private void demandeSuppression(String[] tableauIdDelete) {
         try {
-            for (String numeroDelete : tableauIdDelete) {
-                int idDelete = Integer.parseInt(numeroDelete);
-                servComputer.delete(idDelete);
+            int taille = tableauIdDelete.length;
+            if (taille == 1) {
+                long idSupprimer = Long.parseLong(tableauIdDelete[0]);
+                servComputer.delete(idSupprimer);
+            } else {
+                long [] tableauIdDeleteLong = new long[taille];
+                for (int i = 0 ; i < taille; i++) {
+                    tableauIdDeleteLong[i] = Long.parseLong(tableauIdDelete[i]);
+                }
+                servComputer.deleteMultiple(tableauIdDeleteLong);
             }
         } catch (NumberFormatException | NullPointerException ne) {
             throw new ControllerException(" Erreur delete mode ", ne);

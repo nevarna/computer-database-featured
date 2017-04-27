@@ -32,11 +32,20 @@ public interface DAOComputer {
     boolean delete(long id);
 
     /**
+     * Ecris une requête à la base de donnée afin de supprimer un tableau de computer.
+     * @param id : tableau de l'id d'élément à supprimer
+     * @return boolean : si oui ou non la base de donnée à été modifié par la
+     *         requête
+     */
+    boolean deleteMultiple(long[] id);
+
+    /**
      * Ecris une requête à la base de donnée afin d'avoir les détails un
      * computer.
      * @param id : id de l'élément
      * @return int : nombre de ligne modifié par la requête
      */
+
     Optional<Computer> findById(long id);
 
     /**
