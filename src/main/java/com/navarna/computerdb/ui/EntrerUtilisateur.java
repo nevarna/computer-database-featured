@@ -3,12 +3,13 @@ package com.navarna.computerdb.ui;
 import java.time.LocalDate;
 import java.util.Scanner;
 
-import com.navarna.computerdb.mapper.MapperException;
+import com.navarna.computerdb.exception.CLIException;
+import com.navarna.computerdb.exception.DAOException;
+import com.navarna.computerdb.exception.MapperException;
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Company.CompanyBuilder;
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Computer.ComputerBuilder;
-import com.navarna.computerdb.persistence.DAOException;
 import com.navarna.computerdb.validator.ValidationEntrer;
 
 public class EntrerUtilisateur {

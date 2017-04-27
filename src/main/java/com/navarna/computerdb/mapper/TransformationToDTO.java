@@ -2,6 +2,7 @@ package com.navarna.computerdb.mapper;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import com.navarna.computerdb.dto.CompanyDTO;
@@ -135,5 +136,21 @@ public class TransformationToDTO {
             }
         }
         return pageDTO;
+    }
+
+    /**
+     * Transforme une ArrayList Company en une ArrayList CompanyDTO.
+     * @param page : page de company à transformer
+     * @return ArrayList<CompanyDTO> : arrayList de companyDTO correspondant à page
+     */
+    public static ArrayList<CompanyDTO> ArrayListCompanyToArrayListDTO(ArrayList<Company> liste) {
+        ArrayList<CompanyDTO> listeDTO = new ArrayList<CompanyDTO>();
+        for (Company company : liste) {
+            Optional<CompanyDTO> companyDTO = companyToDTO(company);
+            if (companyDTO.isPresent()) {
+                listeDTO.add(companyDTO.get());
+            }
+        }
+        return listeDTO;
     }
 }

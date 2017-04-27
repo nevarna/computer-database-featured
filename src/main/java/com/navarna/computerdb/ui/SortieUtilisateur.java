@@ -51,8 +51,8 @@ public class SortieUtilisateur {
      * Affiche si un changement dans la base de données à été effectué.
      * @param reponse : nombre de changement effectuer
      */
-    public static void lireValidationChangement(int reponse) {
-        if (reponse != 0) {
+    public static void lireValidationChangement(boolean reponse) {
+        if (reponse) {
             System.out.println("Changement effectué");
         } else {
             System.out.println("Changement non effectué");

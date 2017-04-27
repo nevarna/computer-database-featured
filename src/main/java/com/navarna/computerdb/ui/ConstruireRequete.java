@@ -2,6 +2,7 @@ package com.navarna.computerdb.ui;
 
 import java.util.Optional;
 
+import com.navarna.computerdb.exception.CLIException;
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
