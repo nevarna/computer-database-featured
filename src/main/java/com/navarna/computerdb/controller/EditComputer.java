@@ -11,12 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.navarna.computerdb.dto.CompanyDTO;
+import com.navarna.computerdb.exception.ControllerException;
 import com.navarna.computerdb.mapper.TransformationToDTO;
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Computer;
-import com.navarna.computerdb.model.Page;
-import com.navarna.computerdb.model.Company.CompanyBuilder;
-import com.navarna.computerdb.model.Computer.ComputerBuilder;
 import com.navarna.computerdb.service.ServiceCompanyImpl;
 import com.navarna.computerdb.service.ServiceComputerImpl;
 import com.navarna.computerdb.validator.ValidationEntrer;
@@ -26,6 +24,7 @@ import com.navarna.computerdb.validator.ValidationEntrer;
  */
 public class EditComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static final int NOMBRE_PARAMETRE = 5;
     private ServiceComputerImpl servComputer = new ServiceComputerImpl();
     private ServiceCompanyImpl servCompany = new ServiceCompanyImpl();
 
@@ -47,29 +46,6 @@ public class EditComputer extends HttpServlet {
     }
 
     /**
-     * Créer une liste contenant toutes les companies.
-     * @return ArrayList<CompanyDTO> : liste de toutes les companies
-     */
-    public ArrayList<CompanyDTO> initialisationListeCompany() {
-        ArrayList<CompanyDTO> informationCompany = new ArrayList<CompanyDTO>();
-        boolean fini = false;
-        int numPage = 0;
-        int nbElement = 100;
-        while (!fini) {
-            Page<CompanyDTO> page = TransformationToDTO.pageCompanyToPageDTO(servCompany.liste(numPage, nbElement));
-            numPage++;
-            if (page.estVide()) {
-                fini = true;
-            } else {
-                for (CompanyDTO company : page.getPage()) {
-                    informationCompany.add(company);
-                }
-            }
-        }
-        return informationCompany;
-    }
-
-    /**
      * Verifie les arguments de l'utilisateur et si elles sont correct, fait
      * l'update.
      * @param id : id du computer
@@ -77,19 +53,19 @@ public class EditComputer extends HttpServlet {
      * @param introduced : date de mise en marche
      * @param discontinued : date d'arret
      * @param idCompany : numero de la company
-     * @return int : nombre de ligne modifié par la requête
+     * @return boolean : si oui ou non la base de données à été modifié
      */
-    public int demandeUpdate(long id, String name, String introduced, String discontinued, String idCompany) {
+    public boolean demandeUpdate(long id, String name, String introduced, String discontinued, String idCompany) {
         if (ValidationEntrer.entrerValide(name, introduced, discontinued, idCompany)) {
             LocalDate pIntroduced = LocalDate.parse(introduced);
             LocalDate pDiscontinued = LocalDate.parse(discontinued);
             int CompanyId = ValidationEntrer.stringEnIntPositif(idCompany);
-            Company company = new CompanyBuilder("null").setId(new Long(CompanyId)).build();
-            Computer computer = new ComputerBuilder(name).setId(id).setIntroduced(pIntroduced)
+            Company company = new Company.CompanyBuilder("null").setId(new Long(CompanyId)).build();
+            Computer computer = new Computer.ComputerBuilder(name).setId(id).setIntroduced(pIntroduced)
                     .setDiscontinued(pDiscontinued).setCompany(company).build();
-           return servComputer.update(computer);   
+            return servComputer.update(computer);
         }
-        return 0;
+        return false;
     }
 
     /**
@@ -97,7 +73,7 @@ public class EditComputer extends HttpServlet {
      * @param request : request reçu par le servlet
      * @return long : id du computer
      */
-    public long UtilisationParametreGet(HttpServletRequest request) {
+    public long recupererIdEnGet(HttpServletRequest request) {
         String idLien = request.getParameter("id");
         return setIdComputer(idLien);
     }
@@ -105,25 +81,27 @@ public class EditComputer extends HttpServlet {
     /**
      * Lit les paramêtre reçu de façon POST.
      * @param request : request recu par le servlet
+     * @return String[] : un tableau contenant les indices de manière ordonnées
+     *         0 : id du computer 1 : nom du computer 2 : date de mise en marche
+     *         3 : date d'arret 4 : id de la company
      */
-    public void UtilisationParametrePost(HttpServletRequest request) {
-        String idLien = request.getParameter("id");
-        long id = setIdComputer(idLien);
-        String name = request.getParameter("name");
-        String introduced = request.getParameter("introduced");
-        String discontinued = request.getParameter("discontinued");
-        String idCompany = request.getParameter("idCompany");
-        int reponse = demandeUpdate(id,name, introduced, discontinued, idCompany);
-        request.setAttribute("reponse", reponse);
+    public String[] lireParametrePost(HttpServletRequest request) {
+        String[] parametres = new String[NOMBRE_PARAMETRE];
+        parametres[0] = request.getParameter("id");
+        parametres[1] = request.getParameter("name");
+        parametres[2] = request.getParameter("introduced");
+        parametres[3] = request.getParameter("discontinued");
+        parametres[5] = request.getParameter("idCompany");
+        return parametres;
     }
 
     /**
      * Ecris les attributs dont a besoin le fichier JSP.
      * @param request : request reçu par le servlet.
      * @param id : l'id du computer à modifier
+     * @param informationCompany : arrayList contenant la liste des companies
      */
-    public void ecrireAttribute(HttpServletRequest request, long id) {
-        ArrayList<CompanyDTO> informationCompany = initialisationListeCompany();
+    public void ecrireAttribute(HttpServletRequest request, long id, ArrayList<CompanyDTO> informationCompany) {
         request.setAttribute("listeCompany", informationCompany);
         request.setAttribute("id", id);
     }
@@ -136,8 +114,10 @@ public class EditComputer extends HttpServlet {
             throws ServletException, IOException {
         RequestDispatcher fichierJSP = this.getServletContext()
                 .getRequestDispatcher("/resources/views/editComputer.jsp");
-        long id = UtilisationParametreGet(request);
-        ecrireAttribute(request, id);
+        long id = recupererIdEnGet(request);
+        ArrayList<CompanyDTO> informationCompany = TransformationToDTO
+                .ArrayListCompanyToArrayListDTO(servCompany.listeComplete());
+        ecrireAttribute(request, id, informationCompany);
         fichierJSP.forward(request, response);
     }
 
@@ -147,8 +127,20 @@ public class EditComputer extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        UtilisationParametrePost(request);
-        doGet(request, response);
+        String[] parametres = lireParametrePost(request);
+        long id = setIdComputer(parametres[0]);
+        boolean reponse = demandeUpdate(id, parametres[1], parametres[2], parametres[3], parametres[4]);
+        if (reponse) {
+            response.sendRedirect("Dashboard");
+        } else {
+            RequestDispatcher fichierJSP = this.getServletContext()
+                    .getRequestDispatcher("/resources/views/editComputer.jsp");
+            ArrayList<CompanyDTO> informationCompany = TransformationToDTO
+                    .ArrayListCompanyToArrayListDTO(servCompany.listeComplete());
+            request.setAttribute("reponse", reponse);
+            ecrireAttribute(request, id, informationCompany);
+            fichierJSP.forward(request, response);
+        }
     }
 
 }

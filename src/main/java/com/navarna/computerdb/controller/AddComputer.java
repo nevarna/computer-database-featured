@@ -13,42 +13,16 @@ import javax.servlet.http.HttpServletResponse;
 import com.navarna.computerdb.dto.CompanyDTO;
 import com.navarna.computerdb.mapper.TransformationToDTO;
 import com.navarna.computerdb.model.Company;
-import com.navarna.computerdb.model.Company.CompanyBuilder;
 import com.navarna.computerdb.model.Computer;
-import com.navarna.computerdb.model.Computer.ComputerBuilder;
-import com.navarna.computerdb.model.Page;
 import com.navarna.computerdb.service.ServiceCompanyImpl;
 import com.navarna.computerdb.service.ServiceComputerImpl;
 import com.navarna.computerdb.validator.ValidationEntrer;
 
 public class AddComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static final int NOMBRE_PARAMETRE = 4;
     private ServiceComputerImpl servComputer = new ServiceComputerImpl();
     private ServiceCompanyImpl servCompany = new ServiceCompanyImpl();
-
-    /**
-     * crée une liste de l'emsemble des companies.
-     * @return ArrayList<CompanyDTO> : ensemble des companies de la base de
-     *         données
-     */
-    protected ArrayList<CompanyDTO> initialisationListeCompany() {
-        ArrayList<CompanyDTO> informationCompany = new ArrayList<CompanyDTO>();
-        boolean fini = false;
-        int nbElement = 100;
-        int numPage = 0;
-        while (!fini) {
-            Page<CompanyDTO> page = TransformationToDTO.pageCompanyToPageDTO(servCompany.liste(numPage, nbElement));
-            numPage++;
-            if (page.estVide()) {
-                fini = true;
-            } else {
-                for (CompanyDTO company : page.getPage()) {
-                    informationCompany.add(company);
-                }
-            }
-        }
-        return informationCompany;
-    }
 
     /**
      * Demande validation des entrées de l'utilisateur et demande au service
@@ -59,30 +33,33 @@ public class AddComputer extends HttpServlet {
      * @param idCompany : id de la company du computer
      * @return int : nombre de ligne modifié par la requête
      */
-    public int demandeInsert(String name, String introduced, String discontinued, String idCompany) {
+    private boolean demandeInsert(String name, String introduced, String discontinued, String idCompany) {
         if (ValidationEntrer.entrerValide(name, introduced, discontinued, idCompany)) {
             LocalDate pIntroduced = LocalDate.parse(introduced);
             LocalDate pDiscontinued = LocalDate.parse(discontinued);
             int id = ValidationEntrer.stringEnIntPositif(idCompany);
-            Company company = new CompanyBuilder("null").setId(new Long(id)).build();
-            Computer computer = new ComputerBuilder(name).setIntroduced(pIntroduced).setDiscontinued(pDiscontinued)
-                    .setCompany(company).setId(0L).build();
+            Company company = new Company.CompanyBuilder("null").setId(new Long(id)).build();
+            Computer computer = new Computer.ComputerBuilder(name).setIntroduced(pIntroduced)
+                    .setDiscontinued(pDiscontinued).setCompany(company).setId(0L).build();
             return servComputer.insert(computer);
         }
-        return 0;
+        return false;
     }
 
     /**
      * lit les paramêtre post de la requête et demande une insertion.
      * @param request : request reçu par le servlet
+     * @return String[] : un tableau contenant les indices de manière ordonnées
+     *         0 : nom du computer 1 : date de mise en marche 2 : date d'arret 3
+     *         : id de la company
      */
-    public void UtilisationParametre(HttpServletRequest request) {
-        String name = request.getParameter("name");
-        String introduced = request.getParameter("introduced");
-        String discontinued = request.getParameter("discontinued");
-        String idCompany = request.getParameter("idCompany");
-        int reponse = demandeInsert(name, introduced, discontinued, idCompany);
-        request.setAttribute("reponse", reponse);
+    private String[] lireParametre(HttpServletRequest request) {
+        String[] parametres = new String[NOMBRE_PARAMETRE];
+        parametres[0] = request.getParameter("name");
+        parametres[1] = request.getParameter("introduced");
+        parametres[2] = request.getParameter("discontinued");
+        parametres[3] = request.getParameter("idCompany");
+        return parametres;
     }
 
     /**
@@ -90,7 +67,8 @@ public class AddComputer extends HttpServlet {
      * @param request : request reçu par le servlet
      */
     public void ecrireAttribute(HttpServletRequest request) {
-        ArrayList<CompanyDTO> informationCompany = initialisationListeCompany();
+        ArrayList<CompanyDTO> informationCompany = TransformationToDTO
+                .ArrayListCompanyToArrayListDTO(servCompany.listeComplete());
         request.setAttribute("listeCompany", informationCompany);
     }
 
@@ -112,7 +90,9 @@ public class AddComputer extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        UtilisationParametre(request);
+        String[] parametres = lireParametre(request);
+        boolean reponse = demandeInsert(parametres[0], parametres[1], parametres[2], parametres[3]);
+        request.setAttribute("reponse", reponse);
         doGet(request, response);
     }
 
