@@ -21,7 +21,7 @@ public interface ServiceComputer {
     /**
      * Demande au DAOComputer de modifier le computer.
      * @param computer : Computer à modifier
-     * @return  boolean : si oui on non la base de données a été modfifié
+     * @return boolean : si oui on non la base de données a été modfifié
      */
     boolean update(Computer computer);
 
@@ -33,7 +33,8 @@ public interface ServiceComputer {
     boolean delete(long id);
 
     /**
-     * Demande au DAOComputer de supprimer des computers ayant un id dans le tableau.
+     * Demande au DAOComputer de supprimer des computers ayant un id dans le
+     * tableau.
      * @param id : tableau d'id des computer à supprimer
      * @return boolean : si oui on non la base de données a été modfifié
      */
@@ -43,9 +44,11 @@ public interface ServiceComputer {
      * Demande au DAOComputer la liste des computer.
      * @param numPage : numero de page
      * @param nbElement : nombre d'élément par page
+     * @param typeOrder : colonne de l'order by
+     * @param order : order croissant ou decroissant
      * @return Page<Computer> : page de la liste de computer
      */
-    Page<Computer> liste(int numPage, int nbElement);
+    Page<Computer> liste(int numPage, int nbElement, String typeOrder, String order);
 
     /**
      * Demande au DAOComputer les détails du computer ayant l'id de l'arguments.
@@ -60,9 +63,11 @@ public interface ServiceComputer {
      * @param name : name des computer
      * @param numPage : numero de page
      * @param nbElement : nombre d'élément par page
+     * @param typeOrder : colonne de l'order by
+     * @param order : order croissant ou decroissant
      * @return Page<Computer> : page des computer avec tout leus détails
      */
-    Page<Computer> findByName(String name, int numPage, int nbElement);
+    Page<Computer> findByName(String name, int numPage, int nbElement, String typeOrder, String order);
 
     /**
      * Demande au DAOComputer les détails des computer ayant le nom de
@@ -70,9 +75,11 @@ public interface ServiceComputer {
      * @param nameCompany : name des computer
      * @param numPage : numero de page
      * @param nbElement : nombre d'élément par page
+     * @param typeOrder : colonne de l'order by
+     * @param order : order croissant ou decroissant
      * @return Page<Computer> : page des computer avec tout leus détails
      */
-    Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement);
+    Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement, String typeOrder, String order);
 
     /**
      * Demande au DAOComputer le nombre de computer.

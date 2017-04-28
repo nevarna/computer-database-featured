@@ -56,6 +56,11 @@ public class EditComputer extends HttpServlet {
      * @return boolean : si oui ou non la base de données à été modifié
      */
     public boolean demandeUpdate(long id, String name, String introduced, String discontinued, String idCompany) {
+        System.out.println("dans edit");
+        // A enlever plus tard
+        introduced = "1994-05-06";
+        discontinued = "2017-04-27";
+
         if (ValidationEntrer.entrerValide(name, introduced, discontinued, idCompany)) {
             LocalDate pIntroduced = LocalDate.parse(introduced);
             LocalDate pDiscontinued = LocalDate.parse(discontinued);
@@ -63,6 +68,7 @@ public class EditComputer extends HttpServlet {
             Company company = new Company.CompanyBuilder("null").setId(new Long(CompanyId)).build();
             Computer computer = new Computer.ComputerBuilder(name).setId(id).setIntroduced(pIntroduced)
                     .setDiscontinued(pDiscontinued).setCompany(company).build();
+            System.out.println("Computer changement : "+ computer);
             return servComputer.update(computer);
         }
         return false;
@@ -91,7 +97,7 @@ public class EditComputer extends HttpServlet {
         parametres[1] = request.getParameter("name");
         parametres[2] = request.getParameter("introduced");
         parametres[3] = request.getParameter("discontinued");
-        parametres[5] = request.getParameter("idCompany");
+        parametres[4] = request.getParameter("idCompany");
         return parametres;
     }
 

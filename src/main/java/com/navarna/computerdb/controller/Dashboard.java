@@ -20,7 +20,7 @@ import com.navarna.computerdb.validator.ValidationNavigation;
  */
 public class Dashboard extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final int NOMBRE_PARAMETRE = 4;
+    private static final int NOMBRE_PARAMETRE = 5;
     private ServiceComputerImpl servComputer = new ServiceComputerImpl();
 
     /**
@@ -37,6 +37,7 @@ public class Dashboard extends HttpServlet {
         parametres[1] = request.getParameter("nbElement");
         parametres[2] = request.getParameter("search");
         parametres[3] = request.getParameter("type");
+        parametres[4] = request.getParameter("order");
         return parametres;
     }
 
@@ -46,7 +47,12 @@ public class Dashboard extends HttpServlet {
      * @return String[] : tableau contenant les indices à supprimer.
      */
     private String[] lireParametrePost(HttpServletRequest request) {
-        return request.getParameter("selection").split(",");
+        String selection = request.getParameter("selection");
+        System.out.println("selection : " + selection);
+        if (selection != null) {
+            return selection.split(",");
+        }
+        return new String[0];
     }
 
     /**
@@ -57,15 +63,17 @@ public class Dashboard extends HttpServlet {
     private void demandeSuppression(String[] tableauIdDelete) {
         try {
             int taille = tableauIdDelete.length;
-            if (taille == 1) {
-                long idSupprimer = Long.parseLong(tableauIdDelete[0]);
-                servComputer.delete(idSupprimer);
-            } else {
-                long [] tableauIdDeleteLong = new long[taille];
-                for (int i = 0 ; i < taille; i++) {
-                    tableauIdDeleteLong[i] = Long.parseLong(tableauIdDelete[i]);
+            if (taille != 0) {
+                if (taille == 1) {
+                    long idSupprimer = Long.parseLong(tableauIdDelete[0]);
+                    servComputer.delete(idSupprimer);
+                } else {
+                    long[] tableauIdDeleteLong = new long[taille];
+                    for (int i = 0; i < taille; i++) {
+                        tableauIdDeleteLong[i] = Long.parseLong(tableauIdDelete[i]);
+                    }
+                    servComputer.deleteMultiple(tableauIdDeleteLong);
                 }
-                servComputer.deleteMultiple(tableauIdDeleteLong);
             }
         } catch (NumberFormatException | NullPointerException ne) {
             throw new ControllerException(" Erreur delete mode ", ne);
@@ -80,17 +88,18 @@ public class Dashboard extends HttpServlet {
      * @param nbElement : nombre d'élément par page
      * @return Page<ComputerDTO> : page contenant la liste à afficher
      */
-    private Page<ComputerDTO> creationListe(String name, String typeSearch, int numPage, int nbElement) {
+    private Page<ComputerDTO> creationListe(String name, String typeSearch, String order, int numPage, int nbElement) {
         Page<ComputerDTO> pageComputer = null;
         if (!ValidationNavigation.verificationSearch(name, typeSearch)) {
-            pageComputer = TransformationToDTO.pageComputerToPageDTO(servComputer.liste(numPage, nbElement));
+            pageComputer = TransformationToDTO
+                    .pageComputerToPageDTO(servComputer.liste(numPage, nbElement, typeSearch, order));
         } else {
-            if (typeSearch.equals("Computer")) {
+            if (typeSearch.equals("computer.id")) {
                 pageComputer = TransformationToDTO
-                        .pageComputerToPageDTO(servComputer.findByName(name, numPage, nbElement));
+                        .pageComputerToPageDTO(servComputer.findByName(name, numPage, nbElement, typeSearch, order));
             } else {
                 pageComputer = TransformationToDTO
-                        .pageComputerToPageDTO(servComputer.findByCompany(name, numPage, nbElement));
+                        .pageComputerToPageDTO(servComputer.findByCompany(name, numPage, nbElement, typeSearch, order));
             }
         }
         return pageComputer;
@@ -157,9 +166,21 @@ public class Dashboard extends HttpServlet {
         if (ValidationNavigation.verificationNbElement(parametres[1])) {
             nbElement = Integer.parseInt(parametres[1]);
         }
-        Page<ComputerDTO> pageComputer = creationListe(parametres[2], parametres[3], numPage, nbElement);
-        int totalElement = compterElement(parametres[2], parametres[3]);
-        ecrireAttribute(request, pageComputer, numPage, parametres[2], parametres[3], totalElement, nbElement);
+        String name = null;
+        if (ValidationNavigation.verificationSearch(parametres[2], parametres[3])) {
+            name = ValidationNavigation.EnleverCaractereInterdit(parametres[2]);
+        }
+        String order = "ASC";
+        if (ValidationNavigation.verificationOrder(parametres[4])) {
+            order = parametres[4];
+        }
+        String typeSearch = "computer.id";
+        if (ValidationNavigation.verificationTypeSearch(parametres[3])) {
+            typeSearch = parametres[3];
+        }
+        Page<ComputerDTO> pageComputer = creationListe(name, typeSearch, order, numPage, nbElement);
+        int totalElement = compterElement(name, typeSearch);
+        ecrireAttribute(request, pageComputer, numPage, name, typeSearch, totalElement, nbElement);
         fichierJSP.forward(request, response);
     }
 
@@ -175,5 +196,4 @@ public class Dashboard extends HttpServlet {
         demandeSuppression(tableauIdDelete);
         doGet(request, response);
     }
-
 }

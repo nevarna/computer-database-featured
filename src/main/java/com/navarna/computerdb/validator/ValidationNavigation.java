@@ -44,27 +44,65 @@ public class ValidationNavigation {
         }
     }
 
+    /**
+     * Transforme un string et retourne ce string sans caractere special.
+     * @param name : string recu en arguments
+     * @return String : name sans caractere special ni accent
+     */
     public static String EnleverCaractereInterdit(String name) {
         name = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
         name = name.replaceAll("<[^>]*>|\\d|\\W|_", " ");
-         return name ; 
+        return name;
     }
+
+    /**
+     * Verifie la valeur de typeSearch
+     * @param typeSearch
+     * @return boolean : true or false
+     */
     public static boolean verificationTypeSearch(String typeSearch) {
-        if(typeSearch == null) {
+        if (typeSearch == null) {
             return false;
         }
-        return ((!typeSearch.equals("Computer")) && (!typeSearch.equals("Company"))); 
+        return ((typeSearch.equals("computer.name")) || (typeSearch.equals("company.name")) || (typeSearch.equals("discontinued"))
+                || (typeSearch.equals("introduced")));
     }
-    
-    public static boolean verificationSearch(String name,String typeSearch) {
-        if(name == null) {
+
+    /**
+     * Verification de la valeur de name et typeSearch
+     * @param name : nom entrer en recherche
+     * @param typeSearch : type de la recherche
+     * @return boolean : true or false
+     */
+    public static boolean verificationSearch(String name, String typeSearch) {
+        if (name == null) {
             return false;
-        }
-        else {
-            if(name.equals("")) {
+        } else {
+            if (name.equals("")) {
                 return false;
             }
             return verificationTypeSearch(typeSearch);
+        }
+    }
+
+    /**
+     * Verifie la valeur de order
+     * @param order : si on a besoin de order
+     * @return boolean : true or false
+     */
+    public static boolean verificationOrder(String order) {
+        if (order == null) {
+            return false;
+        }
+        switch (order) {
+        case "none":
+            return false;
+        case "ASC":
+            return true;
+        case "DESC":
+            return true;
+        default:
+            return false;
         }
     }
 }

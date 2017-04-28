@@ -36,7 +36,7 @@ public class ConstruireRequete {
      */
     public void demandeListe(String type) {
         if (type.equals("computers")) {
-            Page<Computer> page = servComputerImpl.liste(numPage, nbElement);
+            Page<Computer> page = servComputerImpl.liste(numPage, nbElement,"id","ASC");
             if (!page.estVide()) {
                 SortieUtilisateur.lireListComputers(page);
             } else {
@@ -97,7 +97,7 @@ public class ConstruireRequete {
      * @param name : nom de du computer
      */
     public void demandeShowName(String name) {
-        Page<Computer> page = servComputerImpl.findByName(name, numPage, nbElement);
+        Page<Computer> page = servComputerImpl.findByName(name, numPage, nbElement,"id","ASC");
         if (!page.estVide()) {
             SortieUtilisateur.lireDetailsComputers(page);
         } else {

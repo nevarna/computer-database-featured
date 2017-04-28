@@ -36,7 +36,7 @@ public class ValidationEntrer {
         try {
             df.parse(dateCouper[0]);
         } catch (ParseException pe) {
-            System.out.println("Date incorrect");
+            System.out.println("Date incorrect : " + dateCouper[0]);
             return false;
         }
         if (dateCouper.length == 2) {

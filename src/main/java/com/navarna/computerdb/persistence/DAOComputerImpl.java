@@ -17,30 +17,32 @@ import com.navarna.computerdb.model.Page;
 public enum DAOComputerImpl implements DAOComputer {
     INSTANCE;
 
-    public static final String INSERT;
-    public static final String UPDATE;
-    public static final String DELETE;
-    public static final String DELETE_LIST;
-    public static final String SELECT_LIST;
-    public static final String FIND_ID;
-    public static final String FIND_NAME;
-    public static final String FIND_COMPANY;
-    public static final String COUNT;
-    public static final String COUNT_NAME;
-    public static final String COUNT_NAME_COMPANY;
+    private static final String INSERT;
+    private static final String UPDATE;
+    private static final String DELETE;
+    private static final String DELETE_LIST;
+    private static final String SELECT_LIST;
+    private static final String FIND_ID;
+    private static final String FIND_NAME;
+    private static final String FIND_COMPANY;
+    private static final String COUNT;
+    private static final String COUNT_NAME;
+    private static final String COUNT_NAME_COMPANY;
+    private static final String LIMIT_OFFSET;
 
     static {
         INSERT = "INSERT INTO computer VALUES ( ?, ?, ?, ?, ? )";
         UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
         DELETE = "DELETE FROM computer where id = ?";
         DELETE_LIST = "DELETE FROM computer where id in (";
-        SELECT_LIST = "SELECT * from computer left join company on company_id = company.id LIMIT ? OFFSET ?";
+        SELECT_LIST = "SELECT * from computer left join company on company_id = company.id ORDER BY ";
         FIND_ID = "SELECT * from computer left join company on company_id = company.id where computer.id = ?";
-        FIND_NAME = "SELECT * from computer left join company on company_id = company.id where computer.name = ? LIMIT ? OFFSET ?";
-        FIND_COMPANY = "SELECT * from computer left join company on company_id = company.id where company.name = ? LIMIT ? OFFSET ?";
+        FIND_NAME = "SELECT * from computer left join company on company_id = company.id where computer.name = ?  ORDER BY ";
+        FIND_COMPANY = "SELECT * from computer left join company on company_id = company.id where company.name = ? ORDER BY ";
         COUNT = "SELECT count(id) from computer";
         COUNT_NAME = "SELECT count(id) from computer where name = ?";
         COUNT_NAME_COMPANY = "SELECT count(computer.id) from computer left join company on company_id = company.id where company.name = ?";
+        LIMIT_OFFSET = " LIMIT ? OFFSET ?";
     }
 
     public static DAOComputerImpl getInstance() {
@@ -99,9 +101,10 @@ public enum DAOComputerImpl implements DAOComputer {
     }
 
     @Override
-    public Page<Computer> list(int numPage, int nbElement) {
+    public Page<Computer> list(int numPage, int nbElement , String typeOrder , String order) {
+        String requeteComplete = ecrireRequeteBasique(SELECT_LIST, typeOrder, order);
         try (Connection conn = ConnectionPoolDB.getInstance().open();
-                PreparedStatement statement = conn.prepareStatement(SELECT_LIST)) {
+                PreparedStatement statement = conn.prepareStatement(requeteComplete)) {
             ResultSet result = null;
             setStatementListe(statement, numPage, nbElement);
             result = statement.executeQuery();
@@ -127,9 +130,10 @@ public enum DAOComputerImpl implements DAOComputer {
     }
 
     @Override
-    public Page<Computer> findByName(String name, int numPage, int nbElement) {
+    public Page<Computer> findByName(String name, int numPage, int nbElement , String typeOrder , String order) {
+        String requeteComplete = ecrireRequeteBasique(FIND_NAME, typeOrder, order);
         try (Connection conn = ConnectionPoolDB.getInstance().open();
-                PreparedStatement statement = conn.prepareStatement(FIND_NAME)) {
+                PreparedStatement statement = conn.prepareStatement(requeteComplete)) {
             ResultSet result = null;
             setStatementFindByName(statement, name, numPage, nbElement);
             result = statement.executeQuery();
@@ -141,9 +145,10 @@ public enum DAOComputerImpl implements DAOComputer {
     }
 
     @Override
-    public Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement) {
+    public Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement , String typeOrder , String order) {
+        String requeteComplete = ecrireRequeteBasique(FIND_COMPANY, typeOrder, order);
         try (Connection conn = ConnectionPoolDB.getInstance().open();
-                PreparedStatement statement = conn.prepareStatement(FIND_COMPANY)) {
+                PreparedStatement statement = conn.prepareStatement(requeteComplete)) {
             ResultSet result = null;
             setStatementFindByName(statement, nameCompany, numPage, nbElement);
             result = statement.executeQuery();
@@ -211,11 +216,17 @@ public enum DAOComputerImpl implements DAOComputer {
         return requeteDeleteMultiple;
     }
 
+    private String ecrireRequeteBasique(String debutRequete, String typeOrder, String order) {
+        StringBuffer requeteComplete = new StringBuffer(debutRequete).append(typeOrder).append(" ").append(order).append(LIMIT_OFFSET);
+        return requeteComplete.toString();
+    }
     /**
      * Introduit les arguments de la fonction dans le statement(fonction list).
      * @param statement : Preparedstatement en cours
      * @param numPage : numero de page
      * @param nbElement : nombre d'élément
+     * @param order : croissant ou decroissant
+     * @param typeOrder : colonne concerner par le order by
      * @throws SQLException : SQL exception possible
      */
     private void setStatementListe(PreparedStatement statement, int numPage, int nbElement) throws SQLException {

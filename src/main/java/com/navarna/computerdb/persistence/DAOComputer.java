@@ -32,7 +32,8 @@ public interface DAOComputer {
     boolean delete(long id);
 
     /**
-     * Ecris une requête à la base de donnée afin de supprimer un tableau de computer.
+     * Ecris une requête à la base de donnée afin de supprimer un tableau de
+     * computer.
      * @param id : tableau de l'id d'élément à supprimer
      * @return boolean : si oui ou non la base de donnée à été modifié par la
      *         requête
@@ -54,10 +55,12 @@ public interface DAOComputer {
      * @param name : nom du computer
      * @param numPage : numero de la page
      * @param nbElement : nombre d'élément par page
+     * @param typeOrder : colonne de l'order by
+     * @param order : order croissant ou decroissant
      * @return Page<Computer> : une page contenant tout les computer ayant le
      *         nom passé en arguments
      */
-    Page<Computer> findByName(String name, int numPage, int nbElement);
+    Page<Computer> findByName(String name, int numPage, int nbElement, String typeOrder, String order);
 
     /**
      * Ecris une requête à la base de donnée afin d'avoir les détails de
@@ -65,18 +68,22 @@ public interface DAOComputer {
      * @param nameCompany : nom du computer
      * @param numPage : numero de la page
      * @param nbElement : nombre d'élément par page
+     * @param typeOrder : colonne de l'order by
+     * @param order : order croissant ou decroissant
      * @return Page<Computer> : une page contenant tout les computer ayant le
      *         nom passé en arguments
      */
-    Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement);
+    Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement, String typeOrder, String order);
 
     /**
      * Ecris une requête à la base de donnée afin d'avoir la liste des computer.
      * @param numPage : numero de la page
      * @param nbElement : nombre d'élément par page
+     * @param typeOrder : colonne de l'order by
+     * @param order : order croissant ou decroissant
      * @return Page<Computer> : Une page contenant une liste de computer
      */
-    Page<Computer> list(int numPage, int nbElement);
+    Page<Computer> list(int numPage, int nbElement, String typeOrder, String order);
 
     /**
      * Ecris une requête à la base de donnée afin d'avoir le nombre de computer.
