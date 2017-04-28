@@ -25,16 +25,11 @@ public class DAOComputerImplTest {
     @BeforeClass
     public static void setComputer () {
         id = 597L;
-        CompanyBuilder companyBuilder = new CompanyBuilder("company").setId(new Long(1)) ;
-        Company company = companyBuilder.build() ;
-        CompanyBuilder companyBuilderNull = new CompanyBuilder("null");
-        Company companyNull = companyBuilderNull.build();
-        ComputerBuilder computerBuilder = new ComputerBuilder("test").setId(new Long(0)).setIntroduced(LocalDate.of(1999,10,11)).setDiscontinued(LocalDate.of(2000, 11, 20)).setCompany(company) ;
-        computerTest = computerBuilder.build();
-        ComputerBuilder builderNull = new ComputerBuilder("null").setCompany(companyNull);
-        computerNull = builderNull.build();
-        ComputerBuilder builderAvecId = new ComputerBuilder("nullAvecId").setId(577L).setCompany(companyNull);
-        computerAvecId = builderAvecId.build();
+        Company company = new Company.CompanyBuilder("company").setId(new Long(1)).build() ;
+        Company companyNull = new CompanyBuilder("null").build();
+        computerTest = new ComputerBuilder("test").setId(new Long(0)).setIntroduced(LocalDate.of(1999,10,11)).setDiscontinued(LocalDate.of(2000, 11, 20)).setCompany(company).build() ;
+        computerNull = new ComputerBuilder("null").setCompany(companyNull).build();
+        computerAvecId = new ComputerBuilder("nullAvecId").setId(577L).setCompany(companyNull).build();
     }
 
     @Test
@@ -44,49 +39,49 @@ public class DAOComputerImplTest {
 
     @Test
     public void testInsert() {
-        int result = DAOComputerImpl.getInstance().insert(computerTest);
-        assertEquals(1,result);
-        int resultNull = DAOComputerImpl.getInstance().insert(computerNull);
-        assertEquals(1,resultNull);
+        boolean result = DAOComputerImpl.getInstance().insert(computerTest);
+        assertEquals(true,result);
+        boolean resultNull = DAOComputerImpl.getInstance().insert(computerNull);
+        assertEquals(true,resultNull);
     }
 
     @Test
     public void testUpdate() {
-        int result = DAOComputerImpl.getInstance().update(computerTest);
-        assertEquals(0,result);
-        int resultNull = DAOComputerImpl.getInstance().update(computerNull);
-        assertEquals(0,resultNull);
-        int resultAvecId = DAOComputerImpl.getInstance().update(computerAvecId);
-        assertEquals(1,resultAvecId);
+        boolean result = DAOComputerImpl.getInstance().update(computerTest);
+        assertEquals(false,result);
+        boolean resultNull = DAOComputerImpl.getInstance().update(computerNull);
+        assertEquals(false,resultNull);
+        boolean resultAvecId = DAOComputerImpl.getInstance().update(computerAvecId);
+        assertEquals(true,resultAvecId);
     }
 
     @Ignore
     public void testDelete() {
-        int result = DAOComputerImpl.getInstance().delete(id);
-        assertEquals(1,result);
+        boolean result = DAOComputerImpl.getInstance().delete(id);
+        assertEquals(true,result);
     }
 
     @Test
     public void testList() {
-        Page<Computer> page = DAOComputerImpl.getInstance().list(0,20);
+        Page<Computer> page = DAOComputerImpl.getInstance().list(0,20,"computer.id","ASC");
         assertEquals(page.estVide(),false);
     }
 
     @Test
     public void testShowId() {
-        Optional<Computer> computer = DAOComputerImpl.getInstance().showId(1L);
+        Optional<Computer> computer = DAOComputerImpl.getInstance().findById(1L);
         assertEquals(computer.isPresent(),true);
     }
 
-    @Test
+    @Ignore
     public void testShowName() {
-        Page<Computer> page = DAOComputerImpl.getInstance().showName("test",0,20);
+        Page<Computer> page = DAOComputerImpl.getInstance().findByName("test",0,20,"computer.id","ASC");
         assertEquals(page.estVide(),false);
     }
 
-    @Test
+    @Ignore
     public void testCountComputer() {
-        int result = DAOComputerImpl.getInstance().countComputer();
+        int result = DAOComputerImpl.getInstance().count();
         assertEquals(result,602);
     }
 }
