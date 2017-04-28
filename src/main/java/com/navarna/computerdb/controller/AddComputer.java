@@ -34,17 +34,13 @@ public class AddComputer extends HttpServlet {
      * @return int : nombre de ligne modifié par la requête
      */
     private boolean demandeInsert(String name, String introduced, String discontinued, String idCompany) {
-        // A enlever plus tard
-        introduced = "2000-05-02";
-        discontinued = "2013-04-27";
-        if (ValidationEntrer.entrerValide(name, introduced, discontinued, idCompany)) {
-            LocalDate pIntroduced = LocalDate.parse(introduced);
-            LocalDate pDiscontinued = LocalDate.parse(discontinued);
-            int id = ValidationEntrer.stringEnIntPositif(idCompany);
-            Company company = new Company.CompanyBuilder("null").setId(new Long(id)).build();
-            Computer computer = new Computer.ComputerBuilder(name).setIntroduced(pIntroduced)
-                    .setDiscontinued(pDiscontinued).setCompany(company).setId(0L).build();
-            System.out.println("computer inserer : "+ computer);
+        int id = ValidationEntrer.stringEnIntPositif(idCompany);
+        LocalDate computerIntroduced = ValidationEntrer.dateController(introduced);
+        LocalDate computerDiscontinued = ValidationEntrer.dateController(discontinued);
+        if (ValidationEntrer.entrerValide(name, computerIntroduced, computerDiscontinued, id)) {
+            Company company = new Company.CompanyBuilder("").setId(new Long(id)).build();
+            Computer computer = new Computer.ComputerBuilder(name).setIntroduced(computerIntroduced)
+                    .setDiscontinued(computerDiscontinued).setCompany(company).setId(0L).build();
             return servComputer.insert(computer);
         }
         return false;

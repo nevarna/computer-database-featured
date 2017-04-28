@@ -48,7 +48,6 @@ public class Dashboard extends HttpServlet {
      */
     private String[] lireParametrePost(HttpServletRequest request) {
         String selection = request.getParameter("selection");
-        System.out.println("selection : " + selection);
         if (selection != null) {
             return selection.split(",");
         }
@@ -94,7 +93,7 @@ public class Dashboard extends HttpServlet {
             pageComputer = TransformationToDTO
                     .pageComputerToPageDTO(servComputer.liste(numPage, nbElement, typeSearch, order));
         } else {
-            if (typeSearch.equals("computer.id")) {
+            if (typeSearch.equals("computer.name")) {
                 pageComputer = TransformationToDTO
                         .pageComputerToPageDTO(servComputer.findByName(name, numPage, nbElement, typeSearch, order));
             } else {

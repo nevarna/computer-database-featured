@@ -41,7 +41,8 @@ public class TransformationResultSet {
     /**
      * extrait du ResultSet une liste de compagnie.
      * @param result : ResultSet de la requête
-     * @return ArrayList<Company> : une arrayList contenant la liste  des companies
+     * @return ArrayList<Company> : une arrayList contenant la liste des
+     *         companies
      */
     public static ArrayList<Company> extraireListeCompleteCompany(ResultSet result) {
         try {
@@ -57,15 +58,25 @@ public class TransformationResultSet {
             throw new MapperException("Erreur de result.next (fonction extraireListeCompany())", se);
         }
     }
+
     /**
      * transforme une date de type String en date de type LocalDate.
      * @param dateEnString : date en type String
      * @return LocalDate : localDate correspondant au String en arguments
      */
     public static Optional<LocalDate> recupererDate(String dateEnString) {
+        System.out.println("date en string : " + dateEnString);
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss.S");
             LocalDate date = LocalDate.parse(dateEnString, formatter);
+            System.out.println(date);
+            return Optional.of(date);
+        } catch (DateTimeParseException pe) {
+        }
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
+            LocalDate date = LocalDate.parse(dateEnString, formatter);
+            System.out.println(date);
             return Optional.of(date);
         } catch (DateTimeParseException pe) {
             return Optional.empty();

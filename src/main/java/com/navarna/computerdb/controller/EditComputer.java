@@ -3,6 +3,7 @@ package com.navarna.computerdb.controller;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.navarna.computerdb.dto.CompanyDTO;
 import com.navarna.computerdb.exception.ControllerException;
 import com.navarna.computerdb.mapper.TransformationToDTO;
-import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.service.ServiceCompanyImpl;
 import com.navarna.computerdb.service.ServiceComputerImpl;
@@ -46,29 +46,43 @@ public class EditComputer extends HttpServlet {
     }
 
     /**
-     * Verifie les arguments de l'utilisateur et si elles sont correct, fait
-     * l'update.
+     * remplace les attributs du computer de la base de données par les
+     * nouveaux.
+     * @param computer : computer avec les valeurs dans la base de données
      * @param id : id du computer
      * @param name : nom du computer
      * @param introduced : date de mise en marche
      * @param discontinued : date d'arret
      * @param idCompany : numero de la company
+     */
+    public void remplaceAttributComputer(Computer computer, long id, String name, String introduced,
+            String discontinued, String idCompany) {
+        System.out.println("computer trouver : " + computer);
+        int idComp = ValidationEntrer.stringEnIntPositif(idCompany);
+        LocalDate computerIntroduced = ValidationEntrer.dateController(introduced);
+        LocalDate computerDiscontinued = ValidationEntrer.dateController(discontinued);
+        if (!name.equals("")) {
+            computer.setName(name);
+        }
+        if (computerIntroduced != null) {
+            computer.setIntroduced(computerIntroduced);
+        }
+        if (computerDiscontinued != null) {
+            computer.setDiscontinued(computerDiscontinued);
+        }
+        if (idComp != -1) {
+            computer.getCompany().setId(idComp);
+        }
+    }
+
+    /**
+     * Verifie les arguments de l'utilisateur et si elles sont correct, fait
+     * l'update.
+     * 
      * @return boolean : si oui ou non la base de données à été modifié
      */
-    public boolean demandeUpdate(long id, String name, String introduced, String discontinued, String idCompany) {
-        System.out.println("dans edit");
-        // A enlever plus tard
-        introduced = "1994-05-06";
-        discontinued = "2017-04-27";
-
-        if (ValidationEntrer.entrerValide(name, introduced, discontinued, idCompany)) {
-            LocalDate pIntroduced = LocalDate.parse(introduced);
-            LocalDate pDiscontinued = LocalDate.parse(discontinued);
-            int CompanyId = ValidationEntrer.stringEnIntPositif(idCompany);
-            Company company = new Company.CompanyBuilder("null").setId(new Long(CompanyId)).build();
-            Computer computer = new Computer.ComputerBuilder(name).setId(id).setIntroduced(pIntroduced)
-                    .setDiscontinued(pDiscontinued).setCompany(company).build();
-            System.out.println("Computer changement : "+ computer);
+    public boolean demandeUpdate(Computer computer) {
+        if (ValidationEntrer.dateLogique(computer.getIntroduced(), computer.getDiscontinued())) {
             return servComputer.update(computer);
         }
         return false;
@@ -135,7 +149,12 @@ public class EditComputer extends HttpServlet {
             throws ServletException, IOException {
         String[] parametres = lireParametrePost(request);
         long id = setIdComputer(parametres[0]);
-        boolean reponse = demandeUpdate(id, parametres[1], parametres[2], parametres[3], parametres[4]);
+        Optional<Computer> computer = servComputer.findById(id);
+        boolean reponse = false;
+        if (computer.isPresent()) {
+            remplaceAttributComputer(computer.get(), id, parametres[1], parametres[2], parametres[3], parametres[4]);
+            reponse = demandeUpdate(computer.get());
+        }
         if (reponse) {
             response.sendRedirect("Dashboard");
         } else {

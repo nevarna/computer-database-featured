@@ -2,23 +2,23 @@ package com.navarna.computerdb.validator;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class ValidationEntrer {
 
     /**
-     * Vérifie que l'heure soit correct.
-     * @param temps : un string contenant l'heure
-     * @return boolean : si oui ou non l'
+     * Vérifie si la date est correcte.
+     * @param dateCouper : tableau de string représentant une date decouper en
+     *            date et heure.
+     * @return boolean : reponse si oui ou non la date est correct
      */
-    public static boolean verificationHeure(String temps) {
-        String[] tempsDecouper = temps.split(":");
-        if (tempsDecouper.length != 3) {
-            return false;
-        }
-        int heure = stringEnIntPositif(tempsDecouper[0]);
-        int minute = stringEnIntPositif(tempsDecouper[1]);
-        int seconde = stringEnIntPositif(tempsDecouper[2]);
-        if ((heure < 0) || (heure > 23) || (minute < 0) || (minute > 59) || (seconde < 0) || (seconde > 59)) {
+    public static boolean verificationDate(String date) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        df.setLenient(false);
+        try {
+            df.parse(date);
+        } catch (ParseException pe) {
             return false;
         }
         return true;
@@ -30,17 +30,13 @@ public class ValidationEntrer {
      *            date et heure.
      * @return boolean : reponse si oui ou non la date est correct
      */
-    public static boolean verificationDate(String[] dateCouper) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    public static boolean verificationDateEnvers(String date) {
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         df.setLenient(false);
         try {
-            df.parse(dateCouper[0]);
+            df.parse(date);
         } catch (ParseException pe) {
-            System.out.println("Date incorrect : " + dateCouper[0]);
             return false;
-        }
-        if (dateCouper.length == 2) {
-            return verificationHeure(dateCouper[1]);
         }
         return true;
     }
@@ -54,11 +50,56 @@ public class ValidationEntrer {
      */
     public static boolean verificationFormatDate(String date) {
         String[] dateDecouper = date.split(" ");
-        if ((dateDecouper.length > 2) || (dateDecouper.length < 0)) {
+        if ((dateDecouper.length > 1) || (dateDecouper.length < 0)) {
             return false;
         } else {
-            return verificationDate(dateDecouper);
+            return verificationDate(date) || verificationDateEnvers(date);
         }
+    }
+
+    /**
+     * transforme la date en format LocalDate.
+     * @param date : date en type String
+     * @return LocalDate : une date correct correspndant à l'entrer
+     */
+    public static LocalDate dateController(String date) {
+        LocalDate dateCorrect = null;
+        try {
+            if (verificationFormatDate(date)) {
+                if (verificationDate(date)) {
+                    dateCorrect = LocalDate.parse(date);
+                } else {
+                    String[] dateSplit = date.split("-");
+                    dateCorrect = LocalDate.of(Integer.parseInt(dateSplit[2]), Integer.parseInt(dateSplit[1]),
+                            Integer.parseInt(dateSplit[0]));
+                }
+            }
+        } catch (DateTimeParseException | NumberFormatException ne) {
+            return dateCorrect;
+        }
+        return dateCorrect;
+    }
+
+    /**
+     * Vérifie la logique entre les dates.
+     * @param introduced : date de debut
+     * @param discontinued : date de fin
+     * @return boolean : si les 2 valeurs sont logique entre elles
+     */
+    public static boolean dateLogique(LocalDate introduced, LocalDate discontinued) {
+        if ((introduced == null) && (discontinued == null)) {
+            return true;
+        }
+        if ((introduced == null) && (discontinued != null)) {
+            return false;
+        }
+        if ((introduced != null) && (discontinued == null)) {
+            return true;
+        }
+        if ((introduced == discontinued) || (introduced.equals(discontinued))) {
+            return true;
+        }
+        return introduced.isBefore(discontinued);
     }
 
     /**
@@ -88,20 +129,8 @@ public class ValidationEntrer {
      * @param idCompany : id de la company
      * @return boolean : true or false
      */
-    public static boolean entrerValide(String name, String introduced, String discontinued, String idCompany) {
-        if (name == null) {
-            return false;
-        }
-        if (!verificationFormatDate(introduced)) {
-            return false;
-        }
-        if (!verificationFormatDate(discontinued)) {
-            return false;
-        }
-        if (stringEnIntPositif(idCompany) == -1) {
-            return false;
-        }
-        return true;
+    public static boolean entrerValide(String name, LocalDate introduced, LocalDate discontinued, long idCompany) {
+        return (name != null) && (!name.equals("")) && (dateLogique(introduced, discontinued)) && (idCompany != -1);
     }
 
 }
