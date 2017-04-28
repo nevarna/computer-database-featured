@@ -19,7 +19,7 @@ public class ValidationNavigationTest {
 
     @Test
     public void testVerificationNbElement() {
-        String correct = "50"; 
+        String correct = "50";
         String faux = "12";
         String faux2 = null;
         assertEquals(true,ValidationNavigation.verificationNbElement(correct));
