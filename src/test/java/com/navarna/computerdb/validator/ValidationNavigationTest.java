@@ -37,8 +37,8 @@ public class ValidationNavigationTest {
 
     @Test
     public void testVerificationTypeSearch() {
-        String correct  = "Company";
-        String correct2 = "Computer";
+        String correct  = "company.name";
+        String correct2 = "computer.name";
         String faux = "Coamp";
         String faux2 = null;
         assertEquals(true, ValidationNavigation.verificationTypeSearch(correct));
@@ -49,7 +49,7 @@ public class ValidationNavigationTest {
 
     @Test
     public void testVerificationSearch() {
-        boolean correct  = ValidationNavigation.verificationSearch("tre", "Computer");
+        boolean correct  = ValidationNavigation.verificationSearch("tre", "computer.name");
         boolean faux = ValidationNavigation.verificationSearch(null, "Computer");
         boolean faux2 = ValidationNavigation.verificationSearch("", "Computer");
         boolean faux3 = ValidationNavigation.verificationSearch("moi", "COmpute");

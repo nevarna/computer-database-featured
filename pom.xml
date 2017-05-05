@@ -4,7 +4,7 @@
 	<groupId>com.navarna.computerdb.</groupId>
 	<artifactId>ComputerDatabase</artifactId>
 	<packaging>war</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>ComputerDatabase Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<properties>
@@ -18,10 +18,13 @@
 		<maven.hikari.version>2.6.1</maven.hikari.version>
 		<maven.servlet.version>3.0.1</maven.servlet.version>
 		<maven.jsp-api.version>2.2</maven.jsp-api.version>
-		<maven.selenium.version>3.0.0</maven.selenium.version>
+		<maven.selenium.version>3.4.0</maven.selenium.version>
+		<maven.gatlin.version>2.1.7</maven.gatlin.version>
+		<maven.gatlin-plugin.version>2.1.7</maven.gatlin-plugin.version>
+		<maven.scala-plugin.version>3.2.2</maven.scala-plugin.version>
 		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
 		<maven-checkstyle-plugin.configLocation>src/main/resources/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-		<maven.slf4j.version>1.6.4</maven.slf4j.version>
+		<maven.slf4j.version>1.8.0-alpha2</maven.slf4j.version>
 		<maven.logback.version>1.0.1</maven.logback.version>
 	</properties>
 	<dependencies>
@@ -58,7 +61,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${maven.slf4j.version}</version>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -84,11 +87,12 @@
 			<scope>test</scope>
 		</dependency>
 
-    <dependency>
-        <groupId>org.seleniumhq.selenium</groupId>
-        <artifactId>selenium-server</artifactId>
-        <version>3.4.0</version>
-    </dependency>  
+		<dependency>
+			<groupId>io.gatling.highcharts</groupId>
+			<artifactId>gatling-charts-highcharts</artifactId>
+			<version>${maven.gatlin.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>ComputerDatabase</finalName>
@@ -100,6 +104,16 @@
 				<configuration>
 					<configLocation>${maven-checkstyle-plugin.configLocation}</configLocation>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<version>${maven.scala-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>io.gatling</groupId>
+				<artifactId>gatling-maven-plugin</artifactId>
+				<version>${maven.gatlin-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</build>
