@@ -4,7 +4,7 @@
 <%@page import="com.navarna.computerdb.model.*"%>
 <%@page import="com.navarna.computerdb.dto.*"%>
 <%@page import="com.navarna.computerdb.controller.*"%>
-<%@page import="com.navarna.computerdb.exception.*" %>
+<%@page import="com.navarna.computerdb.exception.*"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="test"%>
 <%
     String finUrl = null;
@@ -16,7 +16,7 @@
         String retour = "";
         retour = finUrl.replace("+", "%2B");
         retour = finUrl.replace(" ", "+");
-        finUrl= "?search=" + retour + "&type=" + typeSearch;
+        finUrl = "?search=" + retour + "&type=" + typeSearch;
         finUrl += "&";
     } else {
         finUrl = "?";
@@ -52,7 +52,7 @@
 	<section id="main">
 		<div class="container">
 			<h1 id="homeTitle">
-				<% 
+				<%
 				    obj = request.getAttribute("totalElement");
 				    if (obj instanceof Integer) {
 				        Integer totalElement = (Integer) obj;
@@ -71,10 +71,18 @@
                 String nouvelleBalise = "value=\"" + request.getAttribute("name") + "\"";
                 out.print(nouvelleBalise);
             }%> />
-						<input type="radio" name="type" value="Computer" checked />Computer
-						<input type="radio" name="type" value="Company" />Company <input
-							type="submit" id="searchsubmit" value="Filter by name"
-							class="btn btn-primary" />
+
+						<input type="submit" id="searchsubmit" value="Filter by name"
+							class="btn btn-primary" /> <br> <input type="radio"
+							name="type" value="computer.name" checked />Computer <input
+							type="radio" name="type" value="company.name" />Company <input
+							type="radio" name="type" value="introduced" />Introduced <input
+							type="radio" name="type" value="discontinued" />Discontinued <select
+							class="form-horizontal" id="orderby" name="order">
+							<option>none</option>
+							<option value="ASC">croissant</option>
+							<option value="DESC">decroissant</option>
+						</select>
 					</form>
 				</div>
 				<div class="pull-right">
