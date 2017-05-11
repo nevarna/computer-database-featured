@@ -30,7 +30,7 @@ public class ValidationNavigationTest {
     @Test
     public void testEnleverCaractereInterdit() {
         String test = "aéà%&$aa";
-        test = ValidationNavigation.EnleverCaractereInterdit(test);
+        test = ValidationNavigation.enleverCaractereInterdit(test);
         assertEquals("aea   aa", test);
         
     }

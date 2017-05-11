@@ -18,6 +18,10 @@ import com.navarna.computerdb.service.ServiceCompanyImpl;
 import com.navarna.computerdb.service.ServiceComputerImpl;
 import com.navarna.computerdb.validator.ValidationEntrer;
 
+/**
+ * @author excilys
+ *
+ */
 public class AddComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final int NOMBRE_PARAMETRE = 4;
@@ -68,14 +72,11 @@ public class AddComputer extends HttpServlet {
      */
     public void ecrireAttribute(HttpServletRequest request) {
         ArrayList<CompanyDTO> informationCompany = TransformationToDTO
-                .ArrayListCompanyToArrayListDTO(servCompany.listeComplete());
+                .arraylistCompanyToArraylistDTO(servCompany.listeComplete());
         request.setAttribute("listeCompany", informationCompany);
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher fichierJSP = this.getServletContext()
@@ -84,10 +85,7 @@ public class AddComputer extends HttpServlet {
         fichierJSP.forward(request, response);
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String[] parametres = lireParametre(request);

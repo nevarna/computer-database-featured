@@ -96,14 +96,14 @@ public class TransformationResultSet {
                 String tIntroduced = result.getString("introduced");
                 LocalDate introduced = null;
                 if (tIntroduced != null) {
-                    Optional<LocalDate> OpInroduced = recupererDate(tIntroduced);
-                    introduced = OpInroduced.isPresent() ? OpInroduced.get() : null;
+                    Optional<LocalDate> opInroduced = recupererDate(tIntroduced);
+                    introduced = opInroduced.isPresent() ? opInroduced.get() : null;
                 }
                 String tDiscontinued = result.getString("discontinued");
                 LocalDate discontinued = null;
                 if (tDiscontinued != null) {
-                    Optional<LocalDate> OpDiscontinued = recupererDate(tDiscontinued);
-                    discontinued = OpDiscontinued.isPresent() ? OpDiscontinued.get() : null;
+                    Optional<LocalDate> opDiscontinued = recupererDate(tDiscontinued);
+                    discontinued = opDiscontinued.isPresent() ? opDiscontinued.get() : null;
                 }
                 long companyId = result.getLong("company_id");
                 String nameCompany = result.getString("company.name");

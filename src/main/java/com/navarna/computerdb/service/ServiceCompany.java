@@ -9,6 +9,8 @@ public interface ServiceCompany {
 
     /**
      * Demande au DAOCompany la liste des compagnies.
+     * @param numPage : numero de page
+     * @param nbElement : nombre d'élément par page
      * @return Page<Company> : page de la liste de companie
      */
     Page<Company> liste(int numPage, int nbElement);

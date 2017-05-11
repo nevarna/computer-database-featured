@@ -101,7 +101,7 @@ public enum DAOComputerImpl implements DAOComputer {
     }
 
     @Override
-    public Page<Computer> list(int numPage, int nbElement , String typeOrder , String order) {
+    public Page<Computer> list(int numPage, int nbElement, String typeOrder, String order) {
         String requeteComplete = ecrireRequeteBasique(SELECT_LIST, typeOrder, order);
         try (Connection conn = ConnectionPoolDB.getInstance().open();
                 PreparedStatement statement = conn.prepareStatement(requeteComplete)) {
@@ -130,7 +130,7 @@ public enum DAOComputerImpl implements DAOComputer {
     }
 
     @Override
-    public Page<Computer> findByName(String name, int numPage, int nbElement , String typeOrder , String order) {
+    public Page<Computer> findByName(String name, int numPage, int nbElement, String typeOrder, String order) {
         String requeteComplete = ecrireRequeteBasique(FIND_NAME, typeOrder, order);
         try (Connection conn = ConnectionPoolDB.getInstance().open();
                 PreparedStatement statement = conn.prepareStatement(requeteComplete)) {
@@ -145,7 +145,8 @@ public enum DAOComputerImpl implements DAOComputer {
     }
 
     @Override
-    public Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement , String typeOrder , String order) {
+    public Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement, String typeOrder,
+            String order) {
         String requeteComplete = ecrireRequeteBasique(FIND_COMPANY, typeOrder, order);
         try (Connection conn = ConnectionPoolDB.getInstance().open();
                 PreparedStatement statement = conn.prepareStatement(requeteComplete)) {
@@ -216,17 +217,24 @@ public enum DAOComputerImpl implements DAOComputer {
         return requeteDeleteMultiple;
     }
 
+    /**
+     * Ecris la requete complete selon le type d'ordre et l'arguments d'ordre.
+     * @param debutRequete : debut de la requete
+     * @param typeOrder : colone de order
+     * @param order : type de colone order ASC ou DESC
+     * @return String : la requete complete
+     */
     private String ecrireRequeteBasique(String debutRequete, String typeOrder, String order) {
-        StringBuffer requeteComplete = new StringBuffer(debutRequete).append(typeOrder).append(" ").append(order).append(LIMIT_OFFSET);
+        StringBuffer requeteComplete = new StringBuffer(debutRequete).append(typeOrder).append(" ").append(order)
+                .append(LIMIT_OFFSET);
         return requeteComplete.toString();
     }
+
     /**
      * Introduit les arguments de la fonction dans le statement(fonction list).
      * @param statement : Preparedstatement en cours
      * @param numPage : numero de page
      * @param nbElement : nombre d'élément
-     * @param order : croissant ou decroissant
-     * @param typeOrder : colonne concerner par le order by
      * @throws SQLException : SQL exception possible
      */
     private void setStatementListe(PreparedStatement statement, int numPage, int nbElement) throws SQLException {

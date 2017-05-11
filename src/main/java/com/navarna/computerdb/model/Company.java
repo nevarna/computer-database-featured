@@ -4,7 +4,6 @@ public class Company {
     private long id;
     private String name;
 
-
     public long getId() {
         return this.id;
     }
@@ -16,10 +15,11 @@ public class Company {
     public void setId(long id) {
         this.id = id;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
+
     @Override
     public String toString() {
         String affiche = "id : " + this.id + " name : " + this.name;
@@ -60,22 +60,21 @@ public class Company {
         return true;
     }
 
-
     public static final class CompanyBuilder {
         private Company company;
 
         /**
          * Constructeur de classe : un argument obligatoire.
-         * @param pName : String argument obligatoire
+         * @param name : String argument obligatoire
          */
         public CompanyBuilder(String name) {
             company = new Company();
-            company.name = name ==null? "" : name;
+            company.name = name == null ? "" : name;
         }
 
         /**
          * setter de l'id.
-         * @param pId : id de la company
+         * @param id : id de la company
          * @return CompanyBuilder : l'instance de classe
          */
         public CompanyBuilder setId(long id) {

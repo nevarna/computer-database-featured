@@ -17,13 +17,16 @@ public class EntrerUtilisateur {
     public final Scanner sc;
     public final ConstruireRequete construireRequete;
 
+    /**
+     * Constructeur entrerUtilisateur.
+     */
     public EntrerUtilisateur() {
         sc = new Scanner(System.in);
         this.construireRequete = new ConstruireRequete(this);
     }
 
     /**
-     * Demande à l'utilisateur d'entrer les informations d'un ordinateur. 
+     * Demande à l'utilisateur d'entrer les informations d'un ordinateur.
      * @param idComputer : id du computer
      * @return Computer : un Computer avec les données insérer
      */
@@ -103,7 +106,6 @@ public class EntrerUtilisateur {
 
     /**
      * Demande à l'utilisateur d'entrer un id.
-     * 
      * @return int
      */
     public int demandeId() {
@@ -114,7 +116,6 @@ public class EntrerUtilisateur {
 
     /**
      * Demande à l'utilisateur d'entrer un nom.
-     * 
      * @return String : le nom
      */
     public String demandeName() {
@@ -126,7 +127,6 @@ public class EntrerUtilisateur {
     /**
      * Demande à l'utilisateur le numero de la page et le nombre d'élément par
      * page.
-     * 
      * @param type : companies ou computer
      */
     public void demandeChangeNbListe(String type) {
@@ -151,7 +151,6 @@ public class EntrerUtilisateur {
 
     /**
      * Permet à l'utilisateur de naviguer dans la liste.
-     * 
      * @param command : commande de l'utilisateur
      */
     public void retourList(String[] command) {

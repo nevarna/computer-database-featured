@@ -33,7 +33,6 @@ public class ServiceComputerImpl implements ServiceComputer {
         return false;
     }
 
-
     @Override
     public boolean deleteMultiple(long[] id) {
         if (id.length > 1) {
@@ -44,7 +43,7 @@ public class ServiceComputerImpl implements ServiceComputer {
 
     @Override
     public Page<Computer> liste(int numPage, int nbElement, String typeOrder, String order) {
-        return this.dComputerImpl.list(numPage, nbElement,typeOrder,order);
+        return this.dComputerImpl.list(numPage, nbElement, typeOrder, order);
     }
 
     @Override
@@ -58,17 +57,18 @@ public class ServiceComputerImpl implements ServiceComputer {
     @Override
     public Page<Computer> findByName(String name, int numPage, int nbElement, String typeOrder, String order) {
         if (name != null) {
-            return this.dComputerImpl.findByName(name, numPage, nbElement,typeOrder, order);
+            return this.dComputerImpl.findByName(name, numPage, nbElement, typeOrder, order);
         }
-        return new Page<Computer>(0,0);
+        return new Page<Computer>(0, 0);
     }
 
     @Override
-    public Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement, String typeOrder, String order) {
+    public Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement, String typeOrder,
+            String order) {
         if (nameCompany != null) {
             return this.dComputerImpl.findByCompany(nameCompany, numPage, nbElement, typeOrder, order);
         }
-        return new Page<Computer>(0,0);
+        return new Page<Computer>(0, 0);
     }
 
     @Override

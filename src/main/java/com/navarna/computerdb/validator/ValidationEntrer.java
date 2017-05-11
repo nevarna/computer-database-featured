@@ -9,7 +9,7 @@ public class ValidationEntrer {
 
     /**
      * Vérifie si la date est correcte.
-     * @param dateCouper : tableau de string représentant une date decouper en
+     * @param date : tableau de string représentant une date decouper en
      *            date et heure.
      * @return boolean : reponse si oui ou non la date est correct
      */
@@ -26,7 +26,7 @@ public class ValidationEntrer {
 
     /**
      * Vérifie si la date est correcte.
-     * @param dateCouper : tableau de string représentant une date decouper en
+     * @param date : tableau de string représentant une date decouper en
      *            date et heure.
      * @return boolean : reponse si oui ou non la date est correct
      */
@@ -41,11 +41,9 @@ public class ValidationEntrer {
         return true;
     }
 
-    /*
+    /**
      * Verifie si la date en String est correct.
-     * 
      * @param date : date en type String
-     * 
      * @return boolean : true or false
      */
     public static boolean verificationFormatDate(String date) {
@@ -104,7 +102,6 @@ public class ValidationEntrer {
 
     /**
      * transforme un String en int.
-     * 
      * @param nombre : nombre en ype String
      * @return int : le nombre en type int -> -1 si le nombre n'est pas correct
      */

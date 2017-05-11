@@ -54,7 +54,7 @@ public class TransformationToDTO {
      * @param computerDTO : ComputerDTO à transformer
      * @return Optional<Computer> : Computer correspondant au ComputerDTO
      */
-    public static Optional<Computer> DTOToComputer(ComputerDTO computerDTO) {
+    public static Optional<Computer> dtoToComputer(ComputerDTO computerDTO) {
         if ((computerDTO.getName() == null) || (computerDTO.getNameCompany() == null)) {
             return Optional.empty();
         }
@@ -98,7 +98,7 @@ public class TransformationToDTO {
      * @param companyDTO : CompanyDTO à transformer
      * @return Optional<Company> : Company transformer en CompanyDTO
      */
-    public static Optional<Company> DTOToCompany(CompanyDTO companyDTO) {
+    public static Optional<Company> dtoToCompany(CompanyDTO companyDTO) {
         if (companyDTO.getName() != null) {
             Company company = new Company.CompanyBuilder(companyDTO.getName()).setId(companyDTO.getId()).build();
             return Optional.of(company);
@@ -140,10 +140,10 @@ public class TransformationToDTO {
 
     /**
      * Transforme une ArrayList Company en une ArrayList CompanyDTO.
-     * @param page : page de company à transformer
+     * @param liste : liste de company à transformer
      * @return ArrayList<CompanyDTO> : arrayList de companyDTO correspondant à page
      */
-    public static ArrayList<CompanyDTO> ArrayListCompanyToArrayListDTO(ArrayList<Company> liste) {
+    public static ArrayList<CompanyDTO> arraylistCompanyToArraylistDTO(ArrayList<Company> liste) {
         ArrayList<CompanyDTO> listeDTO = new ArrayList<CompanyDTO>();
         for (Company company : liste) {
             Optional<CompanyDTO> companyDTO = companyToDTO(company);

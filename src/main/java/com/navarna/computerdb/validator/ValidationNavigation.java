@@ -9,17 +9,12 @@ public class ValidationNavigation {
     /**
      * Verifie l'indice de la page.
      * @param page : page demandé
-     * @param maxPage : numeroMaxDePage
      * @return boolean : true or false
      */
     public static boolean verificationPage(String page) {
         try {
             int numero = page == null ? -2 : Integer.parseInt(page);
-            if (numero > 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return numero > 0;
         } catch (NumberFormatException ne) {
             throw new ValidatorException("l'argument parametre de page n'est pas un nombre", ne);
         }
@@ -49,15 +44,15 @@ public class ValidationNavigation {
      * @param name : string recu en arguments
      * @return String : name sans caractere special ni accent
      */
-    public static String EnleverCaractereInterdit(String name) {
+    public static String enleverCaractereInterdit(String name) {
         name = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
         name = name.replaceAll("<[^>]*>|\\d|\\W|_", " ");
         return name;
     }
 
     /**
-     * Verifie la valeur de typeSearch
-     * @param typeSearch
+     * Verifie la valeur de typeSearch.
+     * @param typeSearch : type de la recherche
      * @return boolean : true or false
      */
     public static boolean verificationTypeSearch(String typeSearch) {
@@ -69,7 +64,7 @@ public class ValidationNavigation {
     }
 
     /**
-     * Verification de la valeur de name et typeSearch
+     * Verification de la valeur de name et typeSearch.
      * @param name : nom entrer en recherche
      * @param typeSearch : type de la recherche
      * @return boolean : true or false
@@ -86,7 +81,7 @@ public class ValidationNavigation {
     }
 
     /**
-     * Verifie la valeur de order
+     * Verifie la valeur de order.
      * @param order : si on a besoin de order
      * @return boolean : true or false
      */

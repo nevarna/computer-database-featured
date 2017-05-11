@@ -16,7 +16,7 @@ import com.navarna.computerdb.service.ServiceComputerImpl;
 import com.navarna.computerdb.validator.ValidationNavigation;
 
 /**
- * Servlet implementation class Dashboard
+ * Servlet implementation class Dashboard.
  */
 public class Dashboard extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -83,6 +83,7 @@ public class Dashboard extends HttpServlet {
      * Créer la liste à afficher dans pageComputer.
      * @param name : nom ecris en arguments
      * @param typeSearch : si on cherche une companies ou un computer
+     * @param order : type de l'ordre ASC ou DESC
      * @param numPage : numero de la page
      * @param nbElement : nombre d'élément par page
      * @return Page<ComputerDTO> : page contenant la liste à afficher
@@ -126,7 +127,7 @@ public class Dashboard extends HttpServlet {
 
     /**
      * Ecrit les attributs dont a besoin le fichier JSP.
-     * @param request: request reçu par le servlet
+     * @param request : request reçu par le servlet
      * @param pageComputer : page contenant la liste de computer
      * @param numPage : numero de page
      * @param name : nom de la recherche
@@ -147,12 +148,7 @@ public class Dashboard extends HttpServlet {
         request.setAttribute("maxPage", totalElement / nbElement);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.
-     * HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher fichierJSP = this.getServletContext().getRequestDispatcher("/resources/views/dashboard.jsp");
@@ -167,7 +163,7 @@ public class Dashboard extends HttpServlet {
         }
         String name = null;
         if (ValidationNavigation.verificationSearch(parametres[2], parametres[3])) {
-            name = ValidationNavigation.EnleverCaractereInterdit(parametres[2]);
+            name = ValidationNavigation.enleverCaractereInterdit(parametres[2]);
         }
         String order = "ASC";
         if (ValidationNavigation.verificationOrder(parametres[4])) {
@@ -183,12 +179,7 @@ public class Dashboard extends HttpServlet {
         fichierJSP.forward(request, response);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.
-     * HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String[] tableauIdDelete = lireParametrePost(request);

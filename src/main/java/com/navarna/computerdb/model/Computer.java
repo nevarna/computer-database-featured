@@ -92,7 +92,7 @@ public class Computer {
 
         /**
          * Constructeur de classe : un argument obligatoire.
-         * @param pName : String argument obligatoire
+         * @param name : String argument obligatoire
          */
         public ComputerBuilder(String name) {
             computer = new Computer();
@@ -101,7 +101,7 @@ public class Computer {
 
         /**
          * setter de l'id.
-         * @param pId : id du computer
+         * @param id : id du computer
          * @return ComputerBuilder : l'instance de classe
          */
         public ComputerBuilder setId(long id) {
@@ -111,7 +111,7 @@ public class Computer {
 
         /**
          * setter d'introduced.
-         * @param pIntroduced : date de mise en marche du computer
+         * @param introduced : date de mise en marche du computer
          * @return ComputerBuilder : l'instance de classe
          */
         public ComputerBuilder setIntroduced(LocalDate introduced) {
@@ -121,7 +121,7 @@ public class Computer {
 
         /**
          * setter de discontinued.
-         * @param pDiscontinued : date d'arret du computer
+         * @param discontinued : date d'arret du computer
          * @return ComputerBuilder : l'instance de classe
          */
         public ComputerBuilder setDiscontinued(LocalDate discontinued) {
@@ -131,7 +131,7 @@ public class Computer {
 
         /**
          * setter de company.
-         * @param pCompany : Company de l'ordinateur
+         * @param company : Company de l'ordinateur
          * @return ComputerBuilder : l'instance de classe
          */
         public ComputerBuilder setCompany(Company company) {

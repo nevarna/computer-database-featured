@@ -20,7 +20,7 @@ import com.navarna.computerdb.service.ServiceComputerImpl;
 import com.navarna.computerdb.validator.ValidationEntrer;
 
 /**
- * Servlet implementation class EditComputer
+ * Servlet implementation class EditComputer.
  */
 public class EditComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -29,8 +29,9 @@ public class EditComputer extends HttpServlet {
     private ServiceCompanyImpl servCompany = new ServiceCompanyImpl();
 
     /**
-     * set id avec l id passée en arguments get
+     * set id avec l id passée en arguments get.
      * @param idLien : id reçu en get
+     * @return long : id du computer
      */
     public long setIdComputer(String idLien) {
         try {
@@ -78,7 +79,7 @@ public class EditComputer extends HttpServlet {
     /**
      * Verifie les arguments de l'utilisateur et si elles sont correct, fait
      * l'update.
-     * 
+     * @param computer : computer à modifier
      * @return boolean : si oui ou non la base de données à été modifié
      */
     public boolean demandeUpdate(Computer computer) {
@@ -126,25 +127,19 @@ public class EditComputer extends HttpServlet {
         request.setAttribute("id", id);
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher fichierJSP = this.getServletContext()
                 .getRequestDispatcher("/resources/views/editComputer.jsp");
         long id = recupererIdEnGet(request);
         ArrayList<CompanyDTO> informationCompany = TransformationToDTO
-                .ArrayListCompanyToArrayListDTO(servCompany.listeComplete());
+                .arraylistCompanyToArraylistDTO(servCompany.listeComplete());
         ecrireAttribute(request, id, informationCompany);
         fichierJSP.forward(request, response);
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String[] parametres = lireParametrePost(request);
@@ -161,7 +156,7 @@ public class EditComputer extends HttpServlet {
             RequestDispatcher fichierJSP = this.getServletContext()
                     .getRequestDispatcher("/resources/views/editComputer.jsp");
             ArrayList<CompanyDTO> informationCompany = TransformationToDTO
-                    .ArrayListCompanyToArrayListDTO(servCompany.listeComplete());
+                    .arraylistCompanyToArraylistDTO(servCompany.listeComplete());
             request.setAttribute("reponse", reponse);
             ecrireAttribute(request, id, informationCompany);
             fichierJSP.forward(request, response);
