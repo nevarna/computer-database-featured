@@ -1,5 +1,10 @@
 package com.navarna.computerdb.model;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@Component
+@Scope("prototype")
 public class Company {
     private long id;
     private String name;
@@ -59,7 +64,7 @@ public class Company {
         }
         return true;
     }
-
+    @Component
     public static final class CompanyBuilder {
         private Company company;
 

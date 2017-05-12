@@ -3,10 +3,21 @@ package com.navarna.computerdb.controller;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebListener;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScans;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import com.navarna.computerdb.dto.ComputerDTO;
 import com.navarna.computerdb.exception.ControllerException;
@@ -18,11 +29,18 @@ import com.navarna.computerdb.validator.ValidationNavigation;
 /**
  * Servlet implementation class Dashboard.
  */
+@Controller
+@ComponentScan
 public class Dashboard extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final int NOMBRE_PARAMETRE = 5;
-    private ServiceComputerImpl servComputer = new ServiceComputerImpl();
+    @Autowired
+    private ServiceComputerImpl servComputer ;
 
+    public void init(ServletConfig config) throws ServletException{
+        super.init(config);
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext (this);
+    }
     /**
      * Lit les paramêtre reçu en de manière GET et les utilisent.
      * @param request : request reçu par le servlet

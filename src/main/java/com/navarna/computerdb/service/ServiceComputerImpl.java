@@ -2,13 +2,17 @@ package com.navarna.computerdb.service;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
 import com.navarna.computerdb.persistence.DAOComputerImpl;
 
+@Service
 public class ServiceComputerImpl implements ServiceComputer {
-    private DAOComputerImpl dComputerImpl = DAOComputerImpl.getInstance();
-
+    @Autowired
+    private DAOComputerImpl dComputerImpl;
     @Override
     public boolean insert(Computer computer) {
         if (computer.getName() != null) {

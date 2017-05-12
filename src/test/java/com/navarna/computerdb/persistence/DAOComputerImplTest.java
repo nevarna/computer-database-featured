@@ -5,9 +5,11 @@ import static org.junit.Assert.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Computer;
@@ -17,6 +19,8 @@ import com.navarna.computerdb.model.Computer.ComputerBuilder;
 
 public class DAOComputerImplTest {
 
+    private static AnnotationConfigApplicationContext ctx ;
+    private static DAOComputerImpl daoComputerImpl;
     private static Computer computerTest = null;
     private static Computer computerNull = null;
     private static Computer computerAvecId = null;
@@ -30,57 +34,66 @@ public class DAOComputerImplTest {
         computerTest = new ComputerBuilder("test").setId(new Long(0)).setIntroduced(LocalDate.of(1999,10,11)).setDiscontinued(LocalDate.of(2000, 11, 20)).setCompany(company).build() ;
         computerNull = new ComputerBuilder("null").setCompany(companyNull).build();
         computerAvecId = new ComputerBuilder("nullAvecId").setId(1).setCompany(companyNull).build();
+        ctx = new AnnotationConfigApplicationContext(
+                DAOComputerImpl.class,
+                ConnectionSpringPool.class,
+                ConnectionSpringConfig.class);
+        daoComputerImpl = (DAOComputerImpl) ctx.getBean(DAOComputerImpl.class);
     }
 
     @Test
     public void testGetInstance() {
-        assertNotNull(DAOComputerImpl.getInstance()); 
+        assertNotNull(daoComputerImpl); 
     }
 
     @Test
     public void testInsert() {
-        boolean result = DAOComputerImpl.getInstance().insert(computerTest);
+        boolean result = daoComputerImpl.insert(computerTest);
         assertEquals(true,result);
-        boolean resultNull = DAOComputerImpl.getInstance().insert(computerNull);
+        boolean resultNull = daoComputerImpl.insert(computerNull);
         assertEquals(true,resultNull);
     }
 
     @Test
     public void testUpdate() {
         computerTest.setId(600L);
-        boolean result = DAOComputerImpl.getInstance().update(computerTest);
+        boolean result = daoComputerImpl.update(computerTest);
         assertEquals(false,result);
-        boolean resultAvecId = DAOComputerImpl.getInstance().update(computerAvecId);
+        boolean resultAvecId = daoComputerImpl.update(computerAvecId);
         assertEquals(true,resultAvecId);
     }
 
     @Test
     public void testDelete() {
-        boolean result = DAOComputerImpl.getInstance().delete(id);
+        boolean result = daoComputerImpl.delete(id);
         assertEquals(true,result);
     }
 
     @Test
     public void testList() {
-        Page<Computer> page = DAOComputerImpl.getInstance().list(0,20,"computer.id","ASC");
+        Page<Computer> page = daoComputerImpl.list(0,20,"computer.id","ASC");
         assertEquals(page.estVide(),false);
     }
 
     @Test
     public void testShowId() {
-        Optional<Computer> computer = DAOComputerImpl.getInstance().findById(1L);
+        Optional<Computer> computer = daoComputerImpl.findById(1L);
         assertEquals(computer.isPresent(),true);
     }
 
     @Ignore
     public void testShowName() {
-        Page<Computer> page = DAOComputerImpl.getInstance().findByName("test",0,20,"computer.id","ASC");
+        Page<Computer> page = daoComputerImpl.findByName("test",0,20,"computer.id","ASC");
         assertEquals(page.estVide(),false);
     }
 
     @Ignore
     public void testCountComputer() {
-        int result = DAOComputerImpl.getInstance().count();
+        int result = daoComputerImpl.count();
         assertEquals(result,602);
+    }
+    @AfterClass
+    public static void fermer() {
+        ctx.close();
     }
 }

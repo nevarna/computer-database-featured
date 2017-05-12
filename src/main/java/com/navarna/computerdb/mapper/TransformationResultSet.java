@@ -9,6 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Optional;
 
+
 import com.navarna.computerdb.exception.MapperException;
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Computer;
@@ -24,7 +25,7 @@ public class TransformationResultSet {
      * @return Page<Company> : une page contenant la liste de compagnie
      */
     public static Page<Company> extraireListePartielleCompany(ResultSet result, int numPage, int nbElement) {
-        try {
+        try{
             Page<Company> page = new Page<Company>(numPage, nbElement);
             while (result.next()) {
                 Long id = result.getLong("id");

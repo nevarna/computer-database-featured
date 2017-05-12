@@ -7,14 +7,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
+
 import com.navarna.computerdb.exception.DAOException;
 import com.navarna.computerdb.mapper.TransformationResultSet;
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Page;
 
-public enum DAOCompanyImpl implements DAOCompany {
-    INSTANCE;
-
+@Repository
+@Scope("singleton")
+public class DAOCompanyImpl implements DAOCompany {
+    
+    @Autowired 
+    private ConnectionSpringPool springDataSource;
     private static final String SELECT;
     private static final String SELECT_ALL;
     private static final String DELETE_COMPUTERS;
@@ -27,13 +34,9 @@ public enum DAOCompanyImpl implements DAOCompany {
         DELETE_COMPANY = "DELETE from company where id = ?";
     }
 
-    public static DAOCompanyImpl getInstance() {
-        return INSTANCE;
-    }
-
     @Override
     public Page<Company> list(int numPage, int nbElement) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open();
+        try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(SELECT);) {
             ResultSet result = null;
             setStatementListe(statement, numPage, nbElement);
@@ -49,7 +52,7 @@ public enum DAOCompanyImpl implements DAOCompany {
     public int delete(long id) {
         Connection conn = null;
         try {
-            conn = ConnectionPoolDB.getInstance().open();
+            conn = springDataSource.open();
             conn.setAutoCommit(false);
             PreparedStatement statement = conn.prepareStatement(DELETE_COMPUTERS);
             statement.setLong(1, id);
@@ -74,7 +77,7 @@ public enum DAOCompanyImpl implements DAOCompany {
 
     @Override
     public ArrayList<Company> listeComplete() {
-        try (Connection conn = ConnectionPoolDB.getInstance().open();
+        try (Connection conn = springDataSource.open();
                 Statement statement = conn.createStatement()) {
             ResultSet result = null;
             result = statement.executeQuery(SELECT_ALL);

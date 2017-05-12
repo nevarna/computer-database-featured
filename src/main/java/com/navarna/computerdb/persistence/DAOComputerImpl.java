@@ -9,14 +9,19 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.navarna.computerdb.exception.DAOException;
 import com.navarna.computerdb.mapper.TransformationResultSet;
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
 
-public enum DAOComputerImpl implements DAOComputer {
-    INSTANCE;
+@Repository
+public class DAOComputerImpl implements DAOComputer {
 
+    @Autowired
+    private ConnectionSpringPool springDataSource;
     private static final String INSERT;
     private static final String UPDATE;
     private static final String DELETE;
@@ -45,13 +50,9 @@ public enum DAOComputerImpl implements DAOComputer {
         LIMIT_OFFSET = " LIMIT ? OFFSET ?";
     }
 
-    public static DAOComputerImpl getInstance() {
-        return INSTANCE;
-    }
-
     @Override
     public boolean insert(Computer computer) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open();
+        try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(INSERT)) {
             int result = 0;
             setStatementInsert(statement, computer);
@@ -64,7 +65,7 @@ public enum DAOComputerImpl implements DAOComputer {
 
     @Override
     public boolean update(Computer computer) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open();
+        try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(UPDATE)) {
             int result = 0;
             setStatementUpdate(statement, computer);
@@ -77,7 +78,7 @@ public enum DAOComputerImpl implements DAOComputer {
 
     @Override
     public boolean delete(long id) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open();
+        try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(DELETE)) {
             int result = 0;
             statement.setLong(1, id);
@@ -91,7 +92,7 @@ public enum DAOComputerImpl implements DAOComputer {
     @Override
     public boolean deleteMultiple(long[] id) {
         String requeteComplete = ecrireRequeteDeleteList(id);
-        try (Connection conn = ConnectionPoolDB.getInstance().open(); Statement statement = conn.createStatement()) {
+        try (Connection conn = springDataSource.open(); Statement statement = conn.createStatement()) {
             int result = 0;
             result = statement.executeUpdate(requeteComplete);
             return result != 0;
@@ -103,7 +104,7 @@ public enum DAOComputerImpl implements DAOComputer {
     @Override
     public Page<Computer> list(int numPage, int nbElement, String typeOrder, String order) {
         String requeteComplete = ecrireRequeteBasique(SELECT_LIST, typeOrder, order);
-        try (Connection conn = ConnectionPoolDB.getInstance().open();
+        try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(requeteComplete)) {
             ResultSet result = null;
             setStatementListe(statement, numPage, nbElement);
@@ -117,7 +118,7 @@ public enum DAOComputerImpl implements DAOComputer {
 
     @Override
     public Optional<Computer> findById(long id) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open();
+        try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(FIND_ID)) {
             ResultSet result = null;
             statement.setLong(1, id);
@@ -132,7 +133,7 @@ public enum DAOComputerImpl implements DAOComputer {
     @Override
     public Page<Computer> findByName(String name, int numPage, int nbElement, String typeOrder, String order) {
         String requeteComplete = ecrireRequeteBasique(FIND_NAME, typeOrder, order);
-        try (Connection conn = ConnectionPoolDB.getInstance().open();
+        try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(requeteComplete)) {
             ResultSet result = null;
             setStatementFindByName(statement, name, numPage, nbElement);
@@ -148,7 +149,7 @@ public enum DAOComputerImpl implements DAOComputer {
     public Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement, String typeOrder,
             String order) {
         String requeteComplete = ecrireRequeteBasique(FIND_COMPANY, typeOrder, order);
-        try (Connection conn = ConnectionPoolDB.getInstance().open();
+        try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(requeteComplete)) {
             ResultSet result = null;
             setStatementFindByName(statement, nameCompany, numPage, nbElement);
@@ -162,7 +163,7 @@ public enum DAOComputerImpl implements DAOComputer {
 
     @Override
     public int count() {
-        try (Connection conn = ConnectionPoolDB.getInstance().open(); Statement statement = conn.createStatement()) {
+        try (Connection conn = springDataSource.open(); Statement statement = conn.createStatement()) {
             ResultSet result = null;
             result = statement.executeQuery(COUNT);
             int retour = TransformationResultSet.extraireNombreElement(result);
@@ -174,7 +175,7 @@ public enum DAOComputerImpl implements DAOComputer {
 
     @Override
     public int countWithName(String name) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open();
+        try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(COUNT_NAME)) {
             ResultSet result = null;
             statement.setString(1, name);
@@ -188,7 +189,7 @@ public enum DAOComputerImpl implements DAOComputer {
 
     @Override
     public int countWithNameCompany(String nameCompany) {
-        try (Connection conn = ConnectionPoolDB.getInstance().open();
+        try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(COUNT_NAME_COMPANY)) {
             ResultSet result = null;
             statement.setString(1, nameCompany);
