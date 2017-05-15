@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -19,25 +21,23 @@ import com.navarna.computerdb.model.Page;
 @Repository
 @Scope("singleton")
 public class DAOCompanyImpl implements DAOCompany {
-    
-    @Autowired 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DAOCompanyImpl.class);
+    @Autowired
     private ConnectionSpringPool springDataSource;
     private static final String SELECT;
     private static final String SELECT_ALL;
-    private static final String DELETE_COMPUTERS;
     private static final String DELETE_COMPANY;
 
     static {
         SELECT = "SELECT id,name from company LIMIT ? OFFSET ?";
         SELECT_ALL = "SELECT id,name from company";
-        DELETE_COMPUTERS = "DELETE from computer where company_id = ?";
         DELETE_COMPANY = "DELETE from company where id = ?";
     }
 
     @Override
     public Page<Company> list(int numPage, int nbElement) {
-        try (Connection conn = springDataSource.open();
-                PreparedStatement statement = conn.prepareStatement(SELECT);) {
+        LOGGER.info("-------->list(numPage,nbElement) args: " + numPage + " - " + nbElement);
+        try (Connection conn = springDataSource.open(); PreparedStatement statement = conn.prepareStatement(SELECT);) {
             ResultSet result = null;
             setStatementListe(statement, numPage, nbElement);
             result = statement.executeQuery();
@@ -49,36 +49,25 @@ public class DAOCompanyImpl implements DAOCompany {
     }
 
     @Override
-    public int delete(long id) {
-        Connection conn = null;
+    public boolean delete(long id) {
+        LOGGER.info("-------->delete(id) args: " + id);
         try {
-            conn = springDataSource.open();
-            conn.setAutoCommit(false);
-            PreparedStatement statement = conn.prepareStatement(DELETE_COMPUTERS);
+            Connection conn = springDataSource.open();
+            PreparedStatement statement = conn.prepareStatement(DELETE_COMPANY);
             statement.setLong(1, id);
             int nbChangement = statement.executeUpdate();
             statement.close();
-            statement = conn.prepareStatement(DELETE_COMPANY);
-            statement.setLong(1, id);
-            nbChangement += statement.executeUpdate();
-            conn.commit();
             conn.close();
-            return nbChangement;
+            return nbChangement != 0;
         } catch (SQLException se) {
-            try {
-                conn.rollback();
-            } catch (SQLException e) {
-                throw new DAOException("Erreur de base de donnée, et de connection.rollback()", se);
-            }
             throw new DAOException("Erreur de base de donnée", se);
         }
     }
 
-
     @Override
     public ArrayList<Company> listeComplete() {
-        try (Connection conn = springDataSource.open();
-                Statement statement = conn.createStatement()) {
+        LOGGER.info("-------->listeComplete()");
+        try (Connection conn = springDataSource.open(); Statement statement = conn.createStatement()) {
             ResultSet result = null;
             result = statement.executeQuery(SELECT_ALL);
             ArrayList<Company> list = TransformationResultSet.extraireListeCompleteCompany(result);
@@ -96,6 +85,7 @@ public class DAOCompanyImpl implements DAOCompany {
      * @throws SQLException : SQL exception possible
      */
     private void setStatementListe(PreparedStatement statement, int numPage, int nbElement) throws SQLException {
+        LOGGER.info("-------->setStatementListe(statement,numPage,nbElement)args: " + numPage + " - " + nbElement);
         statement.setInt(1, nbElement);
         statement.setInt(2, numPage * nbElement);
     }

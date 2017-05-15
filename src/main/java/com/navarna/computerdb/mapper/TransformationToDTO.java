@@ -5,6 +5,9 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.navarna.computerdb.dto.CompanyDTO;
 import com.navarna.computerdb.dto.ComputerDTO;
 import com.navarna.computerdb.model.Company;
@@ -14,13 +17,14 @@ import com.navarna.computerdb.model.Computer.ComputerBuilder;
 import com.navarna.computerdb.model.Page;
 
 public class TransformationToDTO {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransformationToDTO.class);
     /**
      * Transforme un Computer en ComputerDTO.
      * @param computer : computer à transformer
      * @return Optional<ComputerDTO> : computerDTO correspondant à computer
      */
     public static Optional<ComputerDTO> computerToDTO(Computer computer) {
+        LOGGER.info("-------->computerToDTO(computer) args :"+computer);
         if (computer == null) {
             return Optional.empty();
         } else {
@@ -55,6 +59,7 @@ public class TransformationToDTO {
      * @return Optional<Computer> : Computer correspondant au ComputerDTO
      */
     public static Optional<Computer> dtoToComputer(ComputerDTO computerDTO) {
+        LOGGER.info("-------->dtoToComputer(computerDTO) args :"+computerDTO);
         if ((computerDTO.getName() == null) || (computerDTO.getNameCompany() == null)) {
             return Optional.empty();
         }
@@ -82,6 +87,7 @@ public class TransformationToDTO {
      * @return Optional<CompanyDTO> : CompanyDTO correspondant à la company
      */
     public static Optional<CompanyDTO> companyToDTO(Company company) {
+        LOGGER.info("-------->companyToDTO(company) args :"+company);
         if (company.getName() == null) {
             return Optional.empty();
         }
@@ -99,6 +105,7 @@ public class TransformationToDTO {
      * @return Optional<Company> : Company transformer en CompanyDTO
      */
     public static Optional<Company> dtoToCompany(CompanyDTO companyDTO) {
+        LOGGER.info("-------->dtoToCompany(companyDTO) args :"+companyDTO);
         if (companyDTO.getName() != null) {
             Company company = new Company.CompanyBuilder(companyDTO.getName()).setId(companyDTO.getId()).build();
             return Optional.of(company);
@@ -112,6 +119,7 @@ public class TransformationToDTO {
      * @return Page<ComputerDTO> : page de computerDTO correspondant à page
      */
     public static Page<ComputerDTO> pageComputerToPageDTO(Page<Computer> page) {
+        LOGGER.info("-------->pageComputerToPageDTO(page)");
         Page<ComputerDTO> pageDTO = new Page<ComputerDTO>(page.getNbPage(), page.getNbElementPage());
         for (Computer computer : page.getPage()) {
             Optional<ComputerDTO> computerDTO = computerToDTO(computer);
@@ -128,6 +136,7 @@ public class TransformationToDTO {
      * @return Page<CompanyDTO> : page de companyDTO correspondant à page
      */
     public static Page<CompanyDTO> pageCompanyToPageDTO(Page<Company> page) {
+        LOGGER.info("-------->pageCompanyToPageDTO(page)");
         Page<CompanyDTO> pageDTO = new Page<CompanyDTO>(page.getNbPage(), page.getNbElementPage());
         for (Company company : page.getPage()) {
             Optional<CompanyDTO> companyDTO = companyToDTO(company);
@@ -144,6 +153,7 @@ public class TransformationToDTO {
      * @return ArrayList<CompanyDTO> : arrayList de companyDTO correspondant à page
      */
     public static ArrayList<CompanyDTO> arraylistCompanyToArraylistDTO(ArrayList<Company> liste) {
+        LOGGER.info("-------->arraylistCompanyToArraylistDTO(liste)");
         ArrayList<CompanyDTO> listeDTO = new ArrayList<CompanyDTO>();
         for (Company company : liste) {
             Optional<CompanyDTO> companyDTO = companyToDTO(company);

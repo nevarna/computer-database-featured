@@ -3,6 +3,10 @@ package com.navarna.computerdb.ui;
 import java.time.LocalDate;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.navarna.computerdb.exception.CLIException;
 import com.navarna.computerdb.exception.DAOException;
 import com.navarna.computerdb.exception.MapperException;
@@ -12,18 +16,14 @@ import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Computer.ComputerBuilder;
 import com.navarna.computerdb.validator.ValidationEntrer;
 
+@Component
+@Scope("prototype")
 public class EntrerUtilisateur {
 
-    public final Scanner sc;
-    public final ConstruireRequete construireRequete;
+    public final Scanner sc = new Scanner(System.in);
+    @Autowired
+    public ConstruireRequete construireRequete;
 
-    /**
-     * Constructeur entrerUtilisateur.
-     */
-    public EntrerUtilisateur() {
-        sc = new Scanner(System.in);
-        this.construireRequete = new ConstruireRequete(this);
-    }
 
     /**
      * Demande à l'utilisateur d'entrer les informations d'un ordinateur.

@@ -5,15 +5,20 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ValidationEntrer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ValidationEntrer.class);
 
     /**
      * Vérifie si la date est correcte.
-     * @param date : tableau de string représentant une date decouper en
-     *            date et heure.
+     * @param date : tableau de string représentant une date decouper en date et
+     *            heure.
      * @return boolean : reponse si oui ou non la date est correct
      */
     public static boolean verificationDate(String date) {
+        LOGGER.info("-------->verificationDate(date) args: " + date);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         df.setLenient(false);
         try {
@@ -26,11 +31,12 @@ public class ValidationEntrer {
 
     /**
      * Vérifie si la date est correcte.
-     * @param date : tableau de string représentant une date decouper en
-     *            date et heure.
+     * @param date : tableau de string représentant une date decouper en date et
+     *            heure.
      * @return boolean : reponse si oui ou non la date est correct
      */
     public static boolean verificationDateEnvers(String date) {
+        LOGGER.info("-------->verificationDateEnvers(date) args: " + date);
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         df.setLenient(false);
         try {
@@ -47,6 +53,7 @@ public class ValidationEntrer {
      * @return boolean : true or false
      */
     public static boolean verificationFormatDate(String date) {
+        LOGGER.info("-------->verificationFormatDate(date) args: " + date);
         String[] dateDecouper = date.split(" ");
         if ((dateDecouper.length > 1) || (dateDecouper.length < 0)) {
             return false;
@@ -61,6 +68,7 @@ public class ValidationEntrer {
      * @return LocalDate : une date correct correspndant à l'entrer
      */
     public static LocalDate dateController(String date) {
+        LOGGER.info("-------->dateController(date) args: " + date);
         LocalDate dateCorrect = null;
         try {
             if (verificationFormatDate(date)) {
@@ -85,6 +93,7 @@ public class ValidationEntrer {
      * @return boolean : si les 2 valeurs sont logique entre elles
      */
     public static boolean dateLogique(LocalDate introduced, LocalDate discontinued) {
+        LOGGER.info("-------->dateLogique(introduced,discontinued) args: " + introduced + " - " + discontinued);
         if ((introduced == null) && (discontinued == null)) {
             return true;
         }
@@ -106,6 +115,7 @@ public class ValidationEntrer {
      * @return int : le nombre en type int -> -1 si le nombre n'est pas correct
      */
     public static int stringEnIntPositif(String nombre) {
+        LOGGER.info("-------->stringEnIntPositif(nombre) args: " + nombre);
         int retour = -1;
         try {
             retour = Integer.valueOf(nombre);
@@ -127,6 +137,8 @@ public class ValidationEntrer {
      * @return boolean : true or false
      */
     public static boolean entrerValide(String name, LocalDate introduced, LocalDate discontinued, long idCompany) {
+        LOGGER.info("-------->entrerValide(name,introduced,discontinued,idCompany) args: " + name + " - " + introduced
+                + " - " + discontinued + " - " + idCompany);
         return (name != null) && (!name.equals("")) && (dateLogique(introduced, discontinued)) && (idCompany != -1);
     }
 

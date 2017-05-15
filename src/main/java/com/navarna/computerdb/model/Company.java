@@ -64,7 +64,7 @@ public class Company {
         }
         return true;
     }
-    @Component
+
     public static final class CompanyBuilder {
         private Company company;
 

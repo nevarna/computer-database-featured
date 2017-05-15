@@ -2,32 +2,27 @@ package com.navarna.computerdb.ui;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.navarna.computerdb.exception.CLIException;
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
 import com.navarna.computerdb.service.ServiceCompany;
-import com.navarna.computerdb.service.ServiceCompanyImpl;
 import com.navarna.computerdb.service.ServiceComputer;
-import com.navarna.computerdb.service.ServiceComputerImpl;
 import com.navarna.computerdb.validator.ValidationEntrer;
 
+@Component
 public class ConstruireRequete {
+    @Autowired
     private ServiceComputer servComputerImpl;
+    @Autowired
     private ServiceCompany servCompanyImpl;
+    @Autowired
     private EntrerUtilisateur entrerUtilisateur;
     private int nbElement = 20;
     private int numPage = 0;
-
-    /**
-     * Constructeur.
-     * @param entrerUtilisateur : entrer Utilisateur qui utilise cette instance
-     */
-    public ConstruireRequete(EntrerUtilisateur entrerUtilisateur) {
-        servCompanyImpl = new ServiceCompanyImpl();
-        servComputerImpl = new ServiceComputerImpl();
-        this.entrerUtilisateur = entrerUtilisateur;
-    }
 
     /**
      * L UI appelle le service pour satisfaire la demande de l'utilisateur.
@@ -36,7 +31,7 @@ public class ConstruireRequete {
      */
     public void demandeListe(String type) {
         if (type.equals("computers")) {
-            Page<Computer> page = servComputerImpl.liste(numPage, nbElement, "id", "ASC");
+            Page<Computer> page = servComputerImpl.liste(numPage, nbElement, "computer.id", "ASC");
             if (!page.estVide()) {
                 SortieUtilisateur.lireListComputers(page);
             } else {
@@ -156,7 +151,7 @@ public class ConstruireRequete {
     public void demandeDeleteCompany(String id) {
         int ids = ValidationEntrer.stringEnIntPositif(id);
         if (ids != -1) {
-            SortieUtilisateur.lireValidationChangement(servCompanyImpl.delete(ids) != 0);
+            SortieUtilisateur.lireValidationChangement(servCompanyImpl.delete(ids));
         } else {
             throw new CLIException("fonction demandeUpdate arguments incorect");
         }

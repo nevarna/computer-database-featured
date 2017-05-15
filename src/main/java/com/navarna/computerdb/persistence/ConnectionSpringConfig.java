@@ -2,6 +2,7 @@ package com.navarna.computerdb.persistence;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -11,6 +12,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @PropertySource({ "classpath:informationDB.properties" })
+@ComponentScan(basePackages = "com.navarna.computerdb")
 public class ConnectionSpringConfig {
 
     @Autowired

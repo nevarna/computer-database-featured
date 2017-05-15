@@ -39,7 +39,14 @@ public interface DAOComputer {
      *         requête
      */
     boolean deleteMultiple(long[] id);
-
+    /**
+     * Ecris une requête à la base de donnée afin de supprimer un ensemble de
+     * computer appartement à un company prècise.
+     * @param idCompany : id de la company
+     * @return boolean : si oui ou non la base de donnée à été modifié par la
+     *         requête
+     */
+    boolean deleteCompany(long idCompany);
     /**
      * Ecris une requête à la base de donnée afin d'avoir les détails un
      * computer.

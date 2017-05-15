@@ -24,9 +24,9 @@ public interface DAOCompany {
      * Demande la requête: suppression de la company ayant l'id id et de ses
      * computers.
      * @param id : id de la company
-     * @return int : nombre de ligne supprimé
+     * @return boolean : si oui ou non la base de données à éffectuer des changements
      */
-    int delete(long id);
+    boolean delete(long id);
 
     /**
      * liste des companies à la base de données - renvoie le

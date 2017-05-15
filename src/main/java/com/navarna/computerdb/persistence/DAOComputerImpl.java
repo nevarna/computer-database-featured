@@ -9,6 +9,8 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -19,13 +21,14 @@ import com.navarna.computerdb.model.Page;
 
 @Repository
 public class DAOComputerImpl implements DAOComputer {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(DAOComputerImpl.class);
     @Autowired
     private ConnectionSpringPool springDataSource;
     private static final String INSERT;
     private static final String UPDATE;
     private static final String DELETE;
     private static final String DELETE_LIST;
+    private static final String DELETE_COMPUTERS;
     private static final String SELECT_LIST;
     private static final String FIND_ID;
     private static final String FIND_NAME;
@@ -40,6 +43,7 @@ public class DAOComputerImpl implements DAOComputer {
         UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?";
         DELETE = "DELETE FROM computer where id = ?";
         DELETE_LIST = "DELETE FROM computer where id in (";
+        DELETE_COMPUTERS = "DELETE from computer where company_id = ?";
         SELECT_LIST = "SELECT * from computer left join company on company_id = company.id ORDER BY ";
         FIND_ID = "SELECT * from computer left join company on company_id = company.id where computer.id = ?";
         FIND_NAME = "SELECT * from computer left join company on company_id = company.id where computer.name = ?  ORDER BY ";
@@ -52,8 +56,8 @@ public class DAOComputerImpl implements DAOComputer {
 
     @Override
     public boolean insert(Computer computer) {
-        try (Connection conn = springDataSource.open();
-                PreparedStatement statement = conn.prepareStatement(INSERT)) {
+        LOGGER.info("-------->insert(computer) args: " + computer);
+        try (Connection conn = springDataSource.open(); PreparedStatement statement = conn.prepareStatement(INSERT)) {
             int result = 0;
             setStatementInsert(statement, computer);
             result = statement.executeUpdate();
@@ -65,8 +69,8 @@ public class DAOComputerImpl implements DAOComputer {
 
     @Override
     public boolean update(Computer computer) {
-        try (Connection conn = springDataSource.open();
-                PreparedStatement statement = conn.prepareStatement(UPDATE)) {
+        LOGGER.info("-------->update(computer) args: " + computer);
+        try (Connection conn = springDataSource.open(); PreparedStatement statement = conn.prepareStatement(UPDATE)) {
             int result = 0;
             setStatementUpdate(statement, computer);
             result = statement.executeUpdate();
@@ -78,8 +82,8 @@ public class DAOComputerImpl implements DAOComputer {
 
     @Override
     public boolean delete(long id) {
-        try (Connection conn = springDataSource.open();
-                PreparedStatement statement = conn.prepareStatement(DELETE)) {
+        LOGGER.info("-------->delete(id) args: " + id);
+        try (Connection conn = springDataSource.open(); PreparedStatement statement = conn.prepareStatement(DELETE)) {
             int result = 0;
             statement.setLong(1, id);
             result = statement.executeUpdate();
@@ -91,6 +95,7 @@ public class DAOComputerImpl implements DAOComputer {
 
     @Override
     public boolean deleteMultiple(long[] id) {
+        LOGGER.info("-------->deleteMultiple()");
         String requeteComplete = ecrireRequeteDeleteList(id);
         try (Connection conn = springDataSource.open(); Statement statement = conn.createStatement()) {
             int result = 0;
@@ -102,7 +107,22 @@ public class DAOComputerImpl implements DAOComputer {
     }
 
     @Override
+    public boolean deleteCompany(long idCompany) {
+        Connection conn = springDataSource.open();
+        try (PreparedStatement statement = conn.prepareStatement(DELETE_COMPUTERS)){
+            statement.setLong(1, idCompany);
+            return statement.executeUpdate() != 0;
+            
+        } catch (SQLException se) {
+            throw new DAOException("Erreur de base de donnée", se);
+        }
+    }
+
+
+    @Override
     public Page<Computer> list(int numPage, int nbElement, String typeOrder, String order) {
+        LOGGER.info("-------->list(numPage,nbElement,typeOrder,order) args: " + numPage + " - " + nbElement + " - "
+                + typeOrder + " - " + order);
         String requeteComplete = ecrireRequeteBasique(SELECT_LIST, typeOrder, order);
         try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(requeteComplete)) {
@@ -118,8 +138,8 @@ public class DAOComputerImpl implements DAOComputer {
 
     @Override
     public Optional<Computer> findById(long id) {
-        try (Connection conn = springDataSource.open();
-                PreparedStatement statement = conn.prepareStatement(FIND_ID)) {
+        LOGGER.info("-------->findById(id) args: " + id);
+        try (Connection conn = springDataSource.open(); PreparedStatement statement = conn.prepareStatement(FIND_ID)) {
             ResultSet result = null;
             statement.setLong(1, id);
             result = statement.executeQuery();
@@ -132,6 +152,8 @@ public class DAOComputerImpl implements DAOComputer {
 
     @Override
     public Page<Computer> findByName(String name, int numPage, int nbElement, String typeOrder, String order) {
+        LOGGER.info("-------->findByName(name,numPage,nbElement,typeOrder,order) args: " + name + " - " + numPage
+                + " - " + nbElement + " - " + typeOrder + " - " + order);
         String requeteComplete = ecrireRequeteBasique(FIND_NAME, typeOrder, order);
         try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(requeteComplete)) {
@@ -148,6 +170,8 @@ public class DAOComputerImpl implements DAOComputer {
     @Override
     public Page<Computer> findByCompany(String nameCompany, int numPage, int nbElement, String typeOrder,
             String order) {
+        LOGGER.info("-------->findByNameCompany(nameCompany,numPage,nbElement,typeOrder,order) args: " + nameCompany
+                + " - " + numPage + " - " + nbElement + " - " + typeOrder + " - " + order);
         String requeteComplete = ecrireRequeteBasique(FIND_COMPANY, typeOrder, order);
         try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(requeteComplete)) {
@@ -163,6 +187,7 @@ public class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int count() {
+        LOGGER.info("-------->count()");
         try (Connection conn = springDataSource.open(); Statement statement = conn.createStatement()) {
             ResultSet result = null;
             result = statement.executeQuery(COUNT);
@@ -175,6 +200,7 @@ public class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int countWithName(String name) {
+        LOGGER.info("-------->countWithName(name) args: " + name);
         try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(COUNT_NAME)) {
             ResultSet result = null;
@@ -189,6 +215,7 @@ public class DAOComputerImpl implements DAOComputer {
 
     @Override
     public int countWithNameCompany(String nameCompany) {
+        LOGGER.info("-------->countWithNameCompany(nameCompany) args: " + nameCompany);
         try (Connection conn = springDataSource.open();
                 PreparedStatement statement = conn.prepareStatement(COUNT_NAME_COMPANY)) {
             ResultSet result = null;
@@ -207,6 +234,7 @@ public class DAOComputerImpl implements DAOComputer {
      * @return String : requete contenant les id à suprimer.
      */
     private String ecrireRequeteDeleteList(long[] id) {
+        LOGGER.info("-------->ecrireRequeteDeleteList(id)");
         String requeteDeleteMultiple = DELETE_LIST;
         for (int i = 0; i < id.length; i++) {
             requeteDeleteMultiple += id[i];
@@ -226,6 +254,8 @@ public class DAOComputerImpl implements DAOComputer {
      * @return String : la requete complete
      */
     private String ecrireRequeteBasique(String debutRequete, String typeOrder, String order) {
+        LOGGER.info("-------->ecrireRequeteBasique(debutRequete,typeOrder,order) args: " + debutRequete + " - "
+                + typeOrder + " - " + order);
         StringBuffer requeteComplete = new StringBuffer(debutRequete).append(typeOrder).append(" ").append(order)
                 .append(LIMIT_OFFSET);
         return requeteComplete.toString();
@@ -239,6 +269,7 @@ public class DAOComputerImpl implements DAOComputer {
      * @throws SQLException : SQL exception possible
      */
     private void setStatementListe(PreparedStatement statement, int numPage, int nbElement) throws SQLException {
+        LOGGER.info("-------->setStatementListe(statement,numPage,nbElement) args: " + numPage + " - " + nbElement);
         statement.setInt(1, nbElement);
         statement.setInt(2, numPage * nbElement);
     }
@@ -251,6 +282,7 @@ public class DAOComputerImpl implements DAOComputer {
      * @throws SQLException : SQL exception possible
      */
     private void setStatementInsert(PreparedStatement statement, Computer computer) throws SQLException {
+        LOGGER.info("-------->setStatementInsert(statement,computer) args: " + computer);
         if (computer.getId() != 0) {
             statement.setLong(1, computer.getId());
         } else {
@@ -282,6 +314,7 @@ public class DAOComputerImpl implements DAOComputer {
      * @throws SQLException : SQL exception possible
      */
     private void setStatementUpdate(PreparedStatement statement, Computer computer) throws SQLException {
+        LOGGER.info("-------->setStatementUpdate(statement,computer) args: " + computer);
         if (computer.getId() != 0) {
             statement.setLong(5, computer.getId());
         } else {
@@ -317,6 +350,8 @@ public class DAOComputerImpl implements DAOComputer {
      */
     private void setStatementFindByName(PreparedStatement statement, String name, int numPage, int nbElement)
             throws SQLException {
+        LOGGER.info("-------->setStatementFindByName(statement,name,numPage,nbElement) args: " + name + " - " + numPage
+                + " - " + nbElement);
         statement.setString(1, name);
         statement.setInt(2, nbElement);
         statement.setInt(3, numPage * nbElement);

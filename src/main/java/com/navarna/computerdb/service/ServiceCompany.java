@@ -18,9 +18,9 @@ public interface ServiceCompany {
     /**
      * Demande au DAOCompany la supression d'une compagnie.
      * @param id : id de la company
-     * @return int : nombre de ligne modifier
+     * @return boolean : si oui ou non la base de données à été modifier.
      */
-    int delete(long id);
+    boolean delete(long id);
 
     /**
      * Demande au DAOCompany la liste entière des compagnies.

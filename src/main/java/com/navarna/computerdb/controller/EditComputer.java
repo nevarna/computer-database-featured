@@ -6,10 +6,17 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.navarna.computerdb.dto.CompanyDTO;
 import com.navarna.computerdb.exception.ControllerException;
@@ -22,11 +29,22 @@ import com.navarna.computerdb.validator.ValidationEntrer;
 /**
  * Servlet implementation class EditComputer.
  */
+@Controller
 public class EditComputer extends HttpServlet {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditComputer.class);
     private static final long serialVersionUID = 1L;
     private static final int NOMBRE_PARAMETRE = 5;
+    @Autowired
     private ServiceComputerImpl servComputer = new ServiceComputerImpl();
+    @Autowired
     private ServiceCompanyImpl servCompany = new ServiceCompanyImpl();
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        LOGGER.info("-------->init(config)");
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
 
     /**
      * set id avec l id passée en arguments get.
@@ -34,6 +52,7 @@ public class EditComputer extends HttpServlet {
      * @return long : id du computer
      */
     public long setIdComputer(String idLien) {
+        LOGGER.info("-------->setIdComputer(idLien) args: " + idLien);
         try {
             long numero = idLien == null ? -1 : Long.parseLong(idLien);
             if (numero < 1) {
@@ -58,7 +77,8 @@ public class EditComputer extends HttpServlet {
      */
     public void remplaceAttributComputer(Computer computer, long id, String name, String introduced,
             String discontinued, String idCompany) {
-        System.out.println("computer trouver : " + computer);
+        LOGGER.info("-------->remplaceAttributComputer(computer,id,name,introduced,discontinued,idCompany) args: "
+                + computer + " - " + id + " - " + name + " - " + introduced + "-" + discontinued + "-" + idCompany);
         int idComp = ValidationEntrer.stringEnIntPositif(idCompany);
         LocalDate computerIntroduced = ValidationEntrer.dateController(introduced);
         LocalDate computerDiscontinued = ValidationEntrer.dateController(discontinued);
@@ -83,6 +103,7 @@ public class EditComputer extends HttpServlet {
      * @return boolean : si oui ou non la base de données à été modifié
      */
     public boolean demandeUpdate(Computer computer) {
+        LOGGER.info("-------->demandeUpdate(computer) args: " + computer);
         if (ValidationEntrer.dateLogique(computer.getIntroduced(), computer.getDiscontinued())) {
             return servComputer.update(computer);
         }
@@ -95,6 +116,7 @@ public class EditComputer extends HttpServlet {
      * @return long : id du computer
      */
     public long recupererIdEnGet(HttpServletRequest request) {
+        LOGGER.info("-------->recupereIdEnGet(request)");
         String idLien = request.getParameter("id");
         return setIdComputer(idLien);
     }
@@ -107,6 +129,7 @@ public class EditComputer extends HttpServlet {
      *         3 : date d'arret 4 : id de la company
      */
     public String[] lireParametrePost(HttpServletRequest request) {
+        LOGGER.info("-------->lireParametrePost(request)");
         String[] parametres = new String[NOMBRE_PARAMETRE];
         parametres[0] = request.getParameter("id");
         parametres[1] = request.getParameter("name");
@@ -123,6 +146,7 @@ public class EditComputer extends HttpServlet {
      * @param informationCompany : arrayList contenant la liste des companies
      */
     public void ecrireAttribute(HttpServletRequest request, long id, ArrayList<CompanyDTO> informationCompany) {
+        LOGGER.info("-------->ecrireAttribute(request,id,informationCompany) args: undefined - " + id + " - undefined");
         request.setAttribute("listeCompany", informationCompany);
         request.setAttribute("id", id);
     }
@@ -132,6 +156,7 @@ public class EditComputer extends HttpServlet {
             throws ServletException, IOException {
         RequestDispatcher fichierJSP = this.getServletContext()
                 .getRequestDispatcher("/resources/views/editComputer.jsp");
+        LOGGER.info("-------->doGet(request,reponse)");
         long id = recupererIdEnGet(request);
         ArrayList<CompanyDTO> informationCompany = TransformationToDTO
                 .arraylistCompanyToArraylistDTO(servCompany.listeComplete());
@@ -142,6 +167,7 @@ public class EditComputer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        LOGGER.info("-------->doGet(request,reponse)");
         String[] parametres = lireParametrePost(request);
         long id = setIdComputer(parametres[0]);
         Optional<Computer> computer = servComputer.findById(id);

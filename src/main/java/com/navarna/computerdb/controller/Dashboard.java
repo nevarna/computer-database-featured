@@ -5,19 +5,15 @@ import java.io.IOException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebListener;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScans;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.navarna.computerdb.dto.ComputerDTO;
 import com.navarna.computerdb.exception.ControllerException;
@@ -30,17 +26,20 @@ import com.navarna.computerdb.validator.ValidationNavigation;
  * Servlet implementation class Dashboard.
  */
 @Controller
-@ComponentScan
 public class Dashboard extends HttpServlet {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Dashboard.class);
     private static final long serialVersionUID = 1L;
     private static final int NOMBRE_PARAMETRE = 5;
     @Autowired
-    private ServiceComputerImpl servComputer ;
+    private ServiceComputerImpl servComputer;
 
-    public void init(ServletConfig config) throws ServletException{
+    @Override
+    public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext (this);
+        LOGGER.info("-------->init(config)");
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
     }
+
     /**
      * Lit les paramêtre reçu en de manière GET et les utilisent.
      * @param request : request reçu par le servlet
@@ -50,6 +49,7 @@ public class Dashboard extends HttpServlet {
      *         company
      */
     private String[] lireParametreGet(HttpServletRequest request) {
+        LOGGER.info("-------->lireParametreGet(request)");
         String[] parametres = new String[NOMBRE_PARAMETRE];
         parametres[0] = request.getParameter("page");
         parametres[1] = request.getParameter("nbElement");
@@ -65,6 +65,7 @@ public class Dashboard extends HttpServlet {
      * @return String[] : tableau contenant les indices à supprimer.
      */
     private String[] lireParametrePost(HttpServletRequest request) {
+        LOGGER.info("-------->lireParametrePost(request)");
         String selection = request.getParameter("selection");
         if (selection != null) {
             return selection.split(",");
@@ -78,6 +79,7 @@ public class Dashboard extends HttpServlet {
      *            supprimer
      */
     private void demandeSuppression(String[] tableauIdDelete) {
+        LOGGER.info("-------->demande suppresion(tableauIdDelete)");
         try {
             int taille = tableauIdDelete.length;
             if (taille != 0) {
@@ -107,6 +109,8 @@ public class Dashboard extends HttpServlet {
      * @return Page<ComputerDTO> : page contenant la liste à afficher
      */
     private Page<ComputerDTO> creationListe(String name, String typeSearch, String order, int numPage, int nbElement) {
+        LOGGER.info("-------->creationListe(name,typeSearch,order,numPage,nbElement) args : " + name + " - "
+                + typeSearch + " - " + order + " - " + numPage + " - " + nbElement);
         Page<ComputerDTO> pageComputer = null;
         if (!ValidationNavigation.verificationSearch(name, typeSearch)) {
             pageComputer = TransformationToDTO
@@ -130,6 +134,7 @@ public class Dashboard extends HttpServlet {
      * @return int : compteur d'élément.
      */
     private int compterElement(String name, String typeSearch) {
+        LOGGER.info("-------->compterElement(name, typeSearch) args : " + name + " - " + typeSearch);
         int totalElement = 0;
         if (!ValidationNavigation.verificationSearch(name, typeSearch)) {
             totalElement = servComputer.count();
@@ -155,6 +160,9 @@ public class Dashboard extends HttpServlet {
      */
     public void ecrireAttribute(HttpServletRequest request, Page<ComputerDTO> pageComputer, int numPage, String name,
             String typeSearch, int totalElement, int nbElement) {
+        LOGGER.info(
+                "-------->ecrireAttribut(request,pageComputer,numPage,name,typeSearch,totalElement,nbElement) args : undefined - undefined - "
+                        + numPage + " -" + name + " - " + typeSearch + " - " + totalElement + " - " + nbElement);
         request.setAttribute("computers", pageComputer);
         request.setAttribute("pageCurrente", numPage + 1);
         request.setAttribute("nbElement", nbElement);
@@ -170,6 +178,7 @@ public class Dashboard extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher fichierJSP = this.getServletContext().getRequestDispatcher("/resources/views/dashboard.jsp");
+        LOGGER.info("-------->doGet(request,response)");
         String[] parametres = lireParametreGet(request);
         int numPage = 0;
         if (ValidationNavigation.verificationPage(parametres[0])) {
@@ -200,6 +209,7 @@ public class Dashboard extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        LOGGER.info("-------->doPost(request,response)");
         String[] tableauIdDelete = lireParametrePost(request);
         demandeSuppression(tableauIdDelete);
         doGet(request, response);

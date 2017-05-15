@@ -22,10 +22,14 @@
 		<maven.gatlin.version>2.1.7</maven.gatlin.version>
 		<maven.gatlin-plugin.version>2.1.7</maven.gatlin-plugin.version>
 		<maven.scala-plugin.version>3.2.2</maven.scala-plugin.version>
+		<maven.spring-context.version>4.3.8.RELEASE</maven.spring-context.version>
+		<maven.spring-jdbc.version>4.3.8.RELEASE</maven.spring-jdbc.version>
+		<maven.spring-web.version>4.3.8.RELEASE</maven.spring-web.version>
 		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
 		<maven-checkstyle-plugin.configLocation>src/main/resources/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-		<maven.slf4j.version>1.8.0-alpha2</maven.slf4j.version>
-		<maven.logback.version>1.0.1</maven.logback.version>
+		<maven.slf4j.version>1.7.7</maven.slf4j.version>
+		<maven.logback.version>1.0.2</maven.logback.version>
+		<maven.jcl.slf4j.version>1.7.12</maven.jcl.slf4j.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -61,7 +65,13 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${maven.slf4j.version}</version>
-			<scope>compile</scope>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>1.7.7</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -76,9 +86,16 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${maven.jcl.slf4j.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<version>${maven.hikari.version}</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -86,12 +103,35 @@
 			<version>${maven.selenium.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>io.gatling.highcharts</groupId>
 			<artifactId>gatling-charts-highcharts</artifactId>
 			<version>${maven.gatlin.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${maven.spring-context.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${maven.spring-jdbc.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${maven.spring-web.version}</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	<build>
@@ -114,6 +154,13 @@
 				<groupId>io.gatling</groupId>
 				<artifactId>gatling-maven-plugin</artifactId>
 				<version>${maven.gatlin-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

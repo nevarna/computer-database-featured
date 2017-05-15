@@ -9,6 +9,8 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.navarna.computerdb.exception.MapperException;
 import com.navarna.computerdb.model.Company;
@@ -16,6 +18,7 @@ import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
 
 public class TransformationResultSet {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransformationResultSet.class);
 
     /**
      * extrait du ResultSet une liste de compagnie.
@@ -25,6 +28,7 @@ public class TransformationResultSet {
      * @return Page<Company> : une page contenant la liste de compagnie
      */
     public static Page<Company> extraireListePartielleCompany(ResultSet result, int numPage, int nbElement) {
+        LOGGER.info("-------->extraireListePartielleCompany(result,numPage,nbElement) args: undefined - "+numPage+" - "+nbElement);
         try{
             Page<Company> page = new Page<Company>(numPage, nbElement);
             while (result.next()) {
@@ -46,6 +50,7 @@ public class TransformationResultSet {
      *         companies
      */
     public static ArrayList<Company> extraireListeCompleteCompany(ResultSet result) {
+        LOGGER.info("-------->extraireListeCompleteCompany(result)");
         try {
             ArrayList<Company> liste = new ArrayList<Company>();
             while (result.next()) {
@@ -66,6 +71,7 @@ public class TransformationResultSet {
      * @return LocalDate : localDate correspondant au String en arguments
      */
     public static Optional<LocalDate> recupererDate(String dateEnString) {
+        LOGGER.info("-------->recupererDate(dateEnString) args: "+dateEnString);
         System.out.println("date en string : " + dateEnString);
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss.S");
@@ -90,6 +96,7 @@ public class TransformationResultSet {
      * @return Computer : un computer contenant les données du resultSet.
      */
     public static Optional<Computer> extraireDetailsComputer(ResultSet result) {
+        LOGGER.info("-------->extraireDetailsComputer(result)");
         try {
             if (result.next()) {
                 long id = result.getLong("id");
@@ -128,6 +135,7 @@ public class TransformationResultSet {
      * @return Page<Computer> : une liste de computer
      */
     public static Page<Computer> extraireDetailsComputers(ResultSet result, int numPage, int nbElement) {
+        LOGGER.info("-------->extraireListeDetailsComputers(result,numPage,nbElement) args: undefined - "+numPage+" - "+nbElement);
         try {
             Page<Computer> page = new Page<Computer>(numPage, nbElement);
             while (result.next()) {
@@ -162,6 +170,7 @@ public class TransformationResultSet {
      * @return int : retourne le nombre d'élément satisfaisant la requête
      */
     public static int extraireNombreElement(ResultSet result) {
+        LOGGER.info("-------->extraireListeNombreElement(result)");
         try {
             if (result.next()) {
                 int compteur = result.getInt(1);

@@ -2,9 +2,13 @@ package com.navarna.computerdb.validator;
 
 import java.text.Normalizer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.navarna.computerdb.exception.ValidatorException;
 
 public class ValidationNavigation {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ValidationNavigation.class);
 
     /**
      * Verifie l'indice de la page.
@@ -12,6 +16,7 @@ public class ValidationNavigation {
      * @return boolean : true or false
      */
     public static boolean verificationPage(String page) {
+        LOGGER.info("-------->verificationPage(page) args: " + page);
         try {
             int numero = page == null ? -2 : Integer.parseInt(page);
             return numero > 0;
@@ -26,6 +31,7 @@ public class ValidationNavigation {
      * @return boolean : true or false
      */
     public static boolean verificationNbElement(String nombreElement) {
+        LOGGER.info("-------->verificationNbElement(nombreElement) args: " + nombreElement);
         if (nombreElement == null) {
             return false;
         }
@@ -45,6 +51,7 @@ public class ValidationNavigation {
      * @return String : name sans caractere special ni accent
      */
     public static String enleverCaractereInterdit(String name) {
+        LOGGER.info("-------->enleverCaractereInterdit(name) args: " + name);
         name = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
         name = name.replaceAll("<[^>]*>|\\d|\\W|_", " ");
         return name;
@@ -56,11 +63,12 @@ public class ValidationNavigation {
      * @return boolean : true or false
      */
     public static boolean verificationTypeSearch(String typeSearch) {
+        LOGGER.info("-------->verificationTypeSearch(typeSearch) args: " + typeSearch);
         if (typeSearch == null) {
             return false;
         }
-        return ((typeSearch.equals("computer.name")) || (typeSearch.equals("company.name")) || (typeSearch.equals("discontinued"))
-                || (typeSearch.equals("introduced")));
+        return ((typeSearch.equals("computer.name")) || (typeSearch.equals("company.name"))
+                || (typeSearch.equals("discontinued")) || (typeSearch.equals("introduced")));
     }
 
     /**
@@ -70,6 +78,7 @@ public class ValidationNavigation {
      * @return boolean : true or false
      */
     public static boolean verificationSearch(String name, String typeSearch) {
+        LOGGER.info("-------->verificationSearch(name,typeSearch) args: " + name + " - " + typeSearch);
         if (name == null) {
             return false;
         } else {
@@ -86,6 +95,7 @@ public class ValidationNavigation {
      * @return boolean : true or false
      */
     public static boolean verificationOrder(String order) {
+        LOGGER.info("-------->verificationOrder(order) args: " + order);
         if (order == null) {
             return false;
         }

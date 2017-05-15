@@ -5,10 +5,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.navarna.computerdb.dto.CompanyDTO;
 import com.navarna.computerdb.mapper.TransformationToDTO;
@@ -22,11 +29,22 @@ import com.navarna.computerdb.validator.ValidationEntrer;
  * @author excilys
  *
  */
+@Controller
 public class AddComputer extends HttpServlet {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AddComputer.class);
     private static final long serialVersionUID = 1L;
     private static final int NOMBRE_PARAMETRE = 4;
+    @Autowired
     private ServiceComputerImpl servComputer = new ServiceComputerImpl();
+    @Autowired
     private ServiceCompanyImpl servCompany = new ServiceCompanyImpl();
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        LOGGER.info("-------->init(config)");
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
 
     /**
      * Demande validation des entrées de l'utilisateur et demande au service
@@ -38,6 +56,8 @@ public class AddComputer extends HttpServlet {
      * @return int : nombre de ligne modifié par la requête
      */
     private boolean demandeInsert(String name, String introduced, String discontinued, String idCompany) {
+        LOGGER.info("-------->demandeInsert(name,introducedndiscontinued,idCompany) args:" + name + " - " + introduced
+                + " - " + discontinued + " - " + idCompany);
         int id = ValidationEntrer.stringEnIntPositif(idCompany);
         LocalDate computerIntroduced = ValidationEntrer.dateController(introduced);
         LocalDate computerDiscontinued = ValidationEntrer.dateController(discontinued);
@@ -58,6 +78,7 @@ public class AddComputer extends HttpServlet {
      *         : id de la company
      */
     private String[] lireParametre(HttpServletRequest request) {
+        LOGGER.info("-------->lireParametre(request)");
         String[] parametres = new String[NOMBRE_PARAMETRE];
         parametres[0] = request.getParameter("name");
         parametres[1] = request.getParameter("introduced");
@@ -71,6 +92,7 @@ public class AddComputer extends HttpServlet {
      * @param request : request reçu par le servlet
      */
     public void ecrireAttribute(HttpServletRequest request) {
+        LOGGER.info("-------->ecrireAttribute(request)");
         ArrayList<CompanyDTO> informationCompany = TransformationToDTO
                 .arraylistCompanyToArraylistDTO(servCompany.listeComplete());
         request.setAttribute("listeCompany", informationCompany);
@@ -79,6 +101,7 @@ public class AddComputer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        LOGGER.info("-------->doGet(request,reponse)");
         RequestDispatcher fichierJSP = this.getServletContext()
                 .getRequestDispatcher("/resources/views/addComputer.jsp");
         ecrireAttribute(request);
@@ -88,6 +111,7 @@ public class AddComputer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        LOGGER.info("-------->doPost(request,reponse)");
         String[] parametres = lireParametre(request);
         boolean reponse = demandeInsert(parametres[0], parametres[1], parametres[2], parametres[3]);
         request.setAttribute("reponse", reponse);
