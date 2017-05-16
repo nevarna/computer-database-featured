@@ -2,14 +2,17 @@ package com.navarna.computerdb.persistence;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Computer;
@@ -25,10 +28,29 @@ public class DAOComputerImplTest {
     private static Computer computerNull = null;
     private static Computer computerAvecId = null;
     private static long id = 0L;
+    private static final int NOMBRE_INSERT = 574;
 
+    public static void miseAZero() {
+       JdbcTemplate j = (JdbcTemplate) ctx.getBean("jdbcTemplate");
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("./src/test/resources/insert.sql"));
+            String [] ligne = new String [NOMBRE_INSERT]; 
+            int pointeur = 0 ;
+            while(pointeur < NOMBRE_INSERT) {
+                ligne[pointeur] = br.readLine();
+                ++ pointeur;
+                
+            }
+            br.close();
+            j.batchUpdate(ligne);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     @BeforeClass
     public static void setComputer () {
-        id = 597L;
+        id = 500L;
         Company company = new Company.CompanyBuilder("company").setId(new Long(1)).build() ;
         Company companyNull = new CompanyBuilder("null").build();
         computerTest = new ComputerBuilder("test").setId(new Long(0)).setIntroduced(LocalDate.of(1999,10,11)).setDiscontinued(LocalDate.of(2000, 11, 20)).setCompany(company).build() ;
@@ -36,8 +58,8 @@ public class DAOComputerImplTest {
         computerAvecId = new ComputerBuilder("nullAvecId").setId(1).setCompany(companyNull).build();
         ctx = new AnnotationConfigApplicationContext(
                 DAOComputerImpl.class,
-                ConnectionSpringPool.class,
                 ConnectionSpringConfig.class);
+        miseAZero();
         daoComputerImpl = (DAOComputerImpl) ctx.getBean(DAOComputerImpl.class);
     }
 
@@ -81,16 +103,16 @@ public class DAOComputerImplTest {
         assertEquals(computer.isPresent(),true);
     }
 
-    @Ignore
+    @Test
     public void testShowName() {
         Page<Computer> page = daoComputerImpl.findByName("test",0,20,"computer.id","ASC");
         assertEquals(page.estVide(),false);
     }
 
-    @Ignore
+    @Test
     public void testCountComputer() {
         int result = daoComputerImpl.count();
-        assertEquals(result,602);
+        assertEquals(result,529);
     }
     @AfterClass
     public static void fermer() {

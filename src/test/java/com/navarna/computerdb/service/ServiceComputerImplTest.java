@@ -16,7 +16,6 @@ import com.navarna.computerdb.model.Company.CompanyBuilder;
 import com.navarna.computerdb.model.Computer.ComputerBuilder;
 import com.navarna.computerdb.model.Page;
 import com.navarna.computerdb.persistence.ConnectionSpringConfig;
-import com.navarna.computerdb.persistence.ConnectionSpringPool;
 import com.navarna.computerdb.persistence.DAOComputerImpl;
 
 public class ServiceComputerImplTest {
@@ -33,7 +32,6 @@ public class ServiceComputerImplTest {
         ctx = new AnnotationConfigApplicationContext(
                 ServiceComputerImpl.class,
                 DAOComputerImpl.class,
-                ConnectionSpringPool.class,
                 ConnectionSpringConfig.class);
         serviceComputerImpl = (ServiceComputerImpl) ctx.getBean(ServiceComputerImpl.class);
     }

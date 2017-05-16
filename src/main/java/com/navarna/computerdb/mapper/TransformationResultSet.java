@@ -28,8 +28,9 @@ public class TransformationResultSet {
      * @return Page<Company> : une page contenant la liste de compagnie
      */
     public static Page<Company> extraireListePartielleCompany(ResultSet result, int numPage, int nbElement) {
-        LOGGER.info("-------->extraireListePartielleCompany(result,numPage,nbElement) args: undefined - "+numPage+" - "+nbElement);
-        try{
+        LOGGER.info("-------->extraireListePartielleCompany(result,numPage,nbElement) args: undefined - " + numPage
+                + " - " + nbElement);
+        try {
             Page<Company> page = new Page<Company>(numPage, nbElement);
             while (result.next()) {
                 Long id = result.getLong("id");
@@ -71,7 +72,7 @@ public class TransformationResultSet {
      * @return LocalDate : localDate correspondant au String en arguments
      */
     public static Optional<LocalDate> recupererDate(String dateEnString) {
-        LOGGER.info("-------->recupererDate(dateEnString) args: "+dateEnString);
+        LOGGER.info("-------->recupererDate(dateEnString) args: " + dateEnString);
         System.out.println("date en string : " + dateEnString);
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss.S");
@@ -135,7 +136,8 @@ public class TransformationResultSet {
      * @return Page<Computer> : une liste de computer
      */
     public static Page<Computer> extraireDetailsComputers(ResultSet result, int numPage, int nbElement) {
-        LOGGER.info("-------->extraireListeDetailsComputers(result,numPage,nbElement) args: undefined - "+numPage+" - "+nbElement);
+        LOGGER.info("-------->extraireListeDetailsComputers(result,numPage,nbElement) args: undefined - " + numPage
+                + " - " + nbElement);
         try {
             Page<Computer> page = new Page<Computer>(numPage, nbElement);
             while (result.next()) {

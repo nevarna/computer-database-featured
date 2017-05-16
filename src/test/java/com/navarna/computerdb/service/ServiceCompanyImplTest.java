@@ -9,7 +9,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.persistence.ConnectionSpringConfig;
-import com.navarna.computerdb.persistence.ConnectionSpringPool;
 import com.navarna.computerdb.persistence.DAOCompanyImpl;
 
 public class ServiceCompanyImplTest {
@@ -19,8 +18,7 @@ public class ServiceCompanyImplTest {
         try  {
             AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
                     ServiceCompanyImpl.class,
-                    DAOCompanyImpl.class, 
-                    ConnectionSpringPool.class, 
+                    DAOCompanyImpl.class,  
                     ConnectionSpringConfig.class);
            ArrayList<Company> al = ((ServiceCompanyImpl) ctx.getBean(ServiceCompanyImpl.class)).listeComplete();
            for(Company c : al) {

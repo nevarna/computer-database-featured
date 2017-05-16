@@ -15,7 +15,6 @@
 		<maven.mysql.version>6.0.6</maven.mysql.version>
 		<maven.junit.version>4.11</maven.junit.version>
 		<maven.mockito.version>1.10.19</maven.mockito.version>
-		<maven.hikari.version>2.6.1</maven.hikari.version>
 		<maven.servlet.version>3.0.1</maven.servlet.version>
 		<maven.jsp-api.version>2.2</maven.jsp-api.version>
 		<maven.selenium.version>3.4.0</maven.selenium.version>
@@ -65,7 +64,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${maven.slf4j.version}</version>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -90,12 +89,6 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${maven.jcl.slf4j.version}</version>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>${maven.hikari.version}</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -125,12 +118,24 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<version>${maven.spring-jdbc.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
 			<version>${maven.spring-web.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
