@@ -28,5 +28,11 @@ public class ComputerTest {
 		assertEquals(discontinuedTest,LocalDate.of(2000, 11, 20)) ;
 		assertEquals(company,companyTest) ;
 	}
+	
+	@Test
+	public void test2() {
+	    Computer computer = new Computer.ComputerBuilder(null).build();
+	    System.out.println("computer  "+computer.getName());
+	}
 
 }

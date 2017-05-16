@@ -1,7 +1,12 @@
 package com.navarna.computerdb.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 public class CompanyDTO {
+    @Min(0)
     private long id;
+    @NotNull
     private String name;
 
     /**

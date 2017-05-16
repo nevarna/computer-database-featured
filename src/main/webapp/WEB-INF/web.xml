@@ -4,61 +4,16 @@
 
 <web-app>
 	<display-name>Archetype Created Web Application</display-name>
-	<context-param>
-		<param-name>contextClass</param-name>
-		<param-value>
-			org.springframework.web.context.support.AnnotationConfigWebApplicationContext
-		</param-value>
-	</context-param>
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>com.navarna.computerdb.persistence.ConnectionSpringConfig</param-value>
-	</context-param>
-	<listener>
-		<listener-class>
-			org.springframework.web.context.ContextLoaderListener
-		</listener-class>
-	</listener>
-	<servlet>
-		<servlet-name>Dashboard</servlet-name>
-		<display-name>Dashboard</display-name>
-		<description></description>
-		<servlet-class>com.navarna.computerdb.controller.Dashboard</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>AddComputer</servlet-name>
-		<display-name>AddComputer</display-name>
-		<description></description>
-		<servlet-class>com.navarna.computerdb.controller.AddComputer</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>EditComputer</servlet-name>
-		<display-name>EditComputer</display-name>
-		<description></description>
-		<servlet-class>com.navarna.computerdb.controller.EditComputer</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Dashboard</servlet-name>
-		<url-pattern>/Dashboard</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>AddComputer</servlet-name>
-		<url-pattern>/AddComputer</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>EditComputer</servlet-name>
-		<url-pattern>/EditComputer</url-pattern>
-	</servlet-mapping>
 	<error-page>
 		<error-code>404</error-code>
-		<location>/resources/views/404.html</location>
+		<location>/erreur</location>
 	</error-page>
 	<error-page>
 		<error-code>403</error-code>
-		<location>/resources/views/403.html</location>
+		<location>/erreur</location>
 	</error-page>
 	<error-page>
 		<error-code>500</error-code>
-		<location>/resources/views/500.html</location>
+		<location>/erreur</location>
 	</error-page>
 </web-app>

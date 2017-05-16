@@ -5,7 +5,6 @@ import java.text.Normalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.navarna.computerdb.exception.ValidatorException;
 
 public class ValidationNavigation {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationNavigation.class);
@@ -15,14 +14,9 @@ public class ValidationNavigation {
      * @param page : page demandé
      * @return boolean : true or false
      */
-    public static boolean verificationPage(String page) {
+    public static boolean verificationPage(int page) {
         LOGGER.info("-------->verificationPage(page) args: " + page);
-        try {
-            int numero = page == null ? -2 : Integer.parseInt(page);
-            return numero > 0;
-        } catch (NumberFormatException ne) {
-            throw new ValidatorException("l'argument parametre de page n'est pas un nombre", ne);
-        }
+        return page > 0;
     }
 
     /**
@@ -30,15 +24,12 @@ public class ValidationNavigation {
      * @param nombreElement : nombre d'élément demandé
      * @return boolean : true or false
      */
-    public static boolean verificationNbElement(String nombreElement) {
+    public static boolean verificationNbElement(int nombreElement) {
         LOGGER.info("-------->verificationNbElement(nombreElement) args: " + nombreElement);
-        if (nombreElement == null) {
-            return false;
-        }
         switch (nombreElement) {
-        case "10":
-        case "50":
-        case "100":
+        case 10:
+        case 50:
+        case 100:
             return true;
         default:
             return false;
@@ -53,7 +44,6 @@ public class ValidationNavigation {
     public static String enleverCaractereInterdit(String name) {
         LOGGER.info("-------->enleverCaractereInterdit(name) args: " + name);
         name = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
-        name = name.replaceAll("<[^>]*>|\\d|\\W|_", " ");
         return name;
     }
 
@@ -64,9 +54,6 @@ public class ValidationNavigation {
      */
     public static boolean verificationTypeSearch(String typeSearch) {
         LOGGER.info("-------->verificationTypeSearch(typeSearch) args: " + typeSearch);
-        if (typeSearch == null) {
-            return false;
-        }
         return ((typeSearch.equals("computer.name")) || (typeSearch.equals("company.name"))
                 || (typeSearch.equals("discontinued")) || (typeSearch.equals("introduced")));
     }
@@ -79,14 +66,11 @@ public class ValidationNavigation {
      */
     public static boolean verificationSearch(String name, String typeSearch) {
         LOGGER.info("-------->verificationSearch(name,typeSearch) args: " + name + " - " + typeSearch);
-        if (name == null) {
+        if (name.equals("")) {
             return false;
-        } else {
-            if (name.equals("")) {
-                return false;
-            }
-            return verificationTypeSearch(typeSearch);
         }
+        return verificationTypeSearch(typeSearch);
+
     }
 
     /**
@@ -95,10 +79,6 @@ public class ValidationNavigation {
      * @return boolean : true or false
      */
     public static boolean verificationOrder(String order) {
-        LOGGER.info("-------->verificationOrder(order) args: " + order);
-        if (order == null) {
-            return false;
-        }
         switch (order) {
         case "none":
             return false;

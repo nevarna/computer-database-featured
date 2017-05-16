@@ -139,7 +139,7 @@ public class ValidationEntrer {
     public static boolean entrerValide(String name, LocalDate introduced, LocalDate discontinued, long idCompany) {
         LOGGER.info("-------->entrerValide(name,introduced,discontinued,idCompany) args: " + name + " - " + introduced
                 + " - " + discontinued + " - " + idCompany);
-        return (name != null) && (!name.equals("")) && (dateLogique(introduced, discontinued)) && (idCompany != -1);
+        return (!name.equals("")) && (dateLogique(introduced, discontinued)) && (idCompany != -1);
     }
 
 }

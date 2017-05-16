@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class Computer {
     private long id;
-    private String name;
+    private String name ="";
     private LocalDate introduced;
     private LocalDate discontinued;
     private Company company;
@@ -96,7 +96,7 @@ public class Computer {
          */
         public ComputerBuilder(String name) {
             computer = new Computer();
-            computer.name = name == null ? "" : name;
+            computer.name = name;
         }
 
         /**

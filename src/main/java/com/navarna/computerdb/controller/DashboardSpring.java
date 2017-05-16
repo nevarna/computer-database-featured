@@ -1,18 +1,14 @@
 package com.navarna.computerdb.controller;
 
-import java.io.IOException;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.navarna.computerdb.dto.ComputerDTO;
 import com.navarna.computerdb.exception.ControllerException;
@@ -21,40 +17,50 @@ import com.navarna.computerdb.model.Page;
 import com.navarna.computerdb.service.ServiceComputerImpl;
 import com.navarna.computerdb.validator.ValidationNavigation;
 
-/**
- * Servlet implementation class Dashboard.
- */
-public class Dashboard extends HttpServlet {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Dashboard.class);
-    private static final long serialVersionUID = 1L;
-    private static final int NOMBRE_PARAMETRE = 5;
+@Controller
+@RequestMapping("/dashboard")
+public class DashboardSpring {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DashboardSpring.class);
     @Autowired
     private ServiceComputerImpl servComputer;
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        LOGGER.info("-------->init(config)");
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView getRequest(@RequestParam(value = "page", defaultValue = "0") Integer numPage,
+            @RequestParam(value = "nbElement", defaultValue = "10") Integer nbElement,
+            @RequestParam(value = "search", defaultValue = "") String name,
+            @RequestParam(value = "order", defaultValue = "ASC") String order,
+            @RequestParam(value = "type", defaultValue = "computer.id") String typeSearch) {
+        LOGGER.info("-------->doGet(request,response)");
+        if (!ValidationNavigation.verificationPage(numPage)) {
+            numPage = 0;
+        }
+        if (!ValidationNavigation.verificationNbElement(nbElement)) {
+            nbElement = 10;
+        }
+        if (ValidationNavigation.verificationSearch(name, typeSearch)) {
+            name = ValidationNavigation.enleverCaractereInterdit(name);
+        } else {
+            name = "";
+        }
+        if (!ValidationNavigation.verificationOrder(order)) {
+            order = "ASC";
+        }
+        if (!ValidationNavigation.verificationTypeSearch(typeSearch)) {
+            typeSearch = "computer.id";
+        }
+        Page<ComputerDTO> pageComputer = creationListe(name, typeSearch, order, numPage, nbElement);
+        int totalElement = compterElement(name, typeSearch);
+        ModelAndView model = new ModelAndView("dashboard");
+        ecrireAttribute(model, pageComputer, numPage, name, typeSearch, totalElement, nbElement);
+        return model;
     }
 
-    /**
-     * Lit les paramêtre reçu en de manière GET et les utilisent.
-     * @param request : request reçu par le servlet
-     * @return String[] : un tableau contenant les indices de manière ordonnées
-     *         0 : numero de page 1 : nombre d'élément par page 2 : nom entrer
-     *         en arguments du search 3 : type de la recherche computer ou
-     *         company
-     */
-    private String[] lireParametreGet(HttpServletRequest request) {
-        LOGGER.info("-------->lireParametreGet(request)");
-        String[] parametres = new String[NOMBRE_PARAMETRE];
-        parametres[0] = request.getParameter("page");
-        parametres[1] = request.getParameter("nbElement");
-        parametres[2] = request.getParameter("search");
-        parametres[3] = request.getParameter("type");
-        parametres[4] = request.getParameter("order");
-        return parametres;
+    @RequestMapping(method = RequestMethod.POST)
+    public ModelAndView postRequest(@RequestParam(value = "selection", defaultValue = "") String selection) {
+        String[] tableauIdDelete = lireParametrePost(selection);
+        demandeSuppression(tableauIdDelete);
+        return getRequest(10, 10, "", "ASC", "computer.id");
     }
 
     /**
@@ -62,13 +68,9 @@ public class Dashboard extends HttpServlet {
      * @param request : request reçu par le servlet
      * @return String[] : tableau contenant les indices à supprimer.
      */
-    private String[] lireParametrePost(HttpServletRequest request) {
+    private String[] lireParametrePost(String selection) {
         LOGGER.info("-------->lireParametrePost(request)");
-        String selection = request.getParameter("selection");
-        if (selection != null) {
-            return selection.split(",");
-        }
-        return new String[0];
+        return selection.split(",");
     }
 
     /**
@@ -156,60 +158,19 @@ public class Dashboard extends HttpServlet {
      * @param totalElement : nombre total d'élément de la recherche
      * @param nbElement : nombre d'element par page
      */
-    public void ecrireAttribute(HttpServletRequest request, Page<ComputerDTO> pageComputer, int numPage, String name,
+    public void ecrireAttribute(ModelAndView model, Page<ComputerDTO> pageComputer, int numPage, String name,
             String typeSearch, int totalElement, int nbElement) {
         LOGGER.info(
                 "-------->ecrireAttribut(request,pageComputer,numPage,name,typeSearch,totalElement,nbElement) args : undefined - undefined - "
                         + numPage + " -" + name + " - " + typeSearch + " - " + totalElement + " - " + nbElement);
-        request.setAttribute("computers", pageComputer);
-        request.setAttribute("pageCurrente", numPage + 1);
-        request.setAttribute("nbElement", nbElement);
+        model.addObject("computers", pageComputer);
+        model.addObject("pageCurrente", numPage + 1);
+        model.addObject("nbElement", nbElement);
         if (ValidationNavigation.verificationSearch(name, typeSearch)) {
-            request.setAttribute("name", name);
-            request.setAttribute("research", typeSearch);
+            model.addObject("name", name);
+            model.addObject("research", typeSearch);
         }
-        request.setAttribute("totalElement", totalElement);
-        request.setAttribute("maxPage", totalElement / nbElement);
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        RequestDispatcher fichierJSP = this.getServletContext().getRequestDispatcher("/resources/views/dashboard.jsp");
-        LOGGER.info("-------->doGet(request,response)");
-        String[] parametres = lireParametreGet(request);
-        int numPage = 0;
-        if (ValidationNavigation.verificationPage(parametres[0])) {
-            numPage = Integer.parseInt(parametres[0]);
-        }
-        int nbElement = 10;
-        if (ValidationNavigation.verificationNbElement(parametres[1])) {
-            nbElement = Integer.parseInt(parametres[1]);
-        }
-        String name = null;
-        if (ValidationNavigation.verificationSearch(parametres[2], parametres[3])) {
-            name = ValidationNavigation.enleverCaractereInterdit(parametres[2]);
-        }
-        String order = "ASC";
-        if (ValidationNavigation.verificationOrder(parametres[4])) {
-            order = parametres[4];
-        }
-        String typeSearch = "computer.id";
-        if (ValidationNavigation.verificationTypeSearch(parametres[3])) {
-            typeSearch = parametres[3];
-        }
-        Page<ComputerDTO> pageComputer = creationListe(name, typeSearch, order, numPage, nbElement);
-        int totalElement = compterElement(name, typeSearch);
-        ecrireAttribute(request, pageComputer, numPage, name, typeSearch, totalElement, nbElement);
-        fichierJSP.forward(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        LOGGER.info("-------->doPost(request,response)");
-        String[] tableauIdDelete = lireParametrePost(request);
-        demandeSuppression(tableauIdDelete);
-        doGet(request, response);
+        model.addObject("totalElement", totalElement);
+        model.addObject("maxPage", totalElement / nbElement);
     }
 }
