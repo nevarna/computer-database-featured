@@ -1,9 +1,13 @@
 package com.navarna.computerdb.mapper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +22,9 @@ import com.navarna.computerdb.model.Page;
 
 public class TransformationToDTO {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationToDTO.class);
+    private static final String regexDateFrancaise = "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})";
+    private static final String regexDateFrancaiseEnvers = "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])";
+    private static final String regexDateAnglaise = "^(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])-[0-9]{4}";
     /**
      * Transforme un Computer en ComputerDTO.
      * @param computer : computer à transformer
@@ -53,6 +60,37 @@ public class TransformationToDTO {
         }
     }
 
+    public static LocalDate getLocalDate(String date) {
+        LOGGER.info("-------->getLocalDate(date) args: " + date);
+        if (Pattern.matches(regexDateFrancaise, date)) {
+            return StringEnDate(date, "dd-MM-yyyy");
+        }
+        if (Pattern.matches(regexDateFrancaiseEnvers, date)) {
+            return StringEnDate(date, "yyyy-MM-dd");
+        }
+        if (Pattern.matches(regexDateAnglaise, date)) {
+            return StringEnDate(date, "MM-dd-yyyy");
+        }
+        return null;
+    }
+
+    /**
+     * Vérifie si la date est correcte.
+     * @param date : tableau de string représentant une date decouper en date et
+     *            heure.
+     * @param format : format de la date
+     * @return boolean : reponse si oui ou non la date est correct
+     */
+    public static LocalDate StringEnDate(String date, String format) {
+        LOGGER.info("-------->StringEnDate(date,format) args: " + date + " - " + format);
+        SimpleDateFormat df = new SimpleDateFormat(format);
+        df.setLenient(false);
+        try {
+            return df.parse(date).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        } catch (ParseException pe) {
+            return null;
+        }
+    }
     /**
      * Transforme un ComputerDTO en Computer.
      * @param computerDTO : ComputerDTO à transformer
@@ -60,18 +98,18 @@ public class TransformationToDTO {
      */
     public static Optional<Computer> dtoToComputer(ComputerDTO computerDTO) {
         LOGGER.info("-------->dtoToComputer(computerDTO) args :"+computerDTO);
-        if ((computerDTO.getName() == null) || (computerDTO.getNameCompany() == null)) {
+        if (computerDTO.getName() == null) {
             return Optional.empty();
         }
         ComputerBuilder computerBuilder = new Computer.ComputerBuilder(computerDTO.getName()).setId(computerDTO.getId());
-        CompanyBuilder companyBuilder = new Company.CompanyBuilder(computerDTO.getName()).setId(computerDTO.getIdCompany());
+        CompanyBuilder companyBuilder = new Company.CompanyBuilder(computerDTO.getNameCompany()).setId(computerDTO.getIdCompany());
         try {
             if (computerDTO.getIntroduced() != null) {
-                LocalDate introduced = LocalDate.parse(computerDTO.getIntroduced());
+                LocalDate introduced = getLocalDate(computerDTO.getIntroduced());
                 computerBuilder.setIntroduced(introduced);
             }
             if (computerDTO.getDiscontinued() != null) {
-                LocalDate discontinued = LocalDate.parse(computerDTO.getDiscontinued());
+                LocalDate discontinued = getLocalDate(computerDTO.getDiscontinued());
                 computerBuilder.setDiscontinued(discontinued);
             }
         } catch (DateTimeParseException de) {

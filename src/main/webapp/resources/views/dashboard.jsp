@@ -6,6 +6,7 @@
 <%@page import="com.navarna.computerdb.controller.*"%>
 <%@page import="com.navarna.computerdb.exception.*"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="test"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%
     String finUrl = null;
     Object research = request.getAttribute("research");
@@ -33,7 +34,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Computer Database</title>
+<title><spring:message code="label.title"/></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <link href="resources/css/bootstrap.min.css" rel="stylesheet"
@@ -45,8 +46,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
-				Database </a>
+			<a class="navbar-brand" href="dashboard"> <spring:message code="label.title"/> </a>
 		</div>
 	</header>
 	<section id="main">
@@ -56,10 +56,10 @@
 				    obj = request.getAttribute("totalElement");
 				    if (obj instanceof Integer) {
 				        Integer totalElement = (Integer) obj;
-				        String affichage = totalElement.toString() + " Computers found";
+				        String affichage = totalElement.toString()+" ";
 				        out.print(affichage);
 				    }
-				%>
+				%><spring:message code="label.count"/>
 			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
@@ -72,29 +72,28 @@
                 out.print(nouvelleBalise);
             }%> />
 
-						<input type="submit" id="searchsubmit" value="Filter by name"
+						<input type="submit" id="searchsubmit" value="<spring:message code="label.filter"/>"
 							class="btn btn-primary" /> <br> <input type="radio"
-							name="type" value="computer.name" checked />Computer <input
-							type="radio" name="type" value="company.name" />Company <input
-							type="radio" name="type" value="introduced" />Introduced <input
-							type="radio" name="type" value="discontinued" />Discontinued <select
+							name="type" value="computer.name" checked /><spring:message code="label.name"/> <input
+							type="radio" name="type" value="company.name" /><spring:message code="label.company"/><input
+							type="radio" name="type" value="introduced" /><spring:message code="label.introduced"/> <input
+							type="radio" name="type" value="discontinued" /><spring:message code="label.discontinued"/><select
 							class="form-horizontal" id="orderby" name="order">
-							<option>none</option>
-							<option value="ASC">croissant</option>
-							<option value="DESC">decroissant</option>
+							<option value="ASC"><spring:message code="label.asc"/></option>
+							<option value="DESC"><spring:message code="label.desc"/></option>
 						</select>
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Edit</a>
+					<a class="btn btn-success" id="addComputer" href="addComputer"><spring:message code="label.titleAdd"/></a> 
+					<a class="btn btn-default" id="editComputer" href="#"
+						onclick="$.fn.toggleEditMode();"><spring:message code="label.del"/></a>
 				</div>
 			</div>
 		</div>
 
 		<form id="deleteForm" action="#" method="POST">
-			<input type="hidden" name="selection" value="2">
+			<input type="hidden" name="selection">
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
@@ -111,12 +110,12 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th>Computer name</th>
-						<th>Introduced date</th>
+						<th><spring:message code="label.name"/></th>
+						<th><spring:message code="label.introduced"/></th>
 						<!-- Table header for Discontinued Date -->
-						<th>Discontinued date</th>
+						<th><spring:message code="label.discontinued"/></th>
 						<!-- Table header for Company -->
-						<th>Company</th>
+						<th><spring:message code="label.company"/></th>
 
 					</tr>
 				</thead>

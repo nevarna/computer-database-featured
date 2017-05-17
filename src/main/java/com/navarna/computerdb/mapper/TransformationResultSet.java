@@ -73,18 +73,15 @@ public class TransformationResultSet {
      */
     public static Optional<LocalDate> recupererDate(String dateEnString) {
         LOGGER.info("-------->recupererDate(dateEnString) args: " + dateEnString);
-        System.out.println("date en string : " + dateEnString);
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss.S");
             LocalDate date = LocalDate.parse(dateEnString, formatter);
-            System.out.println(date);
             return Optional.of(date);
         } catch (DateTimeParseException pe) {
         }
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
             LocalDate date = LocalDate.parse(dateEnString, formatter);
-            System.out.println(date);
             return Optional.of(date);
         } catch (DateTimeParseException pe) {
             return Optional.empty();

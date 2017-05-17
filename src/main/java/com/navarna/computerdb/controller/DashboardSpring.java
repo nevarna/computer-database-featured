@@ -1,6 +1,5 @@
 package com.navarna.computerdb.controller;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +24,24 @@ public class DashboardSpring {
     @Autowired
     private ServiceComputerImpl servComputer;
 
+    /**
+     * Navigation GET de l'url /dashboard
+     * @param numPage : numero de la page
+     * @param nbElement : nombre d'élément par page
+     * @param name : nom de recherche
+     * @param order : ordre de tri
+     * @param typeSearch : type de recherche/ tri
+     * @return model : le model contenant les attribut et l'adresse de la page
+     *         jsp
+     */
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getRequest(@RequestParam(value = "page", defaultValue = "0") Integer numPage,
             @RequestParam(value = "nbElement", defaultValue = "10") Integer nbElement,
             @RequestParam(value = "search", defaultValue = "") String name,
             @RequestParam(value = "order", defaultValue = "ASC") String order,
             @RequestParam(value = "type", defaultValue = "computer.id") String typeSearch) {
-        LOGGER.info("-------->doGet(request,response)");
+        LOGGER.info("-------->getRequest(numPage,nbElement,name,order,typeSearch) args: " + numPage + " - " + nbElement
+                + " - " + name + " - " + order + " - " + typeSearch);
         if (!ValidationNavigation.verificationPage(numPage)) {
             numPage = 0;
         }
@@ -56,8 +66,15 @@ public class DashboardSpring {
         return model;
     }
 
+    /**
+     * Navigation POST de l'url /dashboard
+     * @param selection : indice de computer à supprimer
+     * @return model : le model contenant les attribut et l'adresse de la page
+     *         jsp
+     */
     @RequestMapping(method = RequestMethod.POST)
     public ModelAndView postRequest(@RequestParam(value = "selection", defaultValue = "") String selection) {
+        LOGGER.info("-------->postRequest(selection) args: " + selection);
         String[] tableauIdDelete = lireParametrePost(selection);
         demandeSuppression(tableauIdDelete);
         return getRequest(10, 10, "", "ASC", "computer.id");
@@ -69,7 +86,7 @@ public class DashboardSpring {
      * @return String[] : tableau contenant les indices à supprimer.
      */
     private String[] lireParametrePost(String selection) {
-        LOGGER.info("-------->lireParametrePost(request)");
+        LOGGER.info("-------->lireParametrePost(request) args: " + selection);
         return selection.split(",");
     }
 
@@ -150,7 +167,7 @@ public class DashboardSpring {
 
     /**
      * Ecrit les attributs dont a besoin le fichier JSP.
-     * @param request : request reçu par le servlet
+     * @param model : model à retourner
      * @param pageComputer : page contenant la liste de computer
      * @param numPage : numero de page
      * @param name : nom de la recherche
@@ -161,7 +178,7 @@ public class DashboardSpring {
     public void ecrireAttribute(ModelAndView model, Page<ComputerDTO> pageComputer, int numPage, String name,
             String typeSearch, int totalElement, int nbElement) {
         LOGGER.info(
-                "-------->ecrireAttribut(request,pageComputer,numPage,name,typeSearch,totalElement,nbElement) args : undefined - undefined - "
+                "-------->ecrireAttribut(model,pageComputer,numPage,name,typeSearch,totalElement,nbElement) args : undefined - undefined - "
                         + numPage + " -" + name + " - " + typeSearch + " - " + totalElement + " - " + nbElement);
         model.addObject("computers", pageComputer);
         model.addObject("pageCurrente", numPage + 1);
