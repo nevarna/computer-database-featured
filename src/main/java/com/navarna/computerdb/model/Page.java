@@ -1,6 +1,7 @@
 package com.navarna.computerdb.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Page<T> {
     private ArrayList<T> page;
@@ -54,5 +55,20 @@ public class Page<T> {
         if (this.page.size() < nbElementPage) {
             this.page.add(element);
         }
+    }
+
+    /**
+     * Met les objets d'une liste dans la page.
+     * @param list : list contenant des objet
+     */
+    public void addList(List<T> list) {
+        if (!(list.size() > nbElementPage)) {
+            this.page.addAll(list);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Page [page=" + page + ", nbPage=" + nbPage + ", nbElementPage=" + nbElementPage + "]\n";
     }
 }

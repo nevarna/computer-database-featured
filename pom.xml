@@ -13,6 +13,7 @@
 		<maven.mysql.version>6.0.6</maven.mysql.version>
 		<maven.junit.version>4.11</maven.junit.version>
 		<maven.mockito.version>1.10.19</maven.mockito.version>
+		<maven.hikari.version>2.6.1</maven.hikari.version>
 
 		<maven.servlet-api.version>3.0.1</maven.servlet-api.version>
 		<maven.jsp-api.version>2.2</maven.jsp-api.version>
@@ -78,6 +79,11 @@
 			<version>${maven.mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${maven.hikari.version}</version>
+		</dependency>
 
 		<!-- _________________[LogBack]_______________ -->
 		<dependency>
@@ -126,10 +132,15 @@
 		<!-- _________________[hibernate validator]_______________ -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>${maven.hibernate.validator.version}</version>
-			<scope>runtime</scope>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.2.10.Final</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-java8</artifactId>
+			<version>5.1.0.Final</version>
+		</dependency>
+
 		<!-- _________________[spring framework]_______________ -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -167,6 +178,19 @@
 			</exclusions>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${maven.spring-web.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>compile</scope>
+		</dependency>
+
 	</dependencies>
 	<!--===============================PLUGINS ============================= -->
 	<build>

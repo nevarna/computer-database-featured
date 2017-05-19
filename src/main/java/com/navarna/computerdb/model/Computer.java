@@ -2,11 +2,30 @@ package com.navarna.computerdb.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "computer")
 public class Computer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column
     private String name ="";
+    @Column
     private LocalDate introduced;
+    @Column
     private LocalDate discontinued;
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "company_id", referencedColumnName="id")
     private Company company;
 
     public String getName() {
@@ -20,7 +39,7 @@ public class Computer {
     public LocalDate getDiscontinued() {
         return this.discontinued;
     }
-
+    
     public Company getCompany() {
         return this.company;
     }
@@ -44,6 +63,7 @@ public class Computer {
     public void setDiscontinued(LocalDate discontinued) {
         this.discontinued = discontinued;
     }
+
 
     public void setCompany(Company company) {
         this.company = company;
