@@ -6,11 +6,13 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import com.navarna.computerdb.dto.CompanyDTO;
 import com.navarna.computerdb.dto.ComputerDTO;
@@ -25,13 +27,14 @@ public class TransformationToDTO {
     private static final String regexDateFrancaise = "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})";
     private static final String regexDateFrancaiseEnvers = "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])";
     private static final String regexDateAnglaise = "^(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])-[0-9]{4}";
+
     /**
      * Transforme un Computer en ComputerDTO.
      * @param computer : computer à transformer
      * @return Optional<ComputerDTO> : computerDTO correspondant à computer
      */
     public static Optional<ComputerDTO> computerToDTO(Computer computer) {
-        LOGGER.info("-------->computerToDTO(computer) args :"+computer);
+        LOGGER.info("-------->computerToDTO(computer) args :" + computer);
         if (computer == null) {
             return Optional.empty();
         } else {
@@ -62,14 +65,18 @@ public class TransformationToDTO {
 
     public static LocalDate getLocalDate(String date) {
         LOGGER.info("-------->getLocalDate(date) args: " + date);
-        if (Pattern.matches(regexDateFrancaise, date)) {
-            return StringEnDate(date, "dd-MM-yyyy");
-        }
-        if (Pattern.matches(regexDateFrancaiseEnvers, date)) {
-            return StringEnDate(date, "yyyy-MM-dd");
-        }
-        if (Pattern.matches(regexDateAnglaise, date)) {
-            return StringEnDate(date, "MM-dd-yyyy");
+        Locale local = LocaleContextHolder.getLocale();
+        if (local.equals(Locale.FRENCH)) {
+            if (Pattern.matches(regexDateFrancaise, date)) {
+                return StringEnDate(date, "dd-MM-yyyy");
+            }
+            if (Pattern.matches(regexDateFrancaiseEnvers, date)) {
+                return StringEnDate(date, "yyyy-MM-dd");
+            }
+        } else {
+            if (Pattern.matches(regexDateAnglaise, date)) {
+                return StringEnDate(date, "MM-dd-yyyy");
+            }
         }
         return null;
     }
@@ -91,18 +98,21 @@ public class TransformationToDTO {
             return null;
         }
     }
+
     /**
      * Transforme un ComputerDTO en Computer.
      * @param computerDTO : ComputerDTO à transformer
      * @return Optional<Computer> : Computer correspondant au ComputerDTO
      */
     public static Optional<Computer> dtoToComputer(ComputerDTO computerDTO) {
-        LOGGER.info("-------->dtoToComputer(computerDTO) args :"+computerDTO);
+        LOGGER.info("-------->dtoToComputer(computerDTO) args :" + computerDTO);
         if (computerDTO.getName() == null) {
             return Optional.empty();
         }
-        ComputerBuilder computerBuilder = new Computer.ComputerBuilder(computerDTO.getName()).setId(computerDTO.getId());
-        CompanyBuilder companyBuilder = new Company.CompanyBuilder(computerDTO.getNameCompany()).setId(computerDTO.getIdCompany());
+        ComputerBuilder computerBuilder = new Computer.ComputerBuilder(computerDTO.getName())
+                .setId(computerDTO.getId());
+        CompanyBuilder companyBuilder = new Company.CompanyBuilder(computerDTO.getNameCompany())
+                .setId(computerDTO.getIdCompany());
         try {
             if (computerDTO.getIntroduced() != null) {
                 LocalDate introduced = getLocalDate(computerDTO.getIntroduced());
@@ -125,7 +135,7 @@ public class TransformationToDTO {
      * @return Optional<CompanyDTO> : CompanyDTO correspondant à la company
      */
     public static Optional<CompanyDTO> companyToDTO(Company company) {
-        LOGGER.info("-------->companyToDTO(company) args :"+company);
+        LOGGER.info("-------->companyToDTO(company) args :" + company);
         if (company.getName() == null) {
             return Optional.empty();
         }
@@ -143,7 +153,7 @@ public class TransformationToDTO {
      * @return Optional<Company> : Company transformer en CompanyDTO
      */
     public static Optional<Company> dtoToCompany(CompanyDTO companyDTO) {
-        LOGGER.info("-------->dtoToCompany(companyDTO) args :"+companyDTO);
+        LOGGER.info("-------->dtoToCompany(companyDTO) args :" + companyDTO);
         if (companyDTO.getName() != null) {
             Company company = new Company.CompanyBuilder(companyDTO.getName()).setId(companyDTO.getId()).build();
             return Optional.of(company);
@@ -188,7 +198,8 @@ public class TransformationToDTO {
     /**
      * Transforme une ArrayList Company en une ArrayList CompanyDTO.
      * @param liste : liste de company à transformer
-     * @return ArrayList<CompanyDTO> : arrayList de companyDTO correspondant à page
+     * @return ArrayList<CompanyDTO> : arrayList de companyDTO correspondant à
+     *         page
      */
     public static ArrayList<CompanyDTO> arraylistCompanyToArraylistDTO(ArrayList<Company> liste) {
         LOGGER.info("-------->arraylistCompanyToArraylistDTO(liste)");

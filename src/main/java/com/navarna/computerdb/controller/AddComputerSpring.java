@@ -10,9 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.navarna.computerdb.dto.CompanyDTO;
@@ -36,7 +37,7 @@ public class AddComputerSpring {
      * @return model : le model contenant les attribut et l'adresse de la page
      *         jsp
      */
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ModelAndView getRequest() {
         LOGGER.info("-------->getRequest()");
         ModelAndView model = new ModelAndView("addComputer");
@@ -51,7 +52,7 @@ public class AddComputerSpring {
      * @return model : le model contenant les attribut et l'adresse de la page
      *         jsp
      */
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public String postRequest(@Valid @ModelAttribute("ComputerDTO") ComputerDTO computerDto, BindingResult result) {
         LOGGER.info("-------->postRequest(computerDto,result) args: " + computerDto + " - " + result);
         if (!result.hasErrors()) {
@@ -86,7 +87,6 @@ public class AddComputerSpring {
         LOGGER.info("-------->demandeInsert(computerdto) args:" + computerdto);
         Optional<Computer> computer = TransformationToDTO.dtoToComputer(computerdto);
         if (computer.isPresent()) {
-            System.out.println(computer.get());
             return servComputer.insert(computer.get());
         }
         return false;

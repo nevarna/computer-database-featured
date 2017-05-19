@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -15,13 +16,14 @@ public class ErrorSpring {
      * @return model : le model contenant les attribut et l'adresse de la page
      *         jsp
      */
-    @RequestMapping(value = "erreur",method = RequestMethod.GET)
-    public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
+    @RequestMapping(value = "erreur", method = RequestMethod.GET)
+    public ModelAndView renderErrorPage(HttpServletRequest httpRequest,
+            @RequestParam(value = "message", required = false) String message
+            ) {
 
         ModelAndView errorPage = new ModelAndView("errors");
         String errorMsg = "";
         int httpErrorCode = getErrorCode(httpRequest);
-
         switch (httpErrorCode) {
         case 400: {
             errorMsg = "Error Code: 400. Bad Request";
@@ -40,8 +42,11 @@ public class ErrorSpring {
             break;
         }
         default: {
-            errorMsg = "Error on page" + httpRequest.getRequestURL();
+            errorMsg = "Error on page";
         }
+        }
+        if(message!= null) {
+            errorMsg+= " "+message;
         }
         errorPage.addObject("errorMsg", errorMsg);
         return errorPage;
@@ -52,7 +57,11 @@ public class ErrorSpring {
      * @return l'erreur qui s'est produite
      */
     private int getErrorCode(HttpServletRequest httpRequest) {
-        return (Integer) httpRequest.getAttribute("javax.servlet.error.status_code");
+        try {
+            return (Integer) httpRequest.getAttribute("javax.servlet.error.status_code");
+        } catch (ClassCastException | NullPointerException c) {
+            return 0;
+        }
     }
 
 }

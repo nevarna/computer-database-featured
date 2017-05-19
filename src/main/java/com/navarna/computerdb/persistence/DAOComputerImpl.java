@@ -47,7 +47,7 @@ public class DAOComputerImpl implements DAOComputer {
         DELETE_COMPUTERS = "DELETE from computer where company_id = ?";
         SELECT_LIST = "SELECT * from computer left join company on company_id = company.id ORDER BY ";
         FIND_ID = "SELECT * from computer left join company on company_id = company.id where computer.id = ?";
-        FIND_NAME = "SELECT * from computer left join company on company_id = company.id where computer.name = ?  ORDER BY ";
+        FIND_NAME = "SELECT * from computer left join company on company_id = company.id where computer.name LIKE ? ORDER BY ";
         FIND_COMPANY = "SELECT * from computer left join company on company_id = company.id where company.name = ? ORDER BY ";
         COUNT = "SELECT count(id) from computer";
         COUNT_NAME = "SELECT count(id) from computer where name = ?";
@@ -152,7 +152,7 @@ public class DAOComputerImpl implements DAOComputer {
                 + " - " + nbElement + " - " + typeOrder + " - " + order);
         String requeteComplete = ecrireRequeteBasique(FIND_NAME, typeOrder, order);
         try {
-            return jdbcTemplate.query(requeteComplete, getArguments(name, nbElement, numPage * nbElement),
+            return jdbcTemplate.query(requeteComplete, getArguments(name+"%", nbElement, numPage * nbElement),
                     new ResultSetExtractor<Page<Computer>>() {
                         @Override
                         public Page<Computer> extractData(ResultSet arg0) throws SQLException, DataAccessException {
@@ -171,7 +171,7 @@ public class DAOComputerImpl implements DAOComputer {
                 + " - " + numPage + " - " + nbElement + " - " + typeOrder + " - " + order);
         String requeteComplete = ecrireRequeteBasique(FIND_COMPANY, typeOrder, order);
         try {
-            return jdbcTemplate.query(requeteComplete, getArguments(nameCompany, nbElement, numPage * nbElement),
+            return jdbcTemplate.query(requeteComplete, getArguments(nameCompany+"%", nbElement, numPage * nbElement),
                     new ResultSetExtractor<Page<Computer>>() {
                         @Override
                         public Page<Computer> extractData(ResultSet arg0) throws SQLException, DataAccessException {

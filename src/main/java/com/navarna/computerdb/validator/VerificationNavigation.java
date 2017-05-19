@@ -10,16 +10,16 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 @Documented
-@Target({ ElementType.FIELD, ElementType.TYPE })
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ComputerDTOValidator.class)
-public @interface VerificationComputerDTO {
+@Constraint(validatedBy = NavigationValidator.class)
+public @interface VerificationNavigation {
 
     /**
      * retourne le message associer à l'erreur de l'annotation.
      * @return String : message de l'erreur
      */
-    String message() default "{ComputerDTO}";
+    String message() default "Erreur dans la verification navigation";
 
     Class<?>[] groups() default {};
 

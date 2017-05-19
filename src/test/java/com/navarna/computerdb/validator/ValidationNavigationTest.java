@@ -50,4 +50,16 @@ public class ValidationNavigationTest {
         assertEquals(false, faux2);
         assertEquals(false, faux3);
     }
+    
+    @Test
+    public void testVerificationValidator() {
+        boolean correct = NavigationValidator.verificationSearch(null);
+        boolean correct2 =  NavigationValidator.verificationSearch("");
+        boolean correct3 =  NavigationValidator.verificationSearch("name");
+        boolean faux  =  NavigationValidator.verificationSearch("name#");
+        assertEquals(true,correct);
+        assertEquals(true,correct2);
+        assertEquals(true,correct3);
+        assertEquals(false,faux);
+    }
 }

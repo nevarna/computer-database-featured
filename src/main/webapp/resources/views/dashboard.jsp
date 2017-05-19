@@ -9,32 +9,36 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%
     String finUrl = null;
-    Object research = request.getAttribute("research");
-    Object obj = request.getAttribute("name");
-    if ((obj instanceof String) && (research instanceof String)) {
-        finUrl = (String) obj;
-        String typeSearch = (String) research;
-        String retour = "";
-        retour = finUrl.replace("+", "%2B");
-        retour = finUrl.replace(" ", "+");
-        finUrl = "?search=" + retour + "&type=" + typeSearch;
-        finUrl += "&";
-    } else {
-        finUrl = "?";
-    }
     String urlComplete = null;
-    Object StringNbElement = request.getAttribute("nbElement");
-    if (StringNbElement instanceof Integer) {
-        int nbElement = (Integer) StringNbElement;
-        urlComplete = finUrl + "nbElement=" + nbElement + "&";
-    } else {
-        urlComplete = "?";
+    int nbElement = 10;
+    Object obj = request.getAttribute("navigation");
+    NavigationDashboardDTO navigation = null;
+    if (obj instanceof NavigationDashboardDTO) {
+        navigation = (NavigationDashboardDTO) obj;
+        finUrl = navigation.getSearch();
+        String typeSearch = navigation.getType();
+        if (!finUrl.equals("")) {
+            String retour = "";
+            retour = finUrl.replace("+", "%2B");
+            retour = finUrl.replace(" ", "+");
+            finUrl = "?search=" + retour + "&type=" + typeSearch;
+            finUrl += "&";
+        } else {
+            finUrl = "?";
+        }
+
+        nbElement = navigation.getNbElement();
+        if (nbElement != 0) {
+            urlComplete = finUrl + "nbElement=" + nbElement + "&";
+        } else {
+            urlComplete = "?";
+        }
     }
 %>
 <!DOCTYPE html>
 <html>
 <head>
-<title><spring:message code="label.title"/></title>
+<title><spring:message code="label.title" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <link href="resources/css/bootstrap.min.css" rel="stylesheet"
@@ -46,20 +50,22 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> <spring:message code="label.title"/> </a>
+			<a class="navbar-brand" href="dashboard"> <spring:message
+					code="label.title" />
+			</a>
 		</div>
 	</header>
 	<section id="main">
 		<div class="container">
 			<h1 id="homeTitle">
 				<%
+				    Integer totalElement = 0;
 				    obj = request.getAttribute("totalElement");
 				    if (obj instanceof Integer) {
-				        Integer totalElement = (Integer) obj;
-				        String affichage = totalElement.toString()+" ";
-				        out.print(affichage);
+				        totalElement = (Integer) obj;
 				    }
-				%><spring:message code="label.count"/>
+				    out.print(totalElement.toString() + " ");
+				%><spring:message code="label.count" />
 			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
@@ -67,27 +73,32 @@
 
 						<input type="search" id="searchbox" name="search"
 							class="form-control" placeholder="Search name"
-							<%if ((request.getAttribute("name") != null) && (request.getAttribute("name") instanceof String)) {
-                String nouvelleBalise = "value=\"" + request.getAttribute("name") + "\"";
+							<%if (!navigation.getSearch().equals("")) {
+                String nouvelleBalise = "value=\"" + navigation.getSearch() + "\"";
                 out.print(nouvelleBalise);
             }%> />
-
-						<input type="submit" id="searchsubmit" value="<spring:message code="label.filter"/>"
+						<input type="submit" id="searchsubmit"
+							value="<spring:message code="label.filter"/>"
 							class="btn btn-primary" /> <br> <input type="radio"
-							name="type" value="computer.name" checked /><spring:message code="label.name"/> <input
-							type="radio" name="type" value="company.name" /><spring:message code="label.company"/><input
-							type="radio" name="type" value="introduced" /><spring:message code="label.introduced"/> <input
-							type="radio" name="type" value="discontinued" /><spring:message code="label.discontinued"/><select
-							class="form-horizontal" id="orderby" name="order">
-							<option value="ASC"><spring:message code="label.asc"/></option>
-							<option value="DESC"><spring:message code="label.desc"/></option>
+							name="type" value="computer.name" checked />
+						<spring:message code="label.name" />
+						<input type="radio" name="type" value="company.name" />
+						<spring:message code="label.company" />
+						<input type="radio" name="type" value="introduced" />
+						<spring:message code="label.introduced" />
+						<input type="radio" name="type" value="discontinued" />
+						<spring:message code="label.discontinued" />
+						<select class="form-horizontal" id="orderby" name="order">
+							<option value="ASC"><spring:message code="label.asc" /></option>
+							<option value="DESC"><spring:message code="label.desc" /></option>
 						</select>
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer"><spring:message code="label.titleAdd"/></a> 
-					<a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();"><spring:message code="label.del"/></a>
+					<a class="btn btn-success" id="addComputer" href="addComputer"><spring:message
+							code="label.titleAdd" /></a> <a class="btn btn-default"
+						id="editComputer" href="#" onclick="$.fn.toggleEditMode();"><spring:message
+							code="label.del" /></a>
 				</div>
 			</div>
 		</div>
@@ -110,12 +121,12 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th><spring:message code="label.name"/></th>
-						<th><spring:message code="label.introduced"/></th>
+						<th><spring:message code="label.name" /></th>
+						<th><spring:message code="label.introduced" /></th>
 						<!-- Table header for Discontinued Date -->
-						<th><spring:message code="label.discontinued"/></th>
+						<th><spring:message code="label.discontinued" /></th>
 						<!-- Table header for Company -->
-						<th><spring:message code="label.company"/></th>
+						<th><spring:message code="label.company" /></th>
 
 					</tr>
 				</thead>
@@ -153,45 +164,42 @@
 		<div class="container text-center">
 			<ul class="pagination">
 				<%
-				    obj = request.getAttribute("maxPage");
-				    Object obj2 = request.getAttribute("pageCurrente");
-				    if ((obj instanceof Integer) && (obj2 instanceof Integer)) {
-				        Integer max = (Integer) obj;
-				        Integer courant = (Integer) obj2;
-				        if (max != 0) {
-				            String preview;
-				            if (courant > 1) {
-				                preview = "<li><a href=" + urlComplete + "page=" + (courant - 1)
-				                        + " aria-label=\"Previous\"> <span aria-hidden=\"true\">&laquo;</span></a></li>";
-				            } else {
-				                preview = "<li><a href=" + urlComplete + "page=" + 1
-				                        + " aria-label=\"Previous\"> <span aria-hidden=\"true\">&laquo;</span></a></li>";
-				            }
-				            out.println(preview);
-				            String next;
-				            if (courant < max) {
-				                next = "<li><a href=" + urlComplete + "page=" + (courant + 1)
-				                        + " aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>";
+				    Integer max = totalElement / nbElement;
 
-				            } else {
-				                next = "<li><a href=" + urlComplete + "page=" + max
-				                        + " aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>";
-
-				            }
-				            if (courant + 5 < max) {
-				                max = courant + 5;
-				            }
-				            if (courant - 5 > 1) {
-				                courant = courant - 5;
-				            } else {
-				                courant = 1;
-				            }
-				            for (int i = courant; i < max; i++) {
-				                String affiche = "<li><a href=\"" + urlComplete + "page=" + i + "\">" + i + "</a></li>";
-				                out.println(affiche);
-				            }
-				            out.println(next);
+				    Integer courant = navigation.getPage();
+				    if (max != 0) {
+				        String preview;
+				        if (courant > 1) {
+				            preview = "<li><a href=" + urlComplete + "page=" + (courant - 1)
+				                    + " aria-label=\"Previous\"> <span aria-hidden=\"true\">&laquo;</span></a></li>";
+				        } else {
+				            preview = "<li><a href=" + urlComplete + "page=" + 1
+				                    + " aria-label=\"Previous\"> <span aria-hidden=\"true\">&laquo;</span></a></li>";
 				        }
+				        out.println(preview);
+				        String next;
+				        if (courant < max) {
+				            next = "<li><a href=" + urlComplete + "page=" + (courant + 1)
+				                    + " aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>";
+
+				        } else {
+				            next = "<li><a href=" + urlComplete + "page=" + max
+				                    + " aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>";
+
+				        }
+				        if (courant + 3 < max) {
+				            max = courant + 3;
+				        }
+				        if (courant - 3 > 1) {
+				            courant = courant - 3;
+				        } else {
+				            courant = 1;
+				        }
+				        for (int i = courant; i < max; i++) {
+				            String affiche = "<li><a href=\"" + urlComplete + "page=" + i + "\">" + i + "</a></li>";
+				            out.println(affiche);
+				        }
+				        out.println(next);
 				    }
 				%>
 			</ul>

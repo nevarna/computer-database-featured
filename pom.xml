@@ -4,9 +4,8 @@
 	<groupId>com.navarna.computerdb.</groupId>
 	<artifactId>ComputerDatabase</artifactId>
 	<packaging>war</packaging>
-	<version>1.0</version>
+	<version>6.0</version>
 	<name>ComputerDatabase Maven Webapp</name>
-	<url>http://maven.apache.org</url>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -52,16 +51,19 @@
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
 			<version>${maven.jsp-api.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>${maven.jstl.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 			<version>${maven.validation.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 		<!-- _________________[base mysql ...]_______________ -->
 		<dependency>
@@ -83,12 +85,6 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>${maven.slf4j.version}</version>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>1.7.7</version>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -132,6 +128,7 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>${maven.hibernate.validator.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 		<!-- _________________[spring framework]_______________ -->
 		<dependency>

@@ -20,7 +20,11 @@ import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.navarna.computerdb")
+@ComponentScan(basePackages = 
+{"com.navarna.computerdb.controller",
+        "com.navarna.computerdb.service",
+        "com.navarna.computerdb.validation"})
+@ComponentScan
 public class ControllerConfig extends WebMvcConfigurerAdapter {
 
     /**

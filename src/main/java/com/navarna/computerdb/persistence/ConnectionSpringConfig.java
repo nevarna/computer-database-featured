@@ -13,7 +13,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Configuration
 @PropertySource({ "classpath:informationDB.properties" })
-@ComponentScan(basePackages = "com.navarna.computerdb")
+@ComponentScan(basePackages = "com.navarna.computerdb.persistence")
 public class ConnectionSpringConfig {
 
     @Autowired

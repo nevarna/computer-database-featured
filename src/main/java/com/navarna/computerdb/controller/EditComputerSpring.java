@@ -10,9 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -39,7 +40,7 @@ public class EditComputerSpring {
      * @return model : le model contenant les attribut et l'adresse de la page
      *         jsp
      */
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ModelAndView getRequest(@RequestParam(value = "id") int id) {
         LOGGER.info("-------->getRequest(id) args: " + id);
         if (id > 0) {
@@ -65,7 +66,7 @@ public class EditComputerSpring {
      * @return model : le model contenant les attribut et l'adresse de la page
      *         jsp
      */
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public String postRequest(@Valid @ModelAttribute("ComputerDTO") ComputerDTO computerDto, BindingResult result) {
         if (!result.hasErrors()) {
             boolean reponse = demandeUpdate(computerDto);

@@ -1,20 +1,25 @@
 package com.navarna.computerdb.controller;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.navarna.computerdb.dto.ComputerDTO;
+import com.navarna.computerdb.dto.NavigationDashboardDTO;
 import com.navarna.computerdb.exception.ControllerException;
 import com.navarna.computerdb.mapper.TransformationToDTO;
 import com.navarna.computerdb.model.Page;
 import com.navarna.computerdb.service.ServiceComputerImpl;
-import com.navarna.computerdb.validator.ValidationNavigation;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -25,45 +30,25 @@ public class DashboardSpring {
     private ServiceComputerImpl servComputer;
 
     /**
-     * Navigation GET de l'url /dashboard
-     * @param numPage : numero de la page
-     * @param nbElement : nombre d'élément par page
-     * @param name : nom de recherche
-     * @param order : ordre de tri
-     * @param typeSearch : type de recherche/ tri
+     * Navigation GET de l'url /dashboard.
+     * @param navigation : les élément nécéssaire à la navigation
+     * @param result : les erreurs sur les élément de la navigation
      * @return model : le model contenant les attribut et l'adresse de la page
      *         jsp
      */
-    @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView getRequest(@RequestParam(value = "page", defaultValue = "0") Integer numPage,
-            @RequestParam(value = "nbElement", defaultValue = "10") Integer nbElement,
-            @RequestParam(value = "search", defaultValue = "") String name,
-            @RequestParam(value = "order", defaultValue = "ASC") String order,
-            @RequestParam(value = "type", defaultValue = "computer.id") String typeSearch) {
-        LOGGER.info("-------->getRequest(numPage,nbElement,name,order,typeSearch) args: " + numPage + " - " + nbElement
-                + " - " + name + " - " + order + " - " + typeSearch);
-        if (!ValidationNavigation.verificationPage(numPage)) {
-            numPage = 0;
+    @GetMapping
+    public ModelAndView getRequest(@Valid @ModelAttribute("navigation") NavigationDashboardDTO navigation,
+            BindingResult result) {
+        if ((result == null) || (!result.hasErrors())) {
+            navigation.setPage(navigation.getPage()-1);
+            Page<ComputerDTO> pageComputer = creationListe(navigation);
+            int totalElement = compterElement(navigation.getSearch(), navigation.getType());
+            ModelAndView model = new ModelAndView("dashboard");
+            navigation.setPage(navigation.getPage()+1);
+            ecrireAttribute(model, pageComputer, navigation, totalElement);
+            return model;
         }
-        if (!ValidationNavigation.verificationNbElement(nbElement)) {
-            nbElement = 10;
-        }
-        if (ValidationNavigation.verificationSearch(name, typeSearch)) {
-            name = ValidationNavigation.enleverCaractereInterdit(name);
-        } else {
-            name = "";
-        }
-        if (!ValidationNavigation.verificationOrder(order)) {
-            order = "ASC";
-        }
-        if (!ValidationNavigation.verificationTypeSearch(typeSearch)) {
-            typeSearch = "computer.id";
-        }
-        Page<ComputerDTO> pageComputer = creationListe(name, typeSearch, order, numPage, nbElement);
-        int totalElement = compterElement(name, typeSearch);
-        ModelAndView model = new ModelAndView("dashboard");
-        ecrireAttribute(model, pageComputer, numPage, name, typeSearch, totalElement, nbElement);
-        return model;
+        return new ModelAndView("redirect:/erreur?message=dashboard");
     }
 
     /**
@@ -72,12 +57,13 @@ public class DashboardSpring {
      * @return model : le model contenant les attribut et l'adresse de la page
      *         jsp
      */
-    @RequestMapping(method = RequestMethod.POST)
+
+    @PostMapping
     public ModelAndView postRequest(@RequestParam(value = "selection", defaultValue = "") String selection) {
         LOGGER.info("-------->postRequest(selection) args: " + selection);
         String[] tableauIdDelete = lireParametrePost(selection);
         demandeSuppression(tableauIdDelete);
-        return getRequest(10, 10, "", "ASC", "computer.id");
+        return getRequest(new NavigationDashboardDTO(),null);
     }
 
     /**
@@ -125,20 +111,20 @@ public class DashboardSpring {
      * @param nbElement : nombre d'élément par page
      * @return Page<ComputerDTO> : page contenant la liste à afficher
      */
-    private Page<ComputerDTO> creationListe(String name, String typeSearch, String order, int numPage, int nbElement) {
-        LOGGER.info("-------->creationListe(name,typeSearch,order,numPage,nbElement) args : " + name + " - "
-                + typeSearch + " - " + order + " - " + numPage + " - " + nbElement);
+    private Page<ComputerDTO> creationListe(NavigationDashboardDTO navigation) {
+        LOGGER.info("-------->creationListe(navigation) args : " + navigation);
         Page<ComputerDTO> pageComputer = null;
-        if (!ValidationNavigation.verificationSearch(name, typeSearch)) {
-            pageComputer = TransformationToDTO
-                    .pageComputerToPageDTO(servComputer.liste(numPage, nbElement, typeSearch, order));
+        if (navigation.getSearch().equals("")) {
+            pageComputer = TransformationToDTO.pageComputerToPageDTO(servComputer.liste(navigation.getPage(),
+                    navigation.getNbElement(), navigation.getType(), navigation.getOrder()));
         } else {
-            if (typeSearch.equals("computer.name")) {
-                pageComputer = TransformationToDTO
-                        .pageComputerToPageDTO(servComputer.findByName(name, numPage, nbElement, typeSearch, order));
+            if (navigation.getType().equals("computer.name")) {
+                pageComputer = TransformationToDTO.pageComputerToPageDTO(servComputer.findByName(navigation.getSearch(),
+                        navigation.getPage(), navigation.getNbElement(), navigation.getType(), navigation.getOrder()));
             } else {
                 pageComputer = TransformationToDTO
-                        .pageComputerToPageDTO(servComputer.findByCompany(name, numPage, nbElement, typeSearch, order));
+                        .pageComputerToPageDTO(servComputer.findByCompany(navigation.getSearch(), navigation.getPage(),
+                                navigation.getNbElement(), navigation.getType(), navigation.getOrder()));
             }
         }
         return pageComputer;
@@ -153,10 +139,10 @@ public class DashboardSpring {
     private int compterElement(String name, String typeSearch) {
         LOGGER.info("-------->compterElement(name, typeSearch) args : " + name + " - " + typeSearch);
         int totalElement = 0;
-        if (!ValidationNavigation.verificationSearch(name, typeSearch)) {
+        if (name.equals("")) {
             totalElement = servComputer.count();
         } else {
-            if (typeSearch.equals("Computer")) {
+            if (typeSearch.equals("computer.name")) {
                 totalElement = servComputer.countWithName(name);
             } else {
                 totalElement = servComputer.countWithNameCompany(name);
@@ -175,19 +161,13 @@ public class DashboardSpring {
      * @param totalElement : nombre total d'élément de la recherche
      * @param nbElement : nombre d'element par page
      */
-    public void ecrireAttribute(ModelAndView model, Page<ComputerDTO> pageComputer, int numPage, String name,
-            String typeSearch, int totalElement, int nbElement) {
+    public void ecrireAttribute(ModelAndView model, Page<ComputerDTO> pageComputer, NavigationDashboardDTO navigation,
+            int totalElement) {
         LOGGER.info(
                 "-------->ecrireAttribut(model,pageComputer,numPage,name,typeSearch,totalElement,nbElement) args : undefined - undefined - "
-                        + numPage + " -" + name + " - " + typeSearch + " - " + totalElement + " - " + nbElement);
+                        + navigation + " - " + totalElement);
         model.addObject("computers", pageComputer);
-        model.addObject("pageCurrente", numPage + 1);
-        model.addObject("nbElement", nbElement);
-        if (ValidationNavigation.verificationSearch(name, typeSearch)) {
-            model.addObject("name", name);
-            model.addObject("research", typeSearch);
-        }
+        model.addObject("navigation", navigation);
         model.addObject("totalElement", totalElement);
-        model.addObject("maxPage", totalElement / nbElement);
     }
 }
