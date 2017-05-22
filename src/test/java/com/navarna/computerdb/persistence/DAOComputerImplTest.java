@@ -108,12 +108,19 @@ public class DAOComputerImplTest {
         Page<Computer> page = daoComputerImpl.findByName("test",0,20,"computer.id","ASC");
         assertEquals(page.estVide(),false);
     }
+    
+    @Test
+    public void testShowNameCompany() {
+        Page<Computer> page = daoComputerImpl.findByCompany("Apple Inc.",0,20,"computer.id","ASC");
+        assertEquals(page.estVide(),false);
+    }
 
     @Test
     public void testCountComputer() {
         int result = daoComputerImpl.count();
         assertEquals(result,529);
     }
+
     @AfterClass
     public static void fermer() {
         ctx.close();

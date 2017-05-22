@@ -80,7 +80,7 @@
 						<input type="submit" id="searchsubmit"
 							value="<spring:message code="label.filter"/>"
 							class="btn btn-primary" /> <br> <input type="radio"
-							name="type" value="computer.name" checked />
+							name="type" value="name" checked />
 						<spring:message code="label.name" />
 						<input type="radio" name="type" value="company.name" />
 						<spring:message code="label.company" />
