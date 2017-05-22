@@ -9,7 +9,7 @@ public class NavigationDashboardDTO {
     private int page = 1;
     private int nbElement = 10;
     private String search ="";
-    private String type = "computer.id";
+    private String type = "id";
     private String order = "ASC";
 
     public int getPage() {

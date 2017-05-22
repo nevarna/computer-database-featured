@@ -6,7 +6,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 import com.navarna.computerdb.model.Company;
@@ -35,11 +34,6 @@ public class ConnectionSpringConfig {
         configuration.addDataSourceProperty("prepStmtCacheSize", env.getProperty("Database.prepStmtCacheSize"));
         configuration.addDataSourceProperty("prepStmtCacheSqlLimit", env.getProperty("Database.prepStmtCacheSqlLimit"));
         return new HikariDataSource(configuration);
-    }
-
-    @Bean(name = "jdbcTemplate")
-    public JdbcTemplate creationJDBCTemplate() {
-        return new JdbcTemplate(hikariDataSource());
     }
 
     @Bean

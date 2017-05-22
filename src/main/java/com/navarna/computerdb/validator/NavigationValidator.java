@@ -58,7 +58,7 @@ public class NavigationValidator implements ConstraintValidator<VerificationNavi
      */
     public static boolean verificationType(String type) {
         LOGGER.info("-------->verificationTypeSearch(typeSearch) args: " + type);
-        return ((type.equals("computer.id")) ||(type.equals("computer.name")) || (type.equals("company.name")) || (type.equals("discontinued"))
+        return ((type.equals("id")) ||(type.equals("name")) || (type.equals("company.name")) || (type.equals("discontinued"))
                 || (type.equals("introduced")));
     }
 
