@@ -2,226 +2,133 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.navarna.computerdb.</groupId>
-	<artifactId>ComputerDatabase</artifactId>
-	<packaging>war</packaging>
+	<artifactId>ComputerDatabaseMultiModule</artifactId>
+	<packaging>pom</packaging>
 	<version>6.0</version>
-	<name>ComputerDatabase Maven Webapp</name>
+	<name>ComputerDatabase Maven MultiModule</name>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
-		<maven.mysql.version>6.0.6</maven.mysql.version>
-		<maven.junit.version>4.11</maven.junit.version>
-		<maven.mockito.version>1.10.19</maven.mockito.version>
-		<maven.hikari.version>2.6.1</maven.hikari.version>
+		<junit.version>4.11</junit.version>
 
-		<maven.servlet-api.version>3.0.1</maven.servlet-api.version>
-		<maven.jsp-api.version>2.2</maven.jsp-api.version>
-		<maven.servlet.version>3.0.1</maven.servlet.version>
-		<maven.jsp-api.version>2.2</maven.jsp-api.version>
-		<maven.jstl.version>1.2</maven.jstl.version>
-		<maven.validation.version>1.1.0.Final</maven.validation.version>
+		<hibernate.version>5.2.10.Final</hibernate.version>
 
-		<maven.selenium.version>3.4.0</maven.selenium.version>
-		<maven.gatlin.version>2.1.7</maven.gatlin.version>
-		<maven.gatlin-plugin.version>2.1.7</maven.gatlin-plugin.version>
-		<maven.scala-plugin.version>3.2.2</maven.scala-plugin.version>
+		<slf4j.version>1.7.7</slf4j.version>
+		<logback.version>1.0.2</logback.version>
+		<jcl.slf4j.version>1.7.12</jcl.slf4j.version>
 
-		<maven.spring-context.version>4.3.8.RELEASE</maven.spring-context.version>
-		<maven.spring-jdbc.version>4.3.8.RELEASE</maven.spring-jdbc.version>
-		<maven.spring-web.version>4.3.8.RELEASE</maven.spring-web.version>
-		<maven.hibernate.validator.version>5.1.2.Final</maven.hibernate.validator.version>
+		<spring.version>4.3.8.RELEASE</spring.version>
 
 		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
 		<maven-checkstyle-plugin.configLocation>src/main/resources/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-
-		<maven.slf4j.version>1.7.7</maven.slf4j.version>
-		<maven.logback.version>1.0.2</maven.logback.version>
-		<maven.jcl.slf4j.version>1.7.12</maven.jcl.slf4j.version>
 	</properties>
-	<!--===============================DEPENDENCIES ============================= -->
-	<dependencies>
-		<!-- _________________[java servlet]_______________ -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${maven.servlet-api.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>${maven.jsp-api.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>${maven.jstl.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>${maven.validation.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<!-- _________________[base mysql ...]_______________ -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${maven.mysql.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>${maven.mockito.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>${maven.hikari.version}</version>
-		</dependency>
-
-		<!-- _________________[LogBack]_______________ -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${maven.slf4j.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${maven.logback.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>${maven.logback.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${maven.jcl.slf4j.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<!-- _________________[test : selenium, junit, gatling]_______________ -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${maven.junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>${maven.selenium.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.gatling.highcharts</groupId>
-			<artifactId>gatling-charts-highcharts</artifactId>
-			<version>${maven.gatlin.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- _________________[hibernate validator]_______________ -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.2.10.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-java8</artifactId>
-			<version>5.1.0.Final</version>
-		</dependency>
-
-		<!-- _________________[spring framework]_______________ -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${maven.spring-context.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<version>${maven.spring-jdbc.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>${maven.spring-web.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${maven.spring-web.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>compile</scope>
-		</dependency>
-
-	</dependencies>
+	<!--===============================DEPENDANCE ============================= -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- _________________[hibernate validator]_______________ -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-java8</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<!-- _________________[Junit]_______________ -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- _________________[LogBack]_______________ -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${logback.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${jcl.slf4j.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<!-- _________________[spring framework]_______________ -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${spring.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${spring.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${spring.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+				<scope>compile</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<!--===============================PLUGINS ============================= -->
 	<build>
-		<finalName>ComputerDatabase</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${maven-checkstyle-plugin.version}</version>
-				<configuration>
-					<configLocation>${maven-checkstyle-plugin.configLocation}</configLocation>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>net.alchim31.maven</groupId>
-				<artifactId>scala-maven-plugin</artifactId>
-				<version>${maven.scala-plugin.version}</version>
-			</plugin>
-			<plugin>
-				<groupId>io.gatling</groupId>
-				<artifactId>gatling-maven-plugin</artifactId>
-				<version>${maven.gatlin-plugin.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>execute</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>${maven-checkstyle-plugin.version}</version>
+					<configuration>
+						<configLocation>${maven-checkstyle-plugin.configLocation}</configLocation>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 	<reporting>
 		<plugins>
@@ -243,4 +150,14 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	<!--===============================MODULE ============================= -->
+	<modules>
+		<module>model</module>
+		<module>dto</module>
+		<module>dao</module>
+		<module>service</module>
+		<module>ui</module>
+		<module>controller</module>
+	</modules>
+
 </project>
