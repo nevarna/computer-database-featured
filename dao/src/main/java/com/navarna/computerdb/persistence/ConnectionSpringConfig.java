@@ -11,6 +11,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Computer;
+import com.navarna.computerdb.model.User;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -46,7 +47,7 @@ public class ConnectionSpringConfig {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean factory = new LocalSessionFactoryBean();
         factory.setDataSource(hikariDataSource());
-        factory.setAnnotatedClasses(Company.class, Computer.class);
+        factory.setAnnotatedClasses(Company.class, Computer.class,User.class);
         return factory;
     }
 }

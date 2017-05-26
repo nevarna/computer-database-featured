@@ -159,7 +159,7 @@ public class DAOComputerImpl implements DAOComputer {
         String requeteComplete = ecrireRequeteBasique(FIND_NAME, typeOrder, order);
         try (Session session = sessionFactory.openSession()) {
             Query<Computer> query = session.createQuery(requeteComplete,Computer.class);
-            query.setParameter("name", name);
+            query.setParameter("name", name+"%");
             query.setMaxResults(nbElement);
             query.setFirstResult(nbElement * numPage);
             Page<Computer> page = new Page<Computer>(numPage, nbElement);
@@ -178,7 +178,7 @@ public class DAOComputerImpl implements DAOComputer {
         String requeteComplete = ecrireRequeteBasique(FIND_COMPANY, typeOrder, order);
         try (Session session = sessionFactory.openSession()) {
             Query<Computer> query = session.createQuery(requeteComplete,Computer.class);
-            query.setParameter("name", nameCompany);
+            query.setParameter("name", nameCompany+"%");
             query.setMaxResults(nbElement);
             query.setFirstResult(nbElement * numPage);
             Page<Computer> page = new Page<Computer>(numPage, nbElement);
@@ -206,7 +206,7 @@ public class DAOComputerImpl implements DAOComputer {
         LOGGER.info("-------->countWithName(name) args: " + name);
         try (Session session = sessionFactory.openSession()) {
             Query<Long> query = session.createQuery(COUNT_NAME,Long.class);
-            query.setParameter("name", name);
+            query.setParameter("name", name+"%");
             Long reponse = query.uniqueResult();
             return reponse == null? 0 : reponse.intValue();
         } catch (DataAccessException e) {
@@ -219,7 +219,7 @@ public class DAOComputerImpl implements DAOComputer {
         LOGGER.info("-------->countWithNameCompany(nameCompany) args: " + nameCompany);
         try (Session session = sessionFactory.openSession()) {
             Query<Long> query = session.createQuery(COUNT_NAME_COMPANY,Long.class);
-            query.setParameter("name", nameCompany);
+            query.setParameter("name", nameCompany+"%");
             Long reponse = query.uniqueResult();
             return reponse == null? 0 : reponse.intValue();
         } catch (DataAccessException e) {

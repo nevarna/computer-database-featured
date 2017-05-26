@@ -17,6 +17,7 @@ public class DashboardTest {
         //Print the value of variable in the console
         System.out.println("The current URL is " + str);
         driver.quit();
+        
     }
 
 }

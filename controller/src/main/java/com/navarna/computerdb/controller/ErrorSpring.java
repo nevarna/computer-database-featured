@@ -46,7 +46,7 @@ public class ErrorSpring {
         }
         }
         if(message!= null) {
-            errorMsg+= " "+message;
+            errorMsg+= message;
         }
         errorPage.addObject("errorMsg", errorMsg);
         return errorPage;

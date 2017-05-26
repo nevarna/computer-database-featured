@@ -5,6 +5,7 @@
 <%@page import="com.navarna.computerdb.dto.*"%>
 <%@page import="com.navarna.computerdb.controller.*"%>
 <%@page import="com.navarna.computerdb.exception.*"%>
+<%@page import="org.springframework.security.web.csrf.*" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="test"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%
@@ -52,6 +53,14 @@
 		<div class="container">
 			<a class="navbar-brand" href="dashboard"> <spring:message
 					code="label.title" />
+			</a> <a class="navbar-brand"
+				href=<%String langue = "'" + urlComplete + "lang=fr'";
+            out.println(langue);%>>fr
+			</a> <a class="navbar-brand"
+				href=<%langue = "'" + urlComplete + "lang=en'";
+            out.println(langue);%>>en</a>
+			<a class="navbar-brand" href="logout"> <spring:message
+					code="label.logout" />
 			</a>
 		</div>
 	</header>
@@ -103,8 +112,10 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="#" method="POST">
-			<input type="hidden" name="selection">
+		<form id="deleteForm" action="dashboard/delete" method="POST">
+		<% CsrfToken token = (CsrfToken) request.getAttribute("_csrf"); %>
+			<input type="hidden" name= <%out.print("'"+token.getParameterName()+"'"); %>
+				value=<%out.print("'"+token.getToken()+"'"); %> /> <input type="hidden" name="selection">
 		</form>
 
 		<div class="container" style="margin-top: 10px;">

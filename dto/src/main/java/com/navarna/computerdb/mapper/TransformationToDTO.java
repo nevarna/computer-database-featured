@@ -39,25 +39,16 @@ public class TransformationToDTO {
             return Optional.empty();
         } else {
             ComputerDTO computerDTO = new ComputerDTO();
-            if (computer.getId() != 0) {
-                computerDTO.setId(computer.getId());
-            }
-            if (computer.getName() != null) {
-                computerDTO.setName(computer.getName());
-            }
-            if (computer.getIntroduced() != null) {
-                computerDTO.setIntroduced(computer.getIntroduced().toString());
-            }
-            if (computer.getDiscontinued() != null) {
-                computerDTO.setDiscontinued(computer.getDiscontinued().toString());
-            }
+            computerDTO.setId(computer.getId());
+            computerDTO.setName(computer.getName() != null ? computer.getName() : "");
+            computerDTO.setIntroduced(computer.getIntroduced() != null ? computer.getIntroduced().toString() : "");
+            computerDTO
+                    .setDiscontinued(computer.getDiscontinued() != null ? computer.getDiscontinued().toString() : "");
             if (computer.getCompany() != null) {
-                if (computer.getCompany().getId() != 0) {
-                    computerDTO.setIdCompany(computer.getCompany().getId());
-                }
-                if (computer.getCompany().getName() != null) {
-                    computerDTO.setNameCompany(computer.getCompany().getName());
-                }
+                computerDTO.setIdCompany(computer.getCompany().getId());
+                computerDTO
+                        .setNameCompany(computer.getCompany().getName() != null ? computer.getCompany().getName() : "");
+
             }
             return Optional.of(computerDTO);
         }

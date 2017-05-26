@@ -2,6 +2,8 @@ package com.navarna.computerdb.controller;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import com.navarna.computerdb.security.SecurityConfig;
+
 public class ControllerServlet extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     /*
@@ -9,7 +11,7 @@ public class ControllerServlet extends AbstractAnnotationConfigDispatcherServlet
      */
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[] { ControllerConfig.class };
+        return new Class[] {ControllerConfig.class,SecurityConfig.class};
     }
 
     @Override

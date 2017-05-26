@@ -58,12 +58,12 @@ public class DashboardSpring {
      *         jsp
      */
 
-    @PostMapping
-    public ModelAndView postRequest(@RequestParam(value = "selection", defaultValue = "") String selection) {
+    @PostMapping("/delete")
+    public String postRequest(@RequestParam(value = "selection", defaultValue = "") String selection) {
         LOGGER.info("-------->postRequest(selection) args: " + selection);
         String[] tableauIdDelete = lireParametrePost(selection);
         demandeSuppression(tableauIdDelete);
-        return getRequest(new NavigationDashboardDTO(),null);
+        return "redirect:/dashboard";
     }
 
     /**
@@ -73,6 +73,7 @@ public class DashboardSpring {
      */
     private String[] lireParametrePost(String selection) {
         LOGGER.info("-------->lireParametrePost(request) args: " + selection);
+        
         return selection.split(",");
     }
 
@@ -85,7 +86,7 @@ public class DashboardSpring {
         LOGGER.info("-------->demande suppresion(tableauIdDelete)");
         try {
             int taille = tableauIdDelete.length;
-            if (taille != 0) {
+            if ((taille != 0)&&(!tableauIdDelete[0].equals(""))) {
                 if (taille == 1) {
                     long idSupprimer = Long.parseLong(tableauIdDelete[0]);
                     servComputer.delete(idSupprimer);
@@ -118,7 +119,7 @@ public class DashboardSpring {
             pageComputer = TransformationToDTO.pageComputerToPageDTO(servComputer.liste(navigation.getPage(),
                     navigation.getNbElement(), navigation.getType(), navigation.getOrder()));
         } else {
-            if (navigation.getType().equals("computer.name")) {
+            if (navigation.getType().equals("name")) {
                 pageComputer = TransformationToDTO.pageComputerToPageDTO(servComputer.findByName(navigation.getSearch(),
                         navigation.getPage(), navigation.getNbElement(), navigation.getType(), navigation.getOrder()));
             } else {
@@ -142,7 +143,7 @@ public class DashboardSpring {
         if (name.equals("")) {
             totalElement = servComputer.count();
         } else {
-            if (typeSearch.equals("computer.name")) {
+            if (typeSearch.equals("name")) {
                 totalElement = servComputer.countWithName(name);
             } else {
                 totalElement = servComputer.countWithNameCompany(name);
@@ -169,5 +170,6 @@ public class DashboardSpring {
         model.addObject("computers", pageComputer);
         model.addObject("navigation", navigation);
         model.addObject("totalElement", totalElement);
+        
     }
 }

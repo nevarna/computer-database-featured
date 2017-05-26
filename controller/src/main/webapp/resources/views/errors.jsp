@@ -20,6 +20,7 @@
     <section id="main">
         <div class="container"> 
             <div class="alert alert-danger">
+            
                 <%out.println(request.getAttribute("errorMsg")); %>
                 <br/>
                 <!-- stacktrace -->
