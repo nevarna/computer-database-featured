@@ -43,10 +43,6 @@
 		</dependency>
 		<!-- _________________[hibernate validator]_______________ -->
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-java8</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 			<version>${maven.validation.version}</version>

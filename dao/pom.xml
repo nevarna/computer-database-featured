@@ -57,11 +57,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-		<!-- _________________[hibernate validator]_______________ -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-java8</artifactId>
-		</dependency>
 		<!-- _________________[spring framework]_______________ -->
 		<dependency>
 			<groupId>org.springframework</groupId>

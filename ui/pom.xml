@@ -12,12 +12,6 @@
 	<!--===============================DEPENDENCIES ============================= -->
 	<dependencies>
 		<dependency>
-			<artifactId>model</artifactId>
-			<groupId>${project.groupId}</groupId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<artifactId>service</artifactId>
 			<groupId>${project.groupId}</groupId>
 			<version>${project.version}</version>
@@ -27,28 +21,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-		<!-- _________________[LogBack]_______________ -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-		</dependency>
-		<!-- _________________[spring framework]_______________ -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
 		</dependency>
 	</dependencies>
 	<!--===============================PLUGINS ============================= -->

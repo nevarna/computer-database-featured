@@ -32,6 +32,7 @@ public class Computer {
         return this.name;
     }
 
+    @JsonSerialize()
     public LocalDate getIntroduced() {
         return this.introduced;
     }
@@ -79,11 +80,7 @@ public class Computer {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((company == null) ? 0 : company.hashCode());
-        result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
         result = prime * result + (int) (id ^ (id >>> 32));
-        result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
