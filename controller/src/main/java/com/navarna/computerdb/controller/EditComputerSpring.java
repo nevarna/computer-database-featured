@@ -35,7 +35,7 @@ public class EditComputerSpring {
     private ServiceCompanyImpl servCompany = new ServiceCompanyImpl();
 
     /**
-     * Navigation GET de l'url /editComputer
+     * Navigation GET de l'url /editComputer.
      * @param id : id du computer à modifier
      * @return model : le model contenant les attribut et l'adresse de la page
      *         jsp
@@ -60,7 +60,7 @@ public class EditComputerSpring {
     }
 
     /**
-     * Navigation POST de l'url /editComputer
+     * Navigation POST de l'url /editComputer.
      * @param computerDto : ComputerDTO a modifier
      * @param result : ensemble des erreurs de validation de computerDTO
      * @return model : le model contenant les attribut et l'adresse de la page
@@ -93,7 +93,7 @@ public class EditComputerSpring {
     /**
      * Verifie les arguments de l'utilisateur et si elles sont correct, fait
      * l'update.
-     * @param computer : computer à modifier
+     * @param computerdto : computer à modifier
      * @return boolean : si oui ou non la base de données à été modifié
      */
     public boolean demandeUpdate(ComputerDTO computerdto) {

@@ -18,7 +18,7 @@ public class NavigationValidator implements ConstraintValidator<VerificationNavi
     @Override
     public boolean isValid(NavigationDashboardDTO navigation, ConstraintValidatorContext context) {
         LOGGER.info("-------->isValide(navigation, validatorContext) args: " + navigation);
-        if(AttributVide(navigation)) {
+        if (attributVide(navigation)) {
             return false;
         }
         return verificationNbElement(navigation.getNbElement()) && verificationSearch(navigation.getSearch())
@@ -27,11 +27,11 @@ public class NavigationValidator implements ConstraintValidator<VerificationNavi
 
     /**
      * Indique si les attribut en string son vide.
-     * @param navigation
+     * @param navigation : navigation de la page.
      * @return boolean : true ou false
      */
-    public static boolean AttributVide(NavigationDashboardDTO navigation) {
-        return ((navigation.getOrder()==null) || (navigation.getSearch()==null)||(navigation.getType()==null));
+    public static boolean attributVide(NavigationDashboardDTO navigation) {
+        return ((navigation.getOrder() == null) || (navigation.getSearch() == null) || (navigation.getType() == null));
     }
 
     /**
@@ -53,13 +53,13 @@ public class NavigationValidator implements ConstraintValidator<VerificationNavi
 
     /**
      * Verifie la valeur de typeSearch.
-     * @param typeSearch : type de la recherche
+     * @param type : type de la recherche
      * @return boolean : true or false
      */
     public static boolean verificationType(String type) {
         LOGGER.info("-------->verificationTypeSearch(typeSearch) args: " + type);
-        return ((type.equals("id")) ||(type.equals("name")) || (type.equals("company.name")) || (type.equals("discontinued"))
-                || (type.equals("introduced")));
+        return ((type.equals("id")) || (type.equals("name")) || (type.equals("company.name"))
+                || (type.equals("discontinued")) || (type.equals("introduced")));
     }
 
     /**

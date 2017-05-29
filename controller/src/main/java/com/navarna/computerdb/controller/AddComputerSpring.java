@@ -33,7 +33,7 @@ public class AddComputerSpring {
     private ServiceCompanyImpl servCompany = new ServiceCompanyImpl();
 
     /**
-     * Navigation GET de l'url /addComputer
+     * Navigation GET de l'url /addComputer.
      * @return model : le model contenant les attribut et l'adresse de la page
      *         jsp
      */
@@ -46,7 +46,7 @@ public class AddComputerSpring {
     }
 
     /**
-     * Navigation POST de l'url /addComputer
+     * Navigation POST de l'url /addComputer.
      * @param computerDto : ComputerDTO a ajouter
      * @param result : ensemble des erreurs de validation de computerDTO
      * @return model : le model contenant les attribut et l'adresse de la page

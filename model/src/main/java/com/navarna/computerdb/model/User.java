@@ -15,15 +15,25 @@ public class User {
     @Column
     private int level;
 
+    /**
+     * Constructeur vide.
+     */
     public User() {
     }
 
-    public User( String name, String password, int level) {
+    /**
+     * Constructeur avec tous les paramêtres.
+     * @param name : nom de l'user
+     * @param password : password de l'user
+     * @param level : numero de droit
+     */
+    public User(String name, String password, int level) {
         super();
         this.name = name;
         this.password = password;
         this.level = level;
     }
+
     public String getName() {
         return name;
     }

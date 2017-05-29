@@ -6,7 +6,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 import com.navarna.computerdb.model.Company;
@@ -23,6 +22,10 @@ public class ConnectionSpringConfig {
     @Autowired
     private Environment env;
 
+    /**
+     * Cree un bean s'apellant datasource contenant une HikariDataSource.
+     * @return HikariDataSource : data source
+     */
     @Bean(name = "dataSource")
     public HikariDataSource hikariDataSource() {
         HikariConfig configuration = new HikariConfig();
@@ -38,16 +41,15 @@ public class ConnectionSpringConfig {
         return new HikariDataSource(configuration);
     }
 
-    @Bean(name = "jdbcTemplate")
-    public JdbcTemplate creationJDBCTemplate() {
-        return new JdbcTemplate(hikariDataSource());
-    }
-
+    /**
+     * Cree un bean contenant une sessionFactory.
+     * @return LocalSessionFactoryBean : sessionFactory
+     */
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean factory = new LocalSessionFactoryBean();
         factory.setDataSource(hikariDataSource());
-        factory.setAnnotatedClasses(Company.class, Computer.class,User.class);
+        factory.setAnnotatedClasses(Company.class, Computer.class, User.class);
         return factory;
     }
 }

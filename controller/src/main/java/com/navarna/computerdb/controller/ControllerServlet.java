@@ -11,7 +11,7 @@ public class ControllerServlet extends AbstractAnnotationConfigDispatcherServlet
      */
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[] {ControllerConfig.class,SecurityConfig.class};
+        return new Class[] {ControllerConfig.class, SecurityConfig.class};
     }
 
     @Override
@@ -24,7 +24,7 @@ public class ControllerServlet extends AbstractAnnotationConfigDispatcherServlet
      */
     @Override
     protected String[] getServletMappings() {
-        return new String[] { "/" };
+        return new String[] {"/"};
     }
 
 }

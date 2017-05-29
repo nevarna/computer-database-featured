@@ -24,9 +24,9 @@ import com.navarna.computerdb.model.Page;
 
 public class TransformationToDTO {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationToDTO.class);
-    private static final String regexDateFrancaise = "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})";
-    private static final String regexDateFrancaiseEnvers = "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])";
-    private static final String regexDateAnglaise = "^(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])-[0-9]{4}";
+    private static final String DATE_FRANCAISE = "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})";
+    private static final String DATE_FRANCAISE_ENVERS = "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])";
+    private static final String DATE_ANGLAISE = "^(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])-[0-9]{4}";
 
     /**
      * Transforme un Computer en ComputerDTO.
@@ -54,19 +54,24 @@ public class TransformationToDTO {
         }
     }
 
+    /**
+     * Transforme un string en LocalDate selon la locale.
+     * @param date : date en string
+     * @return LocalDate : localDate associer au string selon la locale
+     */
     public static LocalDate getLocalDate(String date) {
         LOGGER.info("-------->getLocalDate(date) args: " + date);
         Locale local = LocaleContextHolder.getLocale();
         if (local.equals(Locale.FRENCH)) {
-            if (Pattern.matches(regexDateFrancaise, date)) {
-                return StringEnDate(date, "dd-MM-yyyy");
+            if (Pattern.matches(DATE_FRANCAISE, date)) {
+                return stringEnDate(date, "dd-MM-yyyy");
             }
-            if (Pattern.matches(regexDateFrancaiseEnvers, date)) {
-                return StringEnDate(date, "yyyy-MM-dd");
+            if (Pattern.matches(DATE_FRANCAISE_ENVERS, date)) {
+                return stringEnDate(date, "yyyy-MM-dd");
             }
         } else {
-            if (Pattern.matches(regexDateAnglaise, date)) {
-                return StringEnDate(date, "MM-dd-yyyy");
+            if (Pattern.matches(DATE_ANGLAISE, date)) {
+                return stringEnDate(date, "MM-dd-yyyy");
             }
         }
         return null;
@@ -79,7 +84,7 @@ public class TransformationToDTO {
      * @param format : format de la date
      * @return boolean : reponse si oui ou non la date est correct
      */
-    public static LocalDate StringEnDate(String date, String format) {
+    public static LocalDate stringEnDate(String date, String format) {
         LOGGER.info("-------->StringEnDate(date,format) args: " + date + " - " + format);
         SimpleDateFormat df = new SimpleDateFormat(format);
         df.setLenient(false);

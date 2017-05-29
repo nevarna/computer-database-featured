@@ -22,7 +22,7 @@ public class DAOCompanyImpl implements DAOCompany {
     private static final Logger LOGGER = LoggerFactory.getLogger(DAOCompanyImpl.class);
     @Autowired
     private SessionFactory sessionFactory;
-    private static String SELECT;
+    private static final String SELECT;
     private static final String DELETE_COMPANY;
 
     static {

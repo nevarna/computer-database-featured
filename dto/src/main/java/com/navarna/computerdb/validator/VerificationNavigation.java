@@ -21,8 +21,13 @@ public @interface VerificationNavigation {
      */
     String message() default "Erreur dans la verification navigation";
 
+    /**
+     * @return Class<?>[] : tableau de classe
+     */
     Class<?>[] groups() default {};
-
+    /**
+     * @return Class<? extends Payload>[] : tablea de classe.
+     */
     Class<? extends Payload>[] payload() default {};
 
 }

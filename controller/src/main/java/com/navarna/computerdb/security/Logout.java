@@ -15,11 +15,11 @@ public class Logout {
 
     @Autowired
     private UserDetailsServiceImpl userService;
-    
+
     @GetMapping
     @RequestMapping("/logout")
     public String getRequest(HttpServletRequest request, HttpServletResponse response) {
-        User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         userService.deconnectionManuel(user.getUsername());
         return "redirect:/";
     }

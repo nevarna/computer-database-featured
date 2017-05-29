@@ -8,7 +8,7 @@ public class NavigationDashboardDTO {
     @Min(1)
     private int page = 1;
     private int nbElement = 10;
-    private String search ="";
+    private String search = "";
     private String type = "id";
     private String order = "ASC";
 
@@ -108,8 +108,8 @@ public class NavigationDashboardDTO {
 
     @Override
     public String toString() {
-        return "NavigationDashboard [page=" + page + ", nbElement=" + nbElement + ", search=" + search + ", type=" + type
-                + ", order=" + order + "]";
+        return "NavigationDashboard [page=" + page + ", nbElement=" + nbElement + ", search=" + search + ", type="
+                + type + ", order=" + order + "]";
     }
 
 }

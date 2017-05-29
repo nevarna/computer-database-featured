@@ -21,8 +21,14 @@ public @interface VerificationComputerDTO {
      */
     String message() default "{ComputerDTO}";
 
+    /**
+     * @return Class<?>[] : tableau de classe
+     */
     Class<?>[] groups() default {};
 
+    /**
+     * @return Class<? extends Payload>[] : tablea de classe.
+     */
     Class<? extends Payload>[] payload() default {};
 
 }

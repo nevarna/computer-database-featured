@@ -60,31 +60,29 @@ public class DAOComputerImpl implements DAOComputer {
     @Override
     public boolean update(Computer computer) {
         LOGGER.info("-------->update(computer) args: " + computer);
-        try(Session session = sessionFactory.openSession())  {
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            int changement = session.createQuery(UPDATE)
-            .setParameter("name", computer.getName())
-            .setParameter("introduced", computer.getIntroduced())
-            .setParameter("discontinued", computer.getDiscontinued())
-            .setParameter("company", computer.getCompany().getId() != 0? computer.getCompany().getId() : null)
-            .setParameter("id", computer.getId())
-            .executeUpdate();
+            int changement = session.createQuery(UPDATE).setParameter("name", computer.getName())
+                    .setParameter("introduced", computer.getIntroduced())
+                    .setParameter("discontinued", computer.getDiscontinued())
+                    .setParameter("company", computer.getCompany().getId() != 0 ? computer.getCompany().getId() : null)
+                    .setParameter("id", computer.getId()).executeUpdate();
             session.getTransaction().commit();
             return changement != 0;
         } catch (DataAccessException se) {
             throw new DAOException("Erreur de base de donnée", se);
         }
-            
+
     }
 
     @Override
     public boolean delete(long id) {
         LOGGER.info("-------->delete(id) args: " + id);
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            int changement =  session.createQuery(DELETE).setParameter("id", id).executeUpdate();
+            int changement = session.createQuery(DELETE).setParameter("id", id).executeUpdate();
             session.getTransaction().commit();
-            return changement != 0 ;
+            return changement != 0;
         } catch (DataAccessException se) {
             throw new DAOException("Erreur de base de donnée", se);
         }
@@ -94,11 +92,11 @@ public class DAOComputerImpl implements DAOComputer {
     public boolean deleteMultiple(long[] id) {
         LOGGER.info("-------->deleteMultiple()");
         String requeteComplete = ecrireRequeteDeleteList(id);
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            int changement =  session.createQuery(requeteComplete).executeUpdate();
+            int changement = session.createQuery(requeteComplete).executeUpdate();
             session.getTransaction().commit();
-            return changement != 0 ;
+            return changement != 0;
         } catch (DataAccessException se) {
             throw new DAOException("Erreur de base de donnée", se);
         }
@@ -107,11 +105,11 @@ public class DAOComputerImpl implements DAOComputer {
     @Override
     public boolean deleteCompany(long idCompany) {
         LOGGER.info("-------->deleteCompany()");
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            int changement =  session.createQuery(DELETE_COMPUTERS).setParameter("id", idCompany).executeUpdate();
+            int changement = session.createQuery(DELETE_COMPUTERS).setParameter("id", idCompany).executeUpdate();
             session.getTransaction().commit();
-            return changement != 0 ;
+            return changement != 0;
         } catch (DataAccessException se) {
             throw new DAOException("Erreur de base de donnée", se);
         }
@@ -123,7 +121,7 @@ public class DAOComputerImpl implements DAOComputer {
                 + typeOrder + " - " + order);
         String requeteComplete = ecrireRequeteBasique(SELECT_LIST, typeOrder, order);
         try (Session session = sessionFactory.openSession()) {
-            Query<Computer> query = session.createQuery(requeteComplete,Computer.class);
+            Query<Computer> query = session.createQuery(requeteComplete, Computer.class);
             query.setMaxResults(nbElement);
             query.setFirstResult(nbElement * numPage);
             Page<Computer> page = new Page<Computer>(numPage, nbElement);
@@ -138,13 +136,12 @@ public class DAOComputerImpl implements DAOComputer {
     public Optional<Computer> findById(long id) {
         LOGGER.info("-------->findById(id) args: " + id);
         try (Session session = sessionFactory.openSession()) {
-            Query<Computer> query = session.createQuery(FIND_ID,Computer.class);
+            Query<Computer> query = session.createQuery(FIND_ID, Computer.class);
             query.setParameter("id", id);
             Computer computer = query.uniqueResult();
-            if(computer == null) {
+            if (computer == null) {
                 return Optional.empty();
-            }
-            else {
+            } else {
                 return Optional.of(computer);
             }
         } catch (DataAccessException e) {
@@ -158,8 +155,8 @@ public class DAOComputerImpl implements DAOComputer {
                 + " - " + nbElement + " - " + typeOrder + " - " + order);
         String requeteComplete = ecrireRequeteBasique(FIND_NAME, typeOrder, order);
         try (Session session = sessionFactory.openSession()) {
-            Query<Computer> query = session.createQuery(requeteComplete,Computer.class);
-            query.setParameter("name", name+"%");
+            Query<Computer> query = session.createQuery(requeteComplete, Computer.class);
+            query.setParameter("name", name + "%");
             query.setMaxResults(nbElement);
             query.setFirstResult(nbElement * numPage);
             Page<Computer> page = new Page<Computer>(numPage, nbElement);
@@ -177,8 +174,8 @@ public class DAOComputerImpl implements DAOComputer {
                 + " - " + numPage + " - " + nbElement + " - " + typeOrder + " - " + order);
         String requeteComplete = ecrireRequeteBasique(FIND_COMPANY, typeOrder, order);
         try (Session session = sessionFactory.openSession()) {
-            Query<Computer> query = session.createQuery(requeteComplete,Computer.class);
-            query.setParameter("name", nameCompany+"%");
+            Query<Computer> query = session.createQuery(requeteComplete, Computer.class);
+            query.setParameter("name", nameCompany + "%");
             query.setMaxResults(nbElement);
             query.setFirstResult(nbElement * numPage);
             Page<Computer> page = new Page<Computer>(numPage, nbElement);
@@ -193,9 +190,9 @@ public class DAOComputerImpl implements DAOComputer {
     public int count() {
         LOGGER.info("-------->count()");
         try (Session session = sessionFactory.openSession()) {
-            Query<Long> query = session.createQuery(COUNT,Long.class);
+            Query<Long> query = session.createQuery(COUNT, Long.class);
             Long reponse = query.uniqueResult();
-            return reponse == null? 0 : reponse.intValue();
+            return reponse == null ? 0 : reponse.intValue();
         } catch (DataAccessException e) {
             throw new DAOException("erreur dans jdbc", e);
         }
@@ -205,10 +202,10 @@ public class DAOComputerImpl implements DAOComputer {
     public int countWithName(String name) {
         LOGGER.info("-------->countWithName(name) args: " + name);
         try (Session session = sessionFactory.openSession()) {
-            Query<Long> query = session.createQuery(COUNT_NAME,Long.class);
-            query.setParameter("name", name+"%");
+            Query<Long> query = session.createQuery(COUNT_NAME, Long.class);
+            query.setParameter("name", name + "%");
             Long reponse = query.uniqueResult();
-            return reponse == null? 0 : reponse.intValue();
+            return reponse == null ? 0 : reponse.intValue();
         } catch (DataAccessException e) {
             throw new DAOException("erreur dans jdbc", e);
         }
@@ -218,10 +215,10 @@ public class DAOComputerImpl implements DAOComputer {
     public int countWithNameCompany(String nameCompany) {
         LOGGER.info("-------->countWithNameCompany(nameCompany) args: " + nameCompany);
         try (Session session = sessionFactory.openSession()) {
-            Query<Long> query = session.createQuery(COUNT_NAME_COMPANY,Long.class);
-            query.setParameter("name", nameCompany+"%");
+            Query<Long> query = session.createQuery(COUNT_NAME_COMPANY, Long.class);
+            query.setParameter("name", nameCompany + "%");
             Long reponse = query.uniqueResult();
-            return reponse == null? 0 : reponse.intValue();
+            return reponse == null ? 0 : reponse.intValue();
         } catch (DataAccessException e) {
             throw new DAOException("erreur dans jdbc", e);
         }
@@ -255,7 +252,8 @@ public class DAOComputerImpl implements DAOComputer {
     private String ecrireRequeteBasique(String debutRequete, String typeOrder, String order) {
         LOGGER.info("-------->ecrireRequeteBasique(debutRequete,typeOrder,order) args: " + debutRequete + " - "
                 + typeOrder + " - " + order);
-        StringBuffer requeteComplete = new StringBuffer(debutRequete).append("computer.").append(typeOrder).append(" ").append(order);
+        StringBuffer requeteComplete = new StringBuffer(debutRequete).append("computer.").append(typeOrder).append(" ")
+                .append(order);
         return requeteComplete.toString();
     }
 

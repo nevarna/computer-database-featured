@@ -13,7 +13,7 @@ public interface ServiceUser {
      *         requête
      */
     boolean insert(User user);
-    
+
     /**
      * Ecris une requête à la base de donnée afin de supprimer un computer.
      * @param name : nom de l'élément à supprimer
@@ -21,10 +21,9 @@ public interface ServiceUser {
      *         requête
      */
     boolean delete(String name);
-    
+
     /**
-     * Ecris une requête à la base de donnée afin d'avoir les détails de
-     * user.
+     * Ecris une requête à la base de donnée afin d'avoir les détails de user.
      * @param name : nom du computer
      * @return Optional<user> : l user si il existe
      */

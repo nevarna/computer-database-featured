@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Page;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DAOCompanyImplTest {
 
@@ -21,7 +22,7 @@ public class DAOCompanyImplTest {
     private static final int NOMBRE_INSERT = 574;
     
     public static void miseAZero() {
-        JdbcTemplate j = (JdbcTemplate) ctx.getBean("jdbcTemplate");
+        JdbcTemplate j =new JdbcTemplate((HikariDataSource) ctx.getBean("dataSource"));
          try {
              BufferedReader br = new BufferedReader(new FileReader("./src/test/resources/insert.sql"));
              String [] ligne = new String [NOMBRE_INSERT]; 

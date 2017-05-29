@@ -19,13 +19,13 @@ public class Computer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column
-    private String name ="";
+    private String name = "";
     @Column
     private LocalDate introduced;
     @Column
     private LocalDate discontinued;
-    @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name = "company_id", referencedColumnName="id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
 
     public String getName() {
@@ -39,7 +39,7 @@ public class Computer {
     public LocalDate getDiscontinued() {
         return this.discontinued;
     }
-    
+
     public Company getCompany() {
         return this.company;
     }
@@ -63,7 +63,6 @@ public class Computer {
     public void setDiscontinued(LocalDate discontinued) {
         this.discontinued = discontinued;
     }
-
 
     public void setCompany(Company company) {
         this.company = company;

@@ -41,15 +41,15 @@ public class NavigationValidatorTest {
     @Test
     public void testAttributVide () {
         NavigationDashboardDTO navigation = new NavigationDashboardDTO();
-        boolean correct  = NavigationValidator.AttributVide(navigation);
+        boolean correct  = NavigationValidator.attributVide(navigation);
         navigation.setOrder(null);
-        boolean faux = NavigationValidator.AttributVide(navigation);
+        boolean faux = NavigationValidator.attributVide(navigation);
         navigation.setOrder("la");
         navigation.setType(null);
-        boolean faux2 = NavigationValidator.AttributVide(navigation);
+        boolean faux2 = NavigationValidator.attributVide(navigation);
         navigation.setType("ASC");
         navigation.setSearch(null);
-        boolean faux3 = NavigationValidator.AttributVide(navigation);
+        boolean faux3 = NavigationValidator.attributVide(navigation);
         assertEquals(correct,false);
         assertEquals(faux,true);
         assertEquals(faux2,true);

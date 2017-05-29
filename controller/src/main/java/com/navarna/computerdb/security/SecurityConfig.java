@@ -18,27 +18,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsServiceImpl userService;
 
-    public UserDetailsServiceImpl userDetais() {
-        return userService;
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-        .addFilter(digestFilter())
-        .authorizeRequests()
-                .antMatchers("/resources/**").permitAll()
-                .antMatchers("/dashboard").hasAnyAuthority("VISITEUR")
-                .antMatchers("/addComputer**","/editComputer**").hasAnyAuthority("UTILISATEUR")
-                .antMatchers("/dashboard/delete").hasAnyAuthority("ADMINISTRATEUR")
-                .and()
-                .logout().logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                .and().exceptionHandling().accessDeniedPage("/erreur?message=accessDenied").authenticationEntryPoint(digestEntryPoint())
-                
-                ;
+        http.addFilter(digestFilter()).authorizeRequests().antMatchers("/resources/**").permitAll().antMatchers("/erreur**").permitAll()
+                .antMatchers("/dashboard").hasAnyAuthority("VISITEUR").antMatchers("/addComputer**", "/editComputer**")
+                .hasAnyAuthority("UTILISATEUR").antMatchers("/dashboard/delete").hasAnyAuthority("ADMINISTRATEUR").and()
+                .logout().logoutUrl("/logout").logoutSuccessUrl("/").and().exceptionHandling()
+                .accessDeniedPage("/erreur?message=accessDenied").authenticationEntryPoint(digestEntryPoint());
     }
 
+    /**
+     * Crée un bean digest entryPoint.
+     * @return DigestAuthentificationEntryPoint : une entrypoint digest configurer
+     */
     @Bean
     public DigestAuthenticationEntryPoint digestEntryPoint() {
         DigestAuthenticationEntryPoint entryPoint = new DigestAuthenticationEntryPoint();
@@ -47,10 +39,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return entryPoint;
     }
 
+    /**
+     * Crée un bean digest filtre.
+     * @return DigestAuthentificationFilter : un filtre digest.
+     */
     @Bean
     public DigestAuthenticationFilter digestFilter() {
         DigestAuthenticationFilter filter = new DigestAuthenticationFilter();
-        filter.setUserDetailsService(userDetais());
+        filter.setUserDetailsService(userService);
         filter.setAuthenticationEntryPoint(digestEntryPoint());
         return filter;
     }

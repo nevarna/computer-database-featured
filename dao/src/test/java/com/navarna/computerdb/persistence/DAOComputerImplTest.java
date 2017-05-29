@@ -19,6 +19,7 @@ import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
 import com.navarna.computerdb.model.Company.CompanyBuilder;
 import com.navarna.computerdb.model.Computer.ComputerBuilder;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DAOComputerImplTest {
 
@@ -31,7 +32,7 @@ public class DAOComputerImplTest {
     private static final int NOMBRE_INSERT = 574;
 
     public static void miseAZero() {
-       JdbcTemplate j = (JdbcTemplate) ctx.getBean("jdbcTemplate");
+        JdbcTemplate j =new JdbcTemplate((HikariDataSource) ctx.getBean("dataSource"));
         try {
             BufferedReader br = new BufferedReader(new FileReader("./src/test/resources/insert.sql"));
             String [] ligne = new String [NOMBRE_INSERT]; 

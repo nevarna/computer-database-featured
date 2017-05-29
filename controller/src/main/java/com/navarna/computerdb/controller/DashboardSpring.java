@@ -40,11 +40,11 @@ public class DashboardSpring {
     public ModelAndView getRequest(@Valid @ModelAttribute("navigation") NavigationDashboardDTO navigation,
             BindingResult result) {
         if ((result == null) || (!result.hasErrors())) {
-            navigation.setPage(navigation.getPage()-1);
+            navigation.setPage(navigation.getPage() - 1);
             Page<ComputerDTO> pageComputer = creationListe(navigation);
             int totalElement = compterElement(navigation.getSearch(), navigation.getType());
             ModelAndView model = new ModelAndView("dashboard");
-            navigation.setPage(navigation.getPage()+1);
+            navigation.setPage(navigation.getPage() + 1);
             ecrireAttribute(model, pageComputer, navigation, totalElement);
             return model;
         }
@@ -52,7 +52,7 @@ public class DashboardSpring {
     }
 
     /**
-     * Navigation POST de l'url /dashboard
+     * Navigation POST de l'url /dashboard.
      * @param selection : indice de computer à supprimer
      * @return model : le model contenant les attribut et l'adresse de la page
      *         jsp
@@ -68,12 +68,11 @@ public class DashboardSpring {
 
     /**
      * Lis les paramêtre reçu de manière POST et les utilise.
-     * @param request : request reçu par le servlet
+     * @param selection : parametre contenant l'emsemble des id à supprimer
      * @return String[] : tableau contenant les indices à supprimer.
      */
     private String[] lireParametrePost(String selection) {
         LOGGER.info("-------->lireParametrePost(request) args: " + selection);
-        
         return selection.split(",");
     }
 
@@ -86,7 +85,7 @@ public class DashboardSpring {
         LOGGER.info("-------->demande suppresion(tableauIdDelete)");
         try {
             int taille = tableauIdDelete.length;
-            if ((taille != 0)&&(!tableauIdDelete[0].equals(""))) {
+            if ((taille != 0) && (!tableauIdDelete[0].equals(""))) {
                 if (taille == 1) {
                     long idSupprimer = Long.parseLong(tableauIdDelete[0]);
                     servComputer.delete(idSupprimer);
@@ -105,11 +104,7 @@ public class DashboardSpring {
 
     /**
      * Créer la liste à afficher dans pageComputer.
-     * @param name : nom ecris en arguments
-     * @param typeSearch : si on cherche une companies ou un computer
-     * @param order : type de l'ordre ASC ou DESC
-     * @param numPage : numero de la page
-     * @param nbElement : nombre d'élément par page
+     * @param navigation : Objet navigation de la page à crée
      * @return Page<ComputerDTO> : page contenant la liste à afficher
      */
     private Page<ComputerDTO> creationListe(NavigationDashboardDTO navigation) {
@@ -156,11 +151,8 @@ public class DashboardSpring {
      * Ecrit les attributs dont a besoin le fichier JSP.
      * @param model : model à retourner
      * @param pageComputer : page contenant la liste de computer
-     * @param numPage : numero de page
-     * @param name : nom de la recherche
-     * @param typeSearch : type de la recherche
+     * @param navigation : Objet navigation de la page à crée
      * @param totalElement : nombre total d'élément de la recherche
-     * @param nbElement : nombre d'element par page
      */
     public void ecrireAttribute(ModelAndView model, Page<ComputerDTO> pageComputer, NavigationDashboardDTO navigation,
             int totalElement) {
@@ -170,6 +162,6 @@ public class DashboardSpring {
         model.addObject("computers", pageComputer);
         model.addObject("navigation", navigation);
         model.addObject("totalElement", totalElement);
-        
+
     }
 }

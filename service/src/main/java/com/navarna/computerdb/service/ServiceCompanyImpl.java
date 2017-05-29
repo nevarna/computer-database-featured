@@ -23,16 +23,16 @@ public class ServiceCompanyImpl implements ServiceCompany {
 
     @Override
     public Page<Company> liste(int numPage, int nbElement) {
-        LOGGER.info("-------->liste(numPage,nbElement) args: "+numPage+" - "+nbElement);
+        LOGGER.info("-------->liste(numPage,nbElement) args: " + numPage + " - " + nbElement);
         return this.dCompanyImpl.list(numPage, nbElement);
     }
 
     @Override
     @Transactional
     public boolean delete(long id) {
-        LOGGER.info("-------->delete(id) args: "+id);
+        LOGGER.info("-------->delete(id) args: " + id);
         if (id > 0) {
-            if(this.dComputerImpl.deleteCompany(id)) {
+            if (this.dComputerImpl.deleteCompany(id)) {
                 return this.dCompanyImpl.delete(id);
             }
         }

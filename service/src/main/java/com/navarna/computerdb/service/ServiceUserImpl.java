@@ -15,7 +15,7 @@ public class ServiceUserImpl implements ServiceUser {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceUserImpl.class);
     @Autowired
     private DAOUserImpl dUserImpl;
- 
+
     @Override
     public boolean insert(User user) {
         LOGGER.info("-------->insert(computer) args: " + user);
