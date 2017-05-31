@@ -20,17 +20,17 @@ import com.navarna.computerdb.dto.CompanyDTO;
 import com.navarna.computerdb.dto.ComputerDTO;
 import com.navarna.computerdb.mapper.TransformationToDTO;
 import com.navarna.computerdb.model.Computer;
-import com.navarna.computerdb.service.ServiceCompanyImpl;
-import com.navarna.computerdb.service.ServiceComputerImpl;
+import com.navarna.computerdb.service.ServiceCompany;
+import com.navarna.computerdb.service.ServiceComputer;
 
 @Controller
 @RequestMapping("/addComputer")
 public class AddComputerSpring {
     private static final Logger LOGGER = LoggerFactory.getLogger(AddComputerSpring.class);
     @Autowired
-    private ServiceComputerImpl servComputer = new ServiceComputerImpl();
+    private ServiceComputer servComputer;
     @Autowired
-    private ServiceCompanyImpl servCompany = new ServiceCompanyImpl();
+    private ServiceCompany servCompany ;
 
     /**
      * Navigation GET de l'url /addComputer.

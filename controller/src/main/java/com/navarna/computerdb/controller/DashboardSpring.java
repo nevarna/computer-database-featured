@@ -19,7 +19,7 @@ import com.navarna.computerdb.dto.NavigationDashboardDTO;
 import com.navarna.computerdb.exception.ControllerException;
 import com.navarna.computerdb.mapper.TransformationToDTO;
 import com.navarna.computerdb.model.Page;
-import com.navarna.computerdb.service.ServiceComputerImpl;
+import com.navarna.computerdb.service.ServiceComputer;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -27,7 +27,7 @@ public class DashboardSpring {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DashboardSpring.class);
     @Autowired
-    private ServiceComputerImpl servComputer;
+    private ServiceComputer servComputer;
 
     /**
      * Navigation GET de l'url /dashboard.
@@ -39,6 +39,7 @@ public class DashboardSpring {
     @GetMapping
     public ModelAndView getRequest(@Valid @ModelAttribute("navigation") NavigationDashboardDTO navigation,
             BindingResult result) {
+        LOGGER.info("-------->getRequest(navigation,result) args: " + navigation);
         if ((result == null) || (!result.hasErrors())) {
             navigation.setPage(navigation.getPage() - 1);
             Page<ComputerDTO> pageComputer = creationListe(navigation);

@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.navarna.computerdb.model.User;
-import com.navarna.computerdb.persistence.DAOUserImpl;
+import com.navarna.computerdb.persistence.DAOUser;
 
 @Service
 public class ServiceUserImpl implements ServiceUser {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceUserImpl.class);
     @Autowired
-    private DAOUserImpl dUserImpl;
+    private DAOUser dUserImpl;
 
     @Override
     public boolean insert(User user) {

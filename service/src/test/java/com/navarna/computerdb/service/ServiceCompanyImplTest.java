@@ -20,7 +20,7 @@ public class ServiceCompanyImplTest {
                     ServiceCompanyImpl.class,
                     DAOCompanyImpl.class,  
                     ConnectionSpringConfig.class);
-           ArrayList<Company> al = ((ServiceCompanyImpl) ctx.getBean(ServiceCompanyImpl.class)).listeComplete();
+           ArrayList<Company> al = ((ServiceCompany) ctx.getBean(ServiceCompany.class)).listeComplete();
             ctx.close();
             assertNotNull(al);
         } catch (Exception e) {

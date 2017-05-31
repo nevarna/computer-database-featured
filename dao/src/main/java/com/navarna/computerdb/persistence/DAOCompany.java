@@ -34,4 +34,5 @@ public interface DAOCompany {
      * @return ArrayList<Company> : liste des companies
      */
     ArrayList<Company> listeComplete();
+
 }

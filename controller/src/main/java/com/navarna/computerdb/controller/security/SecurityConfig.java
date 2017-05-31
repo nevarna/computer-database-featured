@@ -1,4 +1,4 @@
-package com.navarna.computerdb.security;
+package com.navarna.computerdb.controller.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.www.DigestAuthenticationF
 
 @Configuration
 @EnableWebSecurity
-@ComponentScan("com.navarna.computerdb.security")
+@ComponentScan("com.navarna.computerdb.controller.security")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -20,16 +20,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.addFilter(digestFilter()).authorizeRequests().antMatchers("/resources/**").permitAll().antMatchers("/erreur**").permitAll()
-                .antMatchers("/dashboard").hasAnyAuthority("VISITEUR").antMatchers("/addComputer**", "/editComputer**")
+        http.addFilter(digestFilter()).authorizeRequests().antMatchers("/resources/**").permitAll()
+                .antMatchers("/erreur**").permitAll().antMatchers("/api/**").permitAll().antMatchers("/dashboard")
+                .hasAnyAuthority("VISITEUR").antMatchers("/addComputer**", "/editComputer**")
                 .hasAnyAuthority("UTILISATEUR").antMatchers("/dashboard/delete").hasAnyAuthority("ADMINISTRATEUR").and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/").and().exceptionHandling()
-                .accessDeniedPage("/erreur?message=accessDenied").authenticationEntryPoint(digestEntryPoint());
+                .accessDeniedPage("/erreur?message=accessDenied").authenticationEntryPoint(digestEntryPoint())
+                .and().csrf().ignoringAntMatchers("/api/**")
+                ;
     }
 
     /**
      * Crée un bean digest entryPoint.
-     * @return DigestAuthentificationEntryPoint : une entrypoint digest configurer
+     * @return DigestAuthentificationEntryPoint : une entrypoint digest
+     *         configurer
      */
     @Bean
     public DigestAuthenticationEntryPoint digestEntryPoint() {

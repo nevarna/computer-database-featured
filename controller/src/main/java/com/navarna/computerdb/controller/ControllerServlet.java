@@ -2,7 +2,7 @@ package com.navarna.computerdb.controller;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-import com.navarna.computerdb.security.SecurityConfig;
+import com.navarna.computerdb.controller.security.SecurityConfig;
 
 public class ControllerServlet extends AbstractAnnotationConfigDispatcherServletInitializer {
 

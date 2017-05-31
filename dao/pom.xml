@@ -6,12 +6,10 @@
 		<groupId>com.navarna.computerdb.</groupId>
 		<artifactId>ComputerDatabaseMultiModule</artifactId>
 		<relativePath>../pom.xml</relativePath>
-		<version>6.0</version>
+		<version>7.0</version>
 	</parent>
 	<properties>
 
-		<maven.mysql.version>6.0.6</maven.mysql.version>
-		<maven.hikari.version>2.6.1</maven.hikari.version>
 
 	</properties>
 	<!--===============================DEPENDENCIES ============================= -->
@@ -26,42 +24,12 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>${maven.mysql.version}</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>${maven.hikari.version}</version>
-		</dependency>
-
-		<!-- _________________[LogBack]_______________ -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-		</dependency>
-		<!-- _________________[test :junit]_______________ -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
 		</dependency>
 		<!-- _________________[spring framework]_______________ -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
@@ -74,7 +42,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 		</dependency>
-
+		<!-- _________________[hibernate]_______________ -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-java8</artifactId>
+		</dependency>
 	</dependencies>
 	<!--===============================PLUGINS ============================= -->
 	<build>

@@ -1,12 +1,16 @@
 package com.navarna.computerdb.persistence;
 
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Computer;
@@ -15,9 +19,10 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
+@EnableTransactionManagement
 @PropertySource({ "classpath:informationDB.properties" })
 @ComponentScan(basePackages = "com.navarna.computerdb.persistence")
-public class ConnectionSpringConfig {
+public class ConnectionSpringConfig{
 
     @Autowired
     private Environment env;
@@ -52,4 +57,17 @@ public class ConnectionSpringConfig {
         factory.setAnnotatedClasses(Company.class, Computer.class, User.class);
         return factory;
     }
+
+    @Bean
+    @Autowired
+    public HibernateTransactionManager txManager(SessionFactory sessionFactory) {
+        HibernateTransactionManager transaction = new HibernateTransactionManager();
+        transaction.setSessionFactory(sessionFactory);
+        return transaction;
+    }
+    @Bean
+    public DataSourceTransactionManager testBean () {
+        return new DataSourceTransactionManager(hikariDataSource());
+    }
+
 }

@@ -6,7 +6,7 @@
 		<groupId>com.navarna.computerdb.</groupId>
 		<artifactId>ComputerDatabaseMultiModule</artifactId>
 		<relativePath>../pom.xml</relativePath>
-		<version>6.0</version>
+		<version>7.0</version>
 	</parent>
 	<properties>
 		<maven.validation.version>1.1.0.Final</maven.validation.version>
@@ -19,33 +19,10 @@
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- _________________[LogBack]_______________ -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-		</dependency>
-		<!-- _________________[test : junit]_______________ -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
 		<!-- _________________[hibernate validator]_______________ -->
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
-			<version>${maven.validation.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<!-- _________________[spring framework]_______________ -->

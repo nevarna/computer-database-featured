@@ -9,15 +9,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 import com.navarna.computerdb.model.Company;
 
 public class ConnectionHibernateTest {
     private static AnnotationConfigApplicationContext ctx;
-
     @BeforeClass
     public static void initialiser() {
-        ctx = new AnnotationConfigApplicationContext(ConnectionSpringConfig.class);
+        ctx = new AnnotationConfigApplicationContext(DAOCompanyImpl.class,ConnectionSpringConfig.class);
     }
     
     @Test
@@ -30,6 +28,7 @@ public class ConnectionHibernateTest {
         System.out.println(" spring : "+test);
         session.close();
     }
+
     @AfterClass
     public static void fermer() {
         ctx.close();

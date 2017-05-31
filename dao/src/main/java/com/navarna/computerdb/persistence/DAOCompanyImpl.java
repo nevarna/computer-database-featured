@@ -8,7 +8,6 @@ import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +16,6 @@ import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Page;
 
 @Repository
-@Scope("singleton")
 public class DAOCompanyImpl implements DAOCompany {
     private static final Logger LOGGER = LoggerFactory.getLogger(DAOCompanyImpl.class);
     @Autowired
@@ -29,7 +27,7 @@ public class DAOCompanyImpl implements DAOCompany {
         SELECT = "from Company";
         DELETE_COMPANY = "DELETE Company where id = :id";
     }
-
+    
     @Override
     public Page<Company> list(int numPage, int nbElement) {
         LOGGER.info("-------->list(numPage,nbElement) args: " + numPage + " - " + nbElement);
@@ -57,7 +55,7 @@ public class DAOCompanyImpl implements DAOCompany {
             throw new DAOException("erreur dans jdbc", e);
         }
     }
-
+    
     @Override
     public ArrayList<Company> listeComplete() {
         LOGGER.info("-------->listeComplete()");

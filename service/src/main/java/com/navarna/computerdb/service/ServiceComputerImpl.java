@@ -6,16 +6,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.navarna.computerdb.model.Computer;
 import com.navarna.computerdb.model.Page;
-import com.navarna.computerdb.persistence.DAOComputerImpl;
+import com.navarna.computerdb.persistence.DAOComputer;
 
 @Service
+@Transactional(readOnly=true)
 public class ServiceComputerImpl implements ServiceComputer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceComputerImpl.class);
     @Autowired
-    private DAOComputerImpl dComputerImpl;
+    private DAOComputer dComputerImpl;
 
     @Override
     public boolean insert(Computer computer) {

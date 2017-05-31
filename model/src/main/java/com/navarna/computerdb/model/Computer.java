@@ -32,7 +32,6 @@ public class Computer {
         return this.name;
     }
 
-    @JsonSerialize()
     public LocalDate getIntroduced() {
         return this.introduced;
     }

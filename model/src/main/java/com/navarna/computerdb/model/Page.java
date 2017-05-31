@@ -8,6 +8,7 @@ public class Page<T> {
     private int nbPage;
     private int nbElementPage;
 
+    public Page() {}
     /**
      * Constructeur à 2 éléments.
      * @param nbPage : numero de page
