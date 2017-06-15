@@ -12,21 +12,10 @@
 	<!--===============================DEPENDENCIES ============================= -->
 	<dependencies>
 		<dependency>
-			<artifactId>service</artifactId>
-			<groupId>${project.groupId}</groupId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<artifactId>dto</artifactId>
 			<groupId>${project.groupId}</groupId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
-		</dependency>
-		<!-- _________________[spring framework]_______________ -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
 		</dependency>
 		<!-- _________________[Jax cr]_______________ -->
 		<dependency>
@@ -43,6 +32,11 @@
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>2.25</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-moxy</artifactId>
+			<version>2.15</version>
 		</dependency>
 		<!-- _________________[jackson]_______________ -->
 		<dependency>

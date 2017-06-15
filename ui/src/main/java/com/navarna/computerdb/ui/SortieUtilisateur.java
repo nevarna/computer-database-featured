@@ -1,16 +1,22 @@
 package com.navarna.computerdb.ui;
 
-import com.navarna.computerdb.model.Company;
-import com.navarna.computerdb.model.Computer;
-import com.navarna.computerdb.model.Page;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.navarna.computerdb.dto.CompanyDTO;
+import com.navarna.computerdb.dto.ComputerDTO;
+import com.navarna.computerdb.dto.PageCompanyDTO;
+import com.navarna.computerdb.dto.PageComputerDTO;
 
 public class SortieUtilisateur {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SortieUtilisateur.class);
 
     /**
      * Affiche en console les détails d'un computer.
      * @param computer : computer à afficher
      */
-    public static void lireDetailsComputer(Computer computer) {
+    public static void lireDetailsComputer(ComputerDTO computer) {
+        LOGGER.info("-------->lireDetailsComputer(computer) args: " + computer);
         System.out.println("Détail computer : " + computer);
     }
 
@@ -18,9 +24,10 @@ public class SortieUtilisateur {
      * Affiche la page de computer avec leurs détails.
      * @param page : page de Computer
      */
-    public static void lireDetailsComputers(Page<Computer> page) {
+    public static void lireDetailsComputers(PageComputerDTO page) {
+        LOGGER.info("-------->lireDetailsComputers(page) args: " + page);
         System.out.println("Detail computers");
-        for (Computer computer : page.getPage()) {
+        for (ComputerDTO computer : page.getPage()) {
             System.out.println(computer);
         }
     }
@@ -29,9 +36,10 @@ public class SortieUtilisateur {
      * Affiche la page de computer avec leur id et nom.
      * @param page : page de Computer
      */
-    public static void lireListComputers(Page<Computer> page) {
+    public static void lireListComputers(PageComputerDTO page) {
+        LOGGER.info("-------->lireListComputers(page) args: " + page);
         System.out.println("Liste Computer : " + page.getNbPage() + " element : " + page.getNbElementPage());
-        for (Computer computer : page.getPage()) {
+        for (ComputerDTO computer : page.getPage()) {
             System.out.println("id : " + computer.getId() + " name : " + computer.getName());
         }
     }
@@ -40,9 +48,10 @@ public class SortieUtilisateur {
      * Afficher la liste des companies.
      * @param page : page de Company
      */
-    public static void lireListCompanies(Page<Company> page) {
+    public static void lireListCompanies(PageCompanyDTO page) {
+        LOGGER.info("-------->lireListCompanies(page) args: " + page);
         System.out.println("Liste Company : Page " + page.getNbPage() + " element : " + page.getNbElementPage());
-        for (Company company : page.getPage()) {
+        for (CompanyDTO company : page.getPage()) {
             System.out.println("id : " + company.getId() + " name : " + company.getName());
         }
     }
@@ -52,6 +61,7 @@ public class SortieUtilisateur {
      * @param reponse : nombre de changement effectuer
      */
     public static void lireValidationChangement(boolean reponse) {
+        LOGGER.info("-------->lireValidationChangement(reponse) args: " + reponse);
         if (reponse) {
             System.out.println("Changement effectué");
         } else {
@@ -63,6 +73,7 @@ public class SortieUtilisateur {
      * Affiche un message indiquant que aucune donnée n'a été récupérée.
      */
     public static void lireAucuneDonnee() {
+        LOGGER.info("-------->lireAucuneDonnee()");
         System.out.println("Aucune donnée ne correspond à votre recherche");
     }
 
@@ -71,6 +82,7 @@ public class SortieUtilisateur {
      * @param erreur : message d'erreur
      */
     public static void lireErreur(String erreur) {
+        LOGGER.info("-------->lireErreur(erreur)");
         System.out.println("Une erreur s'est produite dans la couche suivante : " + erreur);
     }
 }

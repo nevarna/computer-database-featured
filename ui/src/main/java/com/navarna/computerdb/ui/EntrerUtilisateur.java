@@ -1,37 +1,28 @@
 package com.navarna.computerdb.ui;
 
-import java.time.LocalDate;
 import java.util.Scanner;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.navarna.computerdb.dto.ComputerDTO;
 import com.navarna.computerdb.exception.CLIException;
-import com.navarna.computerdb.model.Company;
-import com.navarna.computerdb.model.Company.CompanyBuilder;
-import com.navarna.computerdb.model.Computer;
-import com.navarna.computerdb.model.Computer.ComputerBuilder;
 import com.navarna.computerdb.validator.ValidationEntrer;
 
-@Component
-@Scope("prototype")
 public class EntrerUtilisateur {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntrerUtilisateur.class);
     public final Scanner sc = new Scanner(System.in);
-    @Autowired
-    public ConstruireRequete construireRequete;
-
+    private ConstruireRequete construireRequete = new ConstruireRequete(this);
 
     /**
      * Demande à l'utilisateur d'entrer les informations d'un ordinateur.
      * @param idComputer : id du computer
      * @return Computer : un Computer avec les données insérer
      */
-    public Computer computerInformation(Long idComputer) {
-        ComputerBuilder computerBuilder = null;
+    public ComputerDTO computerInformation(Long idComputer) {
+        LOGGER.info("-------->computerInformation(idComputer) args: " + idComputer);
+        ComputerDTO computerDTO = null;
         String cInformation = "";
-        LocalDate date;
         int idCompany;
         System.out.println(
                 "--------- INFORMATION COMPUTER ---------\nEntrer La valeur des champs, ne rien entrer equivaut à mettre la valeur par défaut \n");
@@ -40,30 +31,25 @@ public class EntrerUtilisateur {
         if (cInformation.equals("")) {
             throw new CLIException("Le champs nom n'est pas rempli");
         }
-        computerBuilder = new ComputerBuilder(cInformation);
+        computerDTO = new ComputerDTO();
+        computerDTO.setName(cInformation);
         System.out.println("\nchamps introduced de l'ordinateur");
         cInformation = sc.nextLine();
         if (ValidationEntrer.verificationFormatDate(cInformation)) {
-            date = LocalDate.parse(cInformation);
-            computerBuilder.setIntroduced(date);
+            computerDTO.setIntroduced(cInformation);
         }
         System.out.println("\nchamps discontinued de l'ordinateur");
         cInformation = sc.nextLine();
         if (ValidationEntrer.verificationFormatDate(cInformation)) {
-            date = LocalDate.parse(cInformation);
-            computerBuilder.setDiscontinued(date);
+            computerDTO.setDiscontinued(cInformation);
         }
         System.out.println("\nid de la company");
         cInformation = sc.nextLine();
-        CompanyBuilder companyBuilder = new CompanyBuilder("aucuneImportance");
         if ((!cInformation.equals("")) && ((idCompany = ValidationEntrer.stringEnIntPositif(cInformation)) != -1)) {
-            companyBuilder.setId(new Long(idCompany));
+            computerDTO.setIdCompany(idCompany);
         }
-        Company company = companyBuilder.build();
-        computerBuilder.setCompany(company);
-        computerBuilder.setId(idComputer);
-        Computer computer = computerBuilder.build();
-        return computer;
+        computerDTO.setId(idComputer);
+        return computerDTO;
     }
 
     /**
@@ -71,6 +57,7 @@ public class EntrerUtilisateur {
      * computer grace à un id ou grace à son nom.
      */
     public void demandeShow() {
+        LOGGER.info("-------->demandeShow()");
         System.out.println("\n1 : par id\n2 : par nom");
         int entree = ValidationEntrer.stringEnIntPositif(sc.nextLine());
         String[] command = new String[2];
@@ -107,6 +94,7 @@ public class EntrerUtilisateur {
      * @return int
      */
     public int demandeId() {
+        LOGGER.info("-------->demandeId()");
         System.out.println("id de l'ordinateur : ");
         String entree = sc.nextLine();
         return ValidationEntrer.stringEnIntPositif(entree);
@@ -117,6 +105,7 @@ public class EntrerUtilisateur {
      * @return String : le nom
      */
     public String demandeName() {
+        LOGGER.info("-------->demandeName()");
         System.out.println("Nom de l'ordinateur : ");
         String entree = sc.nextLine();
         return entree;
@@ -128,6 +117,7 @@ public class EntrerUtilisateur {
      * @param type : companies ou computer
      */
     public void demandeChangeNbListe(String type) {
+        LOGGER.info("-------->demandeChangeNbListe(type)" + type);
         System.out.println(
                 "Voulez-vous changer le nombre d'element par liste? (Si oui inserer un nombre, sinon taper ENTRER");
         String stringNbElement = sc.nextLine();
@@ -152,6 +142,7 @@ public class EntrerUtilisateur {
      * @param command : commande de l'utilisateur
      */
     public void retourList(String[] command) {
+        LOGGER.info("-------->retourList(command)");
         if (command.length == 2) {
             boolean pasFini = true;
             demandeChangeNbListe(command[1]);
@@ -173,6 +164,7 @@ public class EntrerUtilisateur {
      * Boucle principal : propose des choix à l'utilisateur.
      */
     public void choixPrincipal() {
+        LOGGER.info("-------->choixPrincipal()");
         int entree = 0;
         boolean fini = false;
 

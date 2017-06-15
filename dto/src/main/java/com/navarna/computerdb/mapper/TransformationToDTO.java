@@ -16,6 +16,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 
 import com.navarna.computerdb.dto.CompanyDTO;
 import com.navarna.computerdb.dto.ComputerDTO;
+import com.navarna.computerdb.dto.PageCompanyDTO;
+import com.navarna.computerdb.dto.PageComputerDTO;
 import com.navarna.computerdb.model.Company;
 import com.navarna.computerdb.model.Company.CompanyBuilder;
 import com.navarna.computerdb.model.Computer;
@@ -208,4 +210,19 @@ public class TransformationToDTO {
         }
         return listeDTO;
     }
+
+    public static PageComputerDTO pageComputerDTORest(Page<ComputerDTO> page) {
+        LOGGER.info("-------->pageComputerDTORest(page)" + page);
+        PageComputerDTO pageDTO = new PageComputerDTO(page.getNbPage(), page.getNbElementPage());
+        pageDTO.setPage(page.getPage());
+        return pageDTO;
+    }
+
+    public static PageCompanyDTO pageCompanyDTORest(Page<CompanyDTO> page) {
+        LOGGER.info("-------->pageCompanyDTORest(page)" + page);
+        PageCompanyDTO pageDTO = new PageCompanyDTO(page.getNbPage(), page.getNbElementPage());
+        pageDTO.setPage(page.getPage());
+        return pageDTO;
+    }
+
 }

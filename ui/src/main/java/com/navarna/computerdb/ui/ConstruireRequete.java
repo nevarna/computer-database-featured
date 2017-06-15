@@ -2,27 +2,26 @@ package com.navarna.computerdb.ui;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.navarna.computerdb.dto.ComputerDTO;
+import com.navarna.computerdb.dto.PageCompanyDTO;
+import com.navarna.computerdb.dto.PageComputerDTO;
 import com.navarna.computerdb.exception.CLIException;
-import com.navarna.computerdb.model.Company;
-import com.navarna.computerdb.model.Computer;
-import com.navarna.computerdb.model.Page;
-import com.navarna.computerdb.service.ServiceCompany;
-import com.navarna.computerdb.service.ServiceComputer;
+import com.navarna.computerdb.service.ServiceCompanyRestImpl;
+import com.navarna.computerdb.service.ServiceComputerRestImpl;
 import com.navarna.computerdb.validator.ValidationEntrer;
 
-@Component
 public class ConstruireRequete {
-    @Autowired
-    private ServiceComputer servComputerImpl;
-    @Autowired
-    private ServiceCompany servCompanyImpl;
-    @Autowired
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConstruireRequete.class);
     private EntrerUtilisateur entrerUtilisateur;
     private int nbElement = 20;
     private int numPage = 0;
+
+    public ConstruireRequete(EntrerUtilisateur entrerUtilisateur) {
+        this.entrerUtilisateur = entrerUtilisateur;
+    }
 
     /**
      * L UI appelle le service pour satisfaire la demande de l'utilisateur.
@@ -30,15 +29,16 @@ public class ConstruireRequete {
      * @param type : indique si c'est pour une companies ou un computer
      */
     public void demandeListe(String type) {
+        LOGGER.info("-------->demandeListe(type) args: " + type);
         if (type.equals("computers")) {
-            Page<Computer> page = servComputerImpl.liste(numPage, nbElement, "computer.id", "ASC");
+            PageComputerDTO page = ServiceComputerRestImpl.liste(numPage, nbElement);
             if (!page.estVide()) {
                 SortieUtilisateur.lireListComputers(page);
             } else {
                 SortieUtilisateur.lireAucuneDonnee();
             }
         } else if (type.equals("companies")) {
-            Page<Company> page = servCompanyImpl.liste(numPage, nbElement);
+            PageCompanyDTO page = ServiceCompanyRestImpl.liste(numPage, nbElement);
             if (!page.estVide()) {
                 SortieUtilisateur.lireListCompanies(page);
             } else {
@@ -55,6 +55,7 @@ public class ConstruireRequete {
      * @param type : indique si c'est pour une companies ou un computer
      */
     public void demandePageSuivante(String type) {
+        LOGGER.info("-------->demandePageSuivante(type) args: " + type);
         this.numPage++;
         demandeListe(type);
     }
@@ -64,6 +65,7 @@ public class ConstruireRequete {
      * @param type : indique si c'est pour une companies ou un computer
      */
     public void resetList(String type) {
+        LOGGER.info("-------->resetList(type) args: " + type);
         this.numPage = 0;
     }
 
@@ -73,9 +75,10 @@ public class ConstruireRequete {
      * @param id : id en String.
      */
     public void demandeShowId(String id) {
+        LOGGER.info("-------->demandeShowId(id) args: "+id);
         int ids = ValidationEntrer.stringEnIntPositif(id);
         if (ids != -1) {
-            Optional<Computer> computer = servComputerImpl.findById(ids);
+            Optional<ComputerDTO> computer = ServiceComputerRestImpl.findById(ids);
             if (computer.isPresent()) {
                 SortieUtilisateur.lireDetailsComputer(computer.get());
             } else {
@@ -92,7 +95,8 @@ public class ConstruireRequete {
      * @param name : nom de du computer
      */
     public void demandeShowName(String name) {
-        Page<Computer> page = servComputerImpl.findByName(name, numPage, nbElement, "id", "ASC");
+        LOGGER.info("-------->demandeShowName(name) args: "+name);
+        PageComputerDTO page = ServiceComputerRestImpl.findByName(name, numPage, nbElement);
         if (!page.estVide()) {
             SortieUtilisateur.lireDetailsComputers(page);
         } else {
@@ -106,10 +110,11 @@ public class ConstruireRequete {
      * @param id : id du computer
      */
     public void demandeUpdate(String id) {
+        LOGGER.info("-------->demandeUpdate(id) args: "+id);
         int ids = ValidationEntrer.stringEnIntPositif(id);
         if (ids != -1) {
-            Computer computer = entrerUtilisateur.computerInformation(new Long(ids));
-            SortieUtilisateur.lireValidationChangement(servComputerImpl.update(computer));
+            ComputerDTO computerDTO = entrerUtilisateur.computerInformation(new Long(ids));
+            SortieUtilisateur.lireValidationChangement(ServiceComputerRestImpl.update(computerDTO));
         } else {
             throw new CLIException("fonction demandeUpdate arguments incorect");
         }
@@ -121,9 +126,10 @@ public class ConstruireRequete {
      * @param type :computer
      */
     public void demandeInsert(String type) {
+        LOGGER.info("-------->demandeInsert(type) args: "+type);
         if (type.equals("computer")) {
-            Computer computer = entrerUtilisateur.computerInformation(new Long(0));
-            SortieUtilisateur.lireValidationChangement(servComputerImpl.insert(computer));
+            ComputerDTO computerDTO = entrerUtilisateur.computerInformation(new Long(0));
+            SortieUtilisateur.lireValidationChangement(ServiceComputerRestImpl.insert(computerDTO));
         } else {
             throw new CLIException("fonction demandeInsert arguments incorect");
         }
@@ -135,9 +141,10 @@ public class ConstruireRequete {
      * @param id : id du computer
      */
     public void demandeDelete(String id) {
+        LOGGER.info("-------->demandeDelete(id) args: "+id);
         int ids = ValidationEntrer.stringEnIntPositif(id);
         if (ids != -1) {
-            SortieUtilisateur.lireValidationChangement(servComputerImpl.delete(ids));
+            SortieUtilisateur.lireValidationChangement(ServiceComputerRestImpl.delete(ids));
         } else {
             throw new CLIException("fonction demandeUpdate arguments incorect");
         }
@@ -149,9 +156,10 @@ public class ConstruireRequete {
      * @param id : id de la company
      */
     public void demandeDeleteCompany(String id) {
+        LOGGER.info("-------->demandeDeleteCompany(id) args: "+id);
         int ids = ValidationEntrer.stringEnIntPositif(id);
         if (ids != -1) {
-            SortieUtilisateur.lireValidationChangement(servCompanyImpl.delete(ids));
+            SortieUtilisateur.lireValidationChangement(ServiceCompanyRestImpl.delete(ids));
         } else {
             throw new CLIException("fonction demandeUpdate arguments incorect");
         }
@@ -163,6 +171,7 @@ public class ConstruireRequete {
      * @param nbElement : le nombre d'éléments demandé
      */
     public void demandeChangeNbElement(int nbElement) {
+        LOGGER.info("-------->demandeChangeNbElement(nbElement) args: "+nbElement);
         if (nbElement >= 0) {
             this.nbElement = nbElement;
         } else {
@@ -176,6 +185,7 @@ public class ConstruireRequete {
      * @param nbPage : numero de page demandé
      */
     public void demandeChangeNbPage(int nbPage) {
+        LOGGER.info("-------->demandeChangeNbPage(nbPage) args: "+nbPage);
         if (nbPage >= 0) {
             this.numPage = nbPage;
         } else {
@@ -188,6 +198,7 @@ public class ConstruireRequete {
      * @param command : tableau de commande de l'utilisateur.
      */
     public void command(String[] command) {
+        LOGGER.info("-------->command(command)");
         if (command.length < 2) {
             throw new CLIException("fonction command nombre d'arguments incorect");
         } else {

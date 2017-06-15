@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.navarna.computerdb.dto.ComputerDTO;
+import com.navarna.computerdb.dto.PageComputerDTO;
 import com.navarna.computerdb.exception.RestException;
 import com.navarna.computerdb.mapper.TransformationToDTO;
 import com.navarna.computerdb.model.Computer;
@@ -27,14 +30,16 @@ import com.navarna.computerdb.service.ServiceComputer;
 public class ApiComputerSpring {
     @Autowired
     private ServiceComputer servComputer;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApiComputerSpring.class);
 
     @GetMapping("/{numeroPage}/{element}")
-    public Page<ComputerDTO> getPageComputer(@PathVariable int numeroPage, @PathVariable int element) {
+    public PageComputerDTO getPageComputer(@PathVariable int numeroPage, @PathVariable int element) {
+        LOGGER.info("-------->getPageComputer(numeroPage,element) args: " + numeroPage + " - " + element);
         if ((numeroPage >= 0) && (element > 0)) {
             Page<ComputerDTO> page = TransformationToDTO
                     .pageComputerToPageDTO(servComputer.liste(numeroPage, element, "id", "ASC"));
             if (!page.estVide()) {
-                return page;
+                return TransformationToDTO.pageComputerDTORest(page);
             }
             throw RestException.notFound();
         }
@@ -42,7 +47,8 @@ public class ApiComputerSpring {
     }
 
     @GetMapping("/{id}")
-    public ComputerDTO getComputer(@PathVariable int id) {
+    public ComputerDTO getComputer(@PathVariable long id) {
+        LOGGER.info("-------->getComputer(id) args: " + id);
         if (id > 0) {
             Optional<Computer> computer = servComputer.findById(id);
             if (computer.isPresent()) {
@@ -56,8 +62,25 @@ public class ApiComputerSpring {
         throw RestException.illegalArgument();
     }
 
+    @GetMapping("/{numeroPage}/{element}/{name}")
+    public PageComputerDTO getComputerName(@PathVariable int numeroPage, @PathVariable int element,
+            @PathVariable String name) {
+        LOGGER.info("-------->getComputerName(numeroPage,element,name) args: " + numeroPage + " - " + element + " - "
+                + name);
+        if ((numeroPage >= 0) && (element > 0)) {
+            Page<ComputerDTO> page = TransformationToDTO
+                    .pageComputerToPageDTO(servComputer.findByName(name, numeroPage, element, "id", "ASC"));
+            if (!page.estVide()) {
+                return TransformationToDTO.pageComputerDTORest(page);
+            }
+            throw RestException.notFound();
+        }
+        throw RestException.illegalArgument();
+    }
+
     @PutMapping
     public ComputerDTO insertComputer(@Valid @RequestBody ComputerDTO computerdto, BindingResult result) {
+        LOGGER.info("-------->insertComputer(computerdto,result) args: " + computerdto);
         if (!result.hasErrors()) {
             Optional<Computer> computer = TransformationToDTO.dtoToComputer(computerdto);
             if (computer.isPresent()) {
@@ -70,8 +93,9 @@ public class ApiComputerSpring {
     }
 
     @PostMapping("/{id}")
-    public ComputerDTO updateComputer(@PathVariable int id, @Valid @RequestBody ComputerDTO computerdto,
+    public ComputerDTO updateComputer(@PathVariable long id, @Valid @RequestBody ComputerDTO computerdto,
             BindingResult result) {
+        LOGGER.info("-------->updateComputer(id,computerdto,result) args: " + id + " - " + computerdto);
         if ((!result.hasErrors()) && (id > 0) && (id == computerdto.getId())) {
             Optional<Computer> existe = servComputer.findById(id);
             if (existe.isPresent()) {
@@ -81,8 +105,7 @@ public class ApiComputerSpring {
                         return computerdto;
                     }
                 }
-            }
-            else {
+            } else {
                 throw RestException.inexistent();
             }
         }
@@ -90,14 +113,14 @@ public class ApiComputerSpring {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteComputer (@PathVariable int id) {
-        if(id > 0) {
+    public void deleteComputer(@PathVariable long id) {
+        LOGGER.info("-------->deleteComputer(id) args: " + id);
+        if (id > 0) {
             boolean reussir = servComputer.delete(id);
-            if(!reussir) {
+            if (!reussir) {
                 throw RestException.inexistent();
             }
-        }
-        else {
+        } else {
             throw RestException.illegalArgument();
         }
     }

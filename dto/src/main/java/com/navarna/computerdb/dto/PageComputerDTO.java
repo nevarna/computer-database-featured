@@ -1,23 +1,26 @@
-package com.navarna.computerdb.model;
+package com.navarna.computerdb.dto;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class Page<T> {
-    private ArrayList<T> page;
+public class PageComputerDTO {
+
+    private ArrayList<ComputerDTO> page;
     private int nbPage;
     private int nbElementPage;
 
-    public Page() {}
+    public PageComputerDTO() {
+        this.page = new ArrayList<>();
+    }
+
     /**
      * Constructeur à 2 éléments.
      * @param nbPage : numero de page
      * @param nbElementPage : nombre d'éléments maximum dans la page
      */
-    public Page(int nbPage, int nbElementPage) {
+    public PageComputerDTO(int nbPage, int nbElementPage) {
         this.nbElementPage = nbElementPage;
         this.nbPage = nbPage;
-        this.page = new ArrayList<T>();
+        this.page = new ArrayList<>();
     }
 
     public int getNbPage() {
@@ -36,12 +39,13 @@ public class Page<T> {
         this.nbElementPage = nbElementPage;
     }
 
-    public ArrayList<T> getPage() {
+    public ArrayList<ComputerDTO> getPage() {
         return this.page;
     }
-    
-    public void setPage(ArrayList<T> page) {
-        this.page = page;
+
+    public void setPage(ArrayList<ComputerDTO> page) {
+        this.page  = new ArrayList<>();
+        this.page.addAll(page);
     }
 
     /**
@@ -50,26 +54,6 @@ public class Page<T> {
      */
     public boolean estVide() {
         return this.page.isEmpty();
-    }
-
-    /**
-     * Ajouter un élément dans l'arrayList.
-     * @param element : élément à ajouter dans la liste
-     */
-    public void addElement(T element) {
-        if (this.page.size() < nbElementPage) {
-            this.page.add(element);
-        }
-    }
-
-    /**
-     * Met les objets d'une liste dans la page.
-     * @param list : list contenant des objet
-     */
-    public void addList(List<T> list) {
-        if (!(list.size() > nbElementPage)) {
-            this.page.addAll(list);
-        }
     }
 
     @Override
