@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>service</artifactId>
 	<parent>
-		<groupId>com.navarna.computerdb.</groupId>
+		<groupId>fr.navarna.computerdb</groupId>
 		<artifactId>ComputerDatabaseMultiModule</artifactId>
 		<relativePath>../pom.xml</relativePath>
 		<version>7.0</version>

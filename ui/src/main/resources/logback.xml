@@ -3,7 +3,7 @@
 <configuration>
 
   <appender name="INFORMATION" class="ch.qos.logback.core.FileAppender">
-    <file>/home/excilys/workspace_New/ComputerDatabaseV2/log/informationCLI.log</file>
+    <file>/log/ComputerDatabaseMultiModule/informationCLI.log</file>
     <!-- encoders are assigned the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
@@ -12,7 +12,7 @@
     <append>false</append>
   </appender>
   <appender name="DEBUG" class="ch.qos.logback.core.FileAppender">
-    <file>/home/excilys/workspace_New/ComputerDatabaseV2/log/debugCLI.log</file>
+    <file>/log/ComputerDatabaseMultiModule/debugCLI.log</file>
     <!-- encoders are assigned the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>

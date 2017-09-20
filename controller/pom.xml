@@ -4,7 +4,7 @@
 	<artifactId>controller</artifactId>
 	<packaging>war</packaging>
 	<parent>
-		<groupId>com.navarna.computerdb.</groupId>
+		<groupId>fr.navarna.computerdb</groupId>
 		<artifactId>ComputerDatabaseMultiModule</artifactId>
 		<relativePath>../pom.xml</relativePath>
 		<version>7.0</version>

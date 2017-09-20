@@ -48,9 +48,10 @@ public class TransformationToDTO {
                     .setDiscontinued(computer.getDiscontinued() != null ? computer.getDiscontinued().toString() : "");
             if (computer.getCompany() != null) {
                 computerDTO.setIdCompany(computer.getCompany().getId());
-                computerDTO
-                        .setNameCompany(computer.getCompany().getName() != null ? computer.getCompany().getName() : "");
+                computerDTO.setNameCompany(computer.getCompany().getName() != null ? computer.getCompany().getName() : "");
 
+            } else {
+            	computerDTO.setNameCompany("");
             }
             return Optional.of(computerDTO);
         }

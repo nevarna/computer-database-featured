@@ -3,7 +3,7 @@
 <configuration>
 
   <appender name="INFORMATION" class="ch.qos.logback.core.FileAppender">
-    <file>/home/excilys/workspace_New/ComputerDatabaseV2/log/information.log</file>
+    <file>/log/ComputerDatabaseMultiModule/information.log</file>
     <!-- encoders are assigned the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
@@ -12,7 +12,7 @@
     <append>false</append>
   </appender>
   <appender name="DEBUG" class="ch.qos.logback.core.FileAppender">
-    <file>/home/excilys/workspace_New/ComputerDatabaseV2/log/debug.log</file>
+    <file>/log/ComputerDatabaseMultiModule/debug.log</file>
     <!-- encoders are assigned the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
@@ -22,7 +22,7 @@
   </appender>
   
     <appender name="SPRING" class="ch.qos.logback.core.FileAppender">
-    <file>/home/excilys/workspace_New/ComputerDatabaseV2/log/spring.log</file>
+    <file>/log/ComputerDatabaseMultiModule/spring.log</file>
     <!-- encoders are assigned the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
@@ -31,7 +31,7 @@
     <append>false</append>
   </appender>
       <appender name="HIBERNATE" class="ch.qos.logback.core.FileAppender">
-    <file>/home/excilys/workspace_New/ComputerDatabaseV2/log/hibernate.log</file>
+    <file>/log/ComputerDatabaseMultiModule/hibernate.log</file>
     <!-- encoders are assigned the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
